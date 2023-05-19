@@ -22,19 +22,19 @@ func NewUserUseCase(repo interfaces.UserRepository) services.UserUseCase {
 	}
 }
 
-func (c *userUseCase) GenerateUser(ctx context.Context,user domain.Users) (domain.Users,error) {
+func (c *userUseCase) GenerateUser(ctx context.Context,user domain.Users) (domain.TokenUsers,error) {
 	
 	// Check whether the user already exist. If yes, show the error message, since this is signUp
 	userExist := c.userRepo.CheckUserAvailability(user)
 	
 	if userExist {
-		return domain.Users{},errors.New("user already exist, sign in")
+		return domain.TokenUsers{},errors.New("user already exist, sign in")
 	}
 
 	// Hash password
 	hashedPassword,err := bcrypt.GenerateFromPassword([]byte(user.Password),10)
 	if err != nil {
-		return domain.Users{},errors.New("Internal server error")
+		return domain.TokenUsers{},errors.New("Internal server error")
 	}
 	user.Password = string(hashedPassword)
 
@@ -42,13 +42,21 @@ func (c *userUseCase) GenerateUser(ctx context.Context,user domain.Users) (domai
 
 	userData, err := c.userRepo.GenerateUser(user)
 	if err != nil {
-		return domain.Users{},err
+		return domain.TokenUsers{},err
 	}
 
 	tokenString,err := helper.GenerateToken(user)
-	if err 
 
-	return userData,nil
+	if err != nil {
+		return domain.TokenUsers{},errors.New("could not create token")
+	}
+	
+
+
+	return domain.TokenUsers{
+		Users: userData,
+		Token: tokenString,
+	},nil
 }
 
 func (c *userUseCase) LoginHandler(ctx context.Context,user domain.Users) (domain.Users,error) {

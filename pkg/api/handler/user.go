@@ -68,8 +68,8 @@ func (cr *UserHandler) GenerateUser(c *gin.Context)  {
 	}
 
 	c.JSON(http.StatusCreated,gin.H{
-		"user-details":userCreated,
-		"token":"this is the token bitch",
+		"user-details":userCreated.Users,
+		"token":userCreated.Token,
 	})
 }
 

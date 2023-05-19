@@ -8,7 +8,7 @@ import (
 
 type UserUseCase interface {
 
-	GenerateUser(ctx context.Context,user domain.Users) (domain.Users,error)
+	GenerateUser(ctx context.Context,user domain.Users) (domain.TokenUsers,error)
 
 
 	LoginHandler(ctx context.Context,user domain.Users) (domain.Users,error)

@@ -7,3 +7,9 @@ type Users struct {
 	Password 	string	`json:"password" validate:"min=8,max=20"`
 	Phone			string	`json:"phone"`
 }
+
+
+type TokenUsers struct {
+	Users Users
+	Token string
+}

@@ -13,7 +13,7 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler *handler.UserHandler) *ServerHTTP {
+func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.ProductHandler) *ServerHTTP {
 	router := gin.New()
 
 	// Use logger from Gin
@@ -30,13 +30,18 @@ func NewServerHTTP(userHandler *handler.UserHandler) *ServerHTTP {
 	//ends here 
 	router.POST("/login", middleware.LoginHandler)
 
-	// Auth middleware
-	api := router.Group("/moviesgo", middleware.AuthorizationMiddleware)
+	product := router.Group("/products")
+{
+	product.GET("",productHandler.ShowAllProducts)
+}
 
-	api.GET("users", userHandler.FindAll)
-	api.GET("users/:id", userHandler.FindByID)
-	api.POST("users", userHandler.Save)
-	api.DELETE("users/:id", userHandler.Delete)
+	// Auth middleware
+	// api := router.Group("/moviesgo", middleware.AuthorizationMiddleware)
+
+	// api.GET("users", userHandler.FindAll)
+	// api.GET("users/:id", userHandler.FindByID)
+	// api.POST("users", userHandler.Save)
+	// api.DELETE("users/:id", userHandler.Delete)
 
 	return &ServerHTTP{engine: router}
 }

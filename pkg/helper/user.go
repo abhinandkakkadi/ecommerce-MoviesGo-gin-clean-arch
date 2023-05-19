@@ -24,7 +24,7 @@ func GenerateToken(user domain.Users) (string,error) {
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodES256,claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256,claims)
 
 	tokenString, err := token.SignedString([]byte("132457689"))
 
