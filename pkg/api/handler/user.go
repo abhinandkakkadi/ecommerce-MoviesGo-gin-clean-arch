@@ -96,7 +96,7 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 	// }
 
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.JSON(http.StatusBadRequest,err.Error())
 	} else {
 		c.JSON(http.StatusOK,user_details)
 	}

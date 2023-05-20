@@ -12,7 +12,7 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.ProductHandler) *ServerHTTP {
+func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.ProductHandler,otpHandler *handler.OtpHandler) *ServerHTTP {
 	router := gin.New()
 
 	// Use logger from Gin
@@ -23,17 +23,26 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 
 	// Request JWT
 
-
-	//the edit i made
+// USER SIDE
+	//sign up functionality for user
 	router.POST("/signup", userHandler.GenerateUser)
-	//ends here 
+	//login functionality for user
 	router.POST("/login", userHandler.LoginHandler)
+	//send and verify otp along with user autherisation
+	router.POST("/send-otp",otpHandler.SendOTP)
+	router.POST("/verify-otp",otpHandler.VerifyOTP)
 
 	product := router.Group("/products")
 {
 	product.GET("",productHandler.ShowAllProducts)
 	product.GET("/:id",productHandler.ShowIndividualProducts)
 }
+
+// ADMIN SIDE
+
+	router.POST("/adminsignup",adminHandler.LoginHandler)
+
+
 
 	// Auth middleware
 	// api := router.Group("/moviesgo", middleware.AuthorizationMiddleware)

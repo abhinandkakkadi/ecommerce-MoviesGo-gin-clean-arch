@@ -38,9 +38,8 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 
 		err := c.DB.Raw(`
 		SELECT *
-		FROM users
-		`).Scan(&user_details).Error
-
+		FROM users where email = ?
+		`,user.Email).Scan(&user_details).Error
 
 		if err != nil {
 		return domain.Users{},errors.New("Error checking user details")
