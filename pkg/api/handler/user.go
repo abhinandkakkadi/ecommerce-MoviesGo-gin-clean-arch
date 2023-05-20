@@ -84,15 +84,21 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 		return
 	}
 
-	user, err := cr.userUseCase.LoginHandler(c.Request.Context(),user)
+	user_details, err := cr.userUseCase.LoginHandler(c.Request.Context(),user)
+
+	// if err != nil {
+	// 	c.AbortWithStatus(http.StatusNotFound)
+	// } else {
+	// 	response := Response{}
+	// 	copier.Copy(&response,&user_details.Users)
+
+	// 	c.JSON(http.StatusOK,response)
+	// }
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		response := Response{}
-		copier.Copy(&response,&user)
-
-		c.JSON(http.StatusOK,response)
+		c.JSON(http.StatusOK,user_details)
 	}
 }
 

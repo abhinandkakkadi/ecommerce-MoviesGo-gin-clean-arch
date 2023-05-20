@@ -11,5 +11,6 @@ import (
 
 
 type ProductRepository interface {
-	ShowAllProducts(ctx context.Context) ([]domain.Products, error)
+	ShowAllProducts(ctx context.Context) ([]domain.ProductsBrief, error)
+	ShowIndividualProducts(ctx context.Context,id string)(domain.Products,error)
 }

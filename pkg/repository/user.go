@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
@@ -27,6 +28,26 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 		}
 		return count > 0
 		
+	}
+
+// retreive the user details form the database
+
+	func (c *userDatabase) FindUserByEmail(user domain.Users) (domain.Users,error) {
+
+		var user_details domain.Users
+
+		err := c.DB.Raw(`
+		SELECT *
+		FROM users
+		`).Scan(&user_details).Error
+
+
+		if err != nil {
+		return domain.Users{},errors.New("Error checking user details")
+		}
+
+		return user_details,nil
+
 	}
 
 func (c *userDatabase) GenerateUser(user domain.Users) (domain.Users,error) {

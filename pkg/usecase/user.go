@@ -7,9 +7,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
+	"github.com/thnkrn/go-gin-clean-arch/pkg/helper"
 	interfaces "github.com/thnkrn/go-gin-clean-arch/pkg/repository/interface"
 	services "github.com/thnkrn/go-gin-clean-arch/pkg/usecase/interface"
-	"github.com/thnkrn/go-gin-clean-arch/pkg/helper"
 )
 
 type userUseCase struct {
@@ -59,9 +59,38 @@ func (c *userUseCase) GenerateUser(ctx context.Context,user domain.Users) (domai
 	},nil
 }
 
-func (c *userUseCase) LoginHandler(ctx context.Context,user domain.Users) (domain.Users,error) {
-	user, err := c.userRepo.LoginHandler(ctx,user)
-	return user,err
+func (c *userUseCase) LoginHandler(ctx context.Context,user domain.Users) (domain.TokenUsers,error) {
+
+	// checking if a username exist with this email address
+	ok := c.userRepo.CheckUserAvailability(user)
+	if !ok {
+		return domain.TokenUsers{},errors.New("The user does not exist")
+	}
+
+	// Get the user details in order to check the password, in this case ( The same function can be reused in future )
+	user_details,err := c.userRepo.FindUserByEmail(user)
+	if err != nil {
+		return domain.TokenUsers{},err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user_details.Password),[]byte(user.Password))
+	if err != nil {
+		return domain.TokenUsers{},errors.New("Password incorrect")
+	}
+
+	tokenString,err := helper.GenerateToken(user)
+
+	if err != nil {
+		return domain.TokenUsers{},errors.New("could not create token")
+	}
+	
+	return domain.TokenUsers{
+		Users: user_details,
+		Token: tokenString,
+	},nil
+
+	// user, err = c.userRepo.LoginHandler(ctx,user)
+	// return user,err
 }
 
 func (c *userUseCase) FindAll(ctx context.Context) ([]domain.Users, error) {

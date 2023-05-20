@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
 	interfaces "github.com/thnkrn/go-gin-clean-arch/pkg/repository/interface"
@@ -19,8 +20,19 @@ func NewProductUseCase(repo interfaces.ProductRepository) services.ProductUseCas
 	}
 }
 
-func (cr *productUseCase) ShowAllProducts(c context.Context) ([]domain.Products,error) {
+func (cr *productUseCase) ShowAllProducts(c context.Context) ([]domain.ProductsBrief,error) {
 
-	products, err := cr.productRepo.ShowAllProducts(c)
-	return products, err
+	productsBrief, err := cr.productRepo.ShowAllProducts(c)
+	return productsBrief, err
+}
+
+func (cr *productUseCase) ShowIndividualProducts(c context.Context,id string) (domain.Products,error) {
+
+	product, err := cr.productRepo.ShowIndividualProducts(c,id)
+	
+	if product.Movie_Name == "" {
+		err = errors.New("Record not avaiable")
+	}
+	return product,err
+
 }

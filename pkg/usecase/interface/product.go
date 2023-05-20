@@ -8,5 +8,6 @@ import (
 
 type ProductUseCase interface {
 	
-	ShowAllProducts(c context.Context) ([]domain.Products,error)
+	ShowAllProducts(c context.Context) ([]domain.ProductsBrief,error)
+	ShowIndividualProducts(c context.Context,id string) (domain.Products,error)
 }

@@ -6,7 +6,6 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	_ "github.com/thnkrn/go-gin-clean-arch/cmd/api/docs"
 	handler "github.com/thnkrn/go-gin-clean-arch/pkg/api/handler"
-	middleware "github.com/thnkrn/go-gin-clean-arch/pkg/api/middleware"
 )
 
 type ServerHTTP struct {
@@ -28,11 +27,12 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 	//the edit i made
 	router.POST("/signup", userHandler.GenerateUser)
 	//ends here 
-	router.POST("/login", middleware.LoginHandler)
+	router.POST("/login", userHandler.LoginHandler)
 
 	product := router.Group("/products")
 {
 	product.GET("",productHandler.ShowAllProducts)
+	product.GET("/:id",productHandler.ShowIndividualProducts)
 }
 
 	// Auth middleware

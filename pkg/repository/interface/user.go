@@ -8,8 +8,7 @@ import (
 
 type UserRepository interface {
 	GenerateUser(user domain.Users) (domain.Users,error)
-
-
+	FindUserByEmail(user domain.Users) (domain.Users,error)
 	CheckUserAvailability(user domain.Users) bool
 	LoginHandler(ctx context.Context, user domain.Users) (domain.Users,error)
 	FindAll(ctx context.Context) ([]domain.Users, error)
