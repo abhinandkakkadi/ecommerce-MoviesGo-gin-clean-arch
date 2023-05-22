@@ -5,7 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	services "github.com/thnkrn/go-gin-clean-arch/pkg/usecase/interface"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 )
 
 type ProductHandler struct {
@@ -40,4 +41,42 @@ func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK,product)
+}
+
+
+func (cr *ProductHandler) AddProduct(c *gin.Context) {
+
+	var product domain.Products
+
+	if err := c.BindJSON(&product); err != nil {
+		c.JSON(http.StatusBadRequest,"error while binding")
+		return
+	}
+
+	err := cr.productUseCase.AddProduct(c.Request.Context(),product)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"error":err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK,"success updating the product details")
+}
+
+
+
+func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
+
+	product_id := c.Param("id")
+	err := cr.productUseCase.DeleteProduct(c.Request.Context(), product_id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK,"Succesfully deleted")
+
 }

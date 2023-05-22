@@ -3,40 +3,33 @@ package usecase
 import (
 	"errors"
 
-	config "github.com/thnkrn/go-gin-clean-arch/pkg/config"
-	helper "github.com/thnkrn/go-gin-clean-arch/pkg/helper"
-	interfaces "github.com/thnkrn/go-gin-clean-arch/pkg/repository/interface"
-	services "github.com/thnkrn/go-gin-clean-arch/pkg/usecase/interface"
-	"github.com/thnkrn/go-gin-clean-arch/pkg/utils/models"
+	"github.com/jinzhu/copier"
+	config "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/config"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
+	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
+	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"golang.org/x/net/context"
 )
 
 type otpUseCase struct {
 	cfg config.Config
-	repo interfaces.OtpRepository
+	otpRepository interfaces.OtpRepository
 }
 
 func NewOtpUseCase(cfg config.Config,repo interfaces.OtpRepository) services.OtpUseCase {
 	return &otpUseCase{
 		cfg: cfg,
-		repo: repo,
+		otpRepository: repo,
 	}
 }
 
-// func (cr *otpUseCase) VerifyMobileNumberAlreadyPresent(ctx context.Context,phone string) error {
 
-// 	// ok := VerifyMobileNumberAlreadyPresent(ctx,phone)
-
-// 	// if !ok {
-// 	// 	return errors.New("Mobile number not of a valid user")
-// 	// }
-
-// 	return nil
-// }
 
 func (cr *otpUseCase) SendOTP(ctx context.Context,phone string) error {
 
-	ok := cr.repo.FindUserByMobileNumber(phone)
+	ok := cr.otpRepository.FindUserByMobileNumber(phone)
 	if !ok {
 		return errors.New("the user does not exist")
 	}
@@ -51,13 +44,31 @@ func (cr *otpUseCase) SendOTP(ctx context.Context,phone string) error {
 	return nil
 }
 
-func (cr *otpUseCase) VerifyOTP(ctx context.Context, code models.VerifyData) error {
-
+func (cr *otpUseCase) VerifyOTP(ctx context.Context, code models.VerifyData) (domain.TokenUsers,error) {
+	
+	helper.TwilioSetup(cr.cfg.ACCOUNTSID,cr.cfg.AUTHTOKEN)
 	err := helper.TwilioVerifyOTP(cr.cfg.SERVICESSID,code.Code,code.User.PhoneNumber)
 
 	if err != nil {
-		return errors.New("error while verifying")
+		return domain.TokenUsers{},errors.New("error while verifying")
 	}
 
-	return nil
+	userDetails,err := cr.otpRepository.UserDetailsUsingPhone(ctx,code.User.PhoneNumber)
+	if err != nil {
+		return domain.TokenUsers{},err
+	}
+
+	tokenString,err := helper.GenerateTokenUsers(userDetails)
+
+	var user models.UserDetails
+
+	err = copier.Copy(&user,&userDetails)
+	if err != nil {
+		return domain.TokenUsers{},err
+	}
+	
+	return domain.TokenUsers{
+		Users: user,
+		Token: tokenString,
+	},nil
 }

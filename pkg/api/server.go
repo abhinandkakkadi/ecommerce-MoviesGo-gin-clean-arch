@@ -4,15 +4,16 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	_ "github.com/thnkrn/go-gin-clean-arch/cmd/api/docs"
-	handler "github.com/thnkrn/go-gin-clean-arch/pkg/api/handler"
+	_ "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/cmd/api/docs"
+	handler "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/api/handler"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/api/middleware"
 )
 
 type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.ProductHandler,otpHandler *handler.OtpHandler) *ServerHTTP {
+func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.ProductHandler,otpHandler *handler.OtpHandler,adminHandler *handler.AdminHandler) *ServerHTTP {
 	router := gin.New()
 
 	// Use logger from Gin
@@ -39,15 +40,30 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 }
 
 // ADMIN SIDE
+	// admin login
+	router.POST("/adminsignup",adminHandler.SignupHandler)
+	router.POST("/adminlogin",adminHandler.LoginHandler)
 
-	router.POST("/adminsignup",adminHandler.LoginHandler)
+	// admin signup
+	// router.POST("/adminsignup",adminHandler.SignupHandler)
 
 
 
 	// Auth middleware
-	// api := router.Group("/moviesgo", middleware.AuthorizationMiddleware)
+	api := router.Group("/admin_panel", middleware.AuthorizationMiddleware)
 
-	// api.GET("users", userHandler.FindAll)
+	api.GET("users", adminHandler.GetUsers)
+	api.GET("genres",adminHandler.GetGenres)
+	api.POST("genres/add_genre",adminHandler.AddGenre)
+	api.GET("genres/delete_genre/:id",adminHandler.DeleteGenre)
+	api.POST("/products/add_product",productHandler.AddProduct)
+	api.DELETE("/products/delete_product/:id",productHandler.DeleteProduct)
+	api.GET("/users/block-users/:id",adminHandler.BlockUser)
+	// api.GET("/users/unblock-users/:id",productHandler.DeleteProduct)
+	
+	
+	
+	
 	// api.GET("users/:id", userHandler.FindByID)
 	// api.POST("users", userHandler.Save)
 	// api.DELETE("users/:id", userHandler.Delete)

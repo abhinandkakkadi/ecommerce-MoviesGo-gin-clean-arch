@@ -1,10 +1,12 @@
 package domain
 
+import "time"
+
 type Products struct {
 	ID						uint 			`json:"id" gorm:"unique;not null"`
 	Movie_Name		string		`json:"movie_name"`
 	GenreID				uint				`json:"genre_id"`
-	Genre         Genre			`json:"-" gorm:"foreignkey:GenreID"`
+	Genre         Genre			`json:"-" gorm:"foreignkey:GenreID;constraint:OnDelete:CASCADE"`
 	DirectorID		uint	    `json:"director_id"`
 	Directors			Directors			`json:"-" gorm:"foreignkey:DirectorID"`
 	Release_Year	string		`json:"release_year"`
@@ -14,8 +16,9 @@ type Products struct {
 	Run_time			float64				`json:"runtime"`
 	LanguageID		uint				`json:"language_id"`	
 	Movie_Language	Movie_Language		`json:"-" gorm:"foreignkey:LanguageID"`
-	RatingID		uint		`json:"rating_id"`
-	Rating			Rating		`json:"-" gorm:"foreignkey:RatingID"`
+	Quantity			int		`json:"quantity"`
+	Price					float64		`json:"price"`
+	DeletedAt    *time.Time `gorm:"column:archived_at;index"`
 }
 
 type ProductsBrief struct {
@@ -36,13 +39,13 @@ type Directors struct {
 
 type Movie_Format struct {
 	ID 				uint 			`json:"id" gorm:"unique; not null"`
-	Movie_Format	uint	`json:"movie_format"`
-	Quantity			int		`json:"quantity"`
-	Price					float64		`json:"price"`
+	Format		string	  `json:"movie_format"`
 }
 
 type Rating struct {
 	ID uint 	`json:"id" gorm:"unique; not null"`
+	ProductID		uint		`json:"product_id"`
+	Products 	Products	`json:"-" gorm:"foreignkey:ProductID"`
 	Rating		int		`json:"rating"`
 }
 

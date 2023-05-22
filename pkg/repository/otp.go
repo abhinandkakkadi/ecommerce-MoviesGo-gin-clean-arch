@@ -1,10 +1,11 @@
 package repository
 
 import (
+	"context"
 
-"gorm.io/gorm"
-interfaces "github.com/thnkrn/go-gin-clean-arch/pkg/repository/interface"
-
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
+	"gorm.io/gorm"
 )
 
 type otpRepository struct {
@@ -26,4 +27,14 @@ func (cr *otpRepository) FindUserByMobileNumber(phone string) bool {
 	}
 
 	return count > 0
+}
+
+func (cr *otpRepository) UserDetailsUsingPhone(ctx context.Context,phone string) (domain.Users,error) {
+	
+	var usersDetails domain.Users
+	if err := cr.DB.Raw("select * from users where phone = ?",phone).Scan(&usersDetails).Error; err != nil {
+		return domain.Users{},err
+	}
+
+	return usersDetails,nil
 }

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
-	interfaces "github.com/thnkrn/go-gin-clean-arch/pkg/repository/interface"
+	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"gorm.io/gorm"
 )
 
@@ -38,11 +38,11 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 
 		err := c.DB.Raw(`
 		SELECT *
-		FROM users where email = ?
+		FROM users where email = ? and blocked = false
 		`,user.Email).Scan(&user_details).Error
 
 		if err != nil {
-		return domain.Users{},errors.New("Error checking user details")
+		return domain.Users{},errors.New("error checking user details")
 		}
 
 		return user_details,nil

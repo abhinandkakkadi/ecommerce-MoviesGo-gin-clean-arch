@@ -3,13 +3,16 @@ package usecase
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 
-	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
-	"github.com/thnkrn/go-gin-clean-arch/pkg/helper"
-	interfaces "github.com/thnkrn/go-gin-clean-arch/pkg/repository/interface"
-	services "github.com/thnkrn/go-gin-clean-arch/pkg/usecase/interface"
+	"github.com/jinzhu/copier"
+	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
+	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
+	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
 
 type userUseCase struct {
@@ -45,16 +48,22 @@ func (c *userUseCase) GenerateUser(ctx context.Context,user domain.Users) (domai
 		return domain.TokenUsers{},err
 	}
 
-	tokenString,err := helper.GenerateToken(user)
+	tokenString,err := helper.GenerateTokenUsers(user)
 
 	if err != nil {
 		return domain.TokenUsers{},errors.New("could not create token")
 	}
+
+	var userDetails models.UserDetails
 	
 
+	err = copier.Copy(&userDetails,&userData)
+	if err != nil {
+		return domain.TokenUsers{},err
+	}
 
 	return domain.TokenUsers{
-		Users: userData,
+		Users: userDetails,
 		Token: tokenString,
 	},nil
 }
@@ -73,19 +82,33 @@ func (c *userUseCase) LoginHandler(ctx context.Context,user domain.Users) (domai
 		return domain.TokenUsers{},err
 	}
 
+	fmt.Println(user)
+	fmt.Println(user_details)
+
 	err = bcrypt.CompareHashAndPassword([]byte(user_details.Password),[]byte(user.Password))
 	if err != nil {
 		return domain.TokenUsers{},errors.New("Password incorrect")
 	}
 
-	tokenString,err := helper.GenerateToken(user)
+	tokenString,err := helper.GenerateTokenUsers(user)
 
 	if err != nil {
 		return domain.TokenUsers{},errors.New("could not create token")
 	}
+
+	var userDetails models.UserDetails
+	// err = mapstructure.Decode(&userDetails,&user_details)
+	// if err != nil {
+	// 	return domain.TokenUsers{},errors.New("internal server error")
+	// }
+
+	err = copier.Copy(&userDetails,&user_details)
+	if err != nil {
+		return domain.TokenUsers{},err
+	}
 	
 	return domain.TokenUsers{
-		Users: user_details,
+		Users: userDetails,
 		Token: tokenString,
 	},nil
 

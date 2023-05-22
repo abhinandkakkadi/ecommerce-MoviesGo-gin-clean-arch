@@ -3,10 +3,12 @@ package usecase
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
-	interfaces "github.com/thnkrn/go-gin-clean-arch/pkg/repository/interface"
-	services "github.com/thnkrn/go-gin-clean-arch/pkg/usecase/interface"
+	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
+	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
 
 
@@ -26,7 +28,7 @@ func (cr *productUseCase) ShowAllProducts(c context.Context) ([]domain.ProductsB
 	return productsBrief, err
 }
 
-func (cr *productUseCase) ShowIndividualProducts(c context.Context,id string) (domain.Products,error) {
+func (cr *productUseCase) ShowIndividualProducts(c context.Context,id string) (models.IndividualProduct,error) {
 
 	product, err := cr.productRepo.ShowIndividualProducts(c,id)
 	
@@ -34,5 +36,43 @@ func (cr *productUseCase) ShowIndividualProducts(c context.Context,id string) (d
 		err = errors.New("Record not avaiable")
 	}
 	return product,err
+
+}
+
+func (cr *productUseCase) AddProduct(c context.Context,product domain.Products) (error) {
+
+	alreadyPresent,err := cr.productRepo.CheckIfAlreadyPresent(c,product)
+
+	if err != nil {
+		return err
+	}
+
+	if alreadyPresent {
+		fmt.Println("it came here")
+		err := cr.productRepo.UdateQuantity(c,product)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	err = cr.productRepo.AddProduct(c,product)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (cr *productUseCase) DeleteProduct(c context.Context, product_id string) error {
+
+	err := cr.productRepo.DeleteProduct(c,product_id)
+	if err != nil {
+		return err
+	}
+	return nil
 
 }

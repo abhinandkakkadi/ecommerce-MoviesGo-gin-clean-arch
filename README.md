@@ -1,4 +1,4 @@
-# Clean Architecture using Golang with Gin framework
+# MoviesGo E-Commerce App in Golang with Gin framework
 
 ## Template Structure
 

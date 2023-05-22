@@ -3,9 +3,11 @@ package repository
 import (
 	"context"
 	"errors"
+	"strconv"
 
-	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
-	interfaces "github.com/thnkrn/go-gin-clean-arch/pkg/repository/interface"
+	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"gorm.io/gorm"
 ) 
 
@@ -15,8 +17,7 @@ type productDatabase struct {
 }
 
 func NewProductRepository(DB *gorm.DB) interfaces.ProductRepository {
-	return &productDatabase{DB,
-	}
+	return &productDatabase{DB,}
 }
 
 func (c *productDatabase) ShowAllProducts(ctx context.Context)([]domain.ProductsBrief, error) {
@@ -38,21 +39,97 @@ func (c *productDatabase) ShowAllProducts(ctx context.Context)([]domain.Products
 
 }
 
-func (c *productDatabase) ShowIndividualProducts(ctx context.Context,id string)(domain.Products,error) {
+func (c *productDatabase) ShowIndividualProducts(ctx context.Context,id string)(models.IndividualProduct,error) {
 
-	var product domain.Products
-
+	var product models.IndividualProduct
 	err := c.DB.Raw(`
-	SELECT *
-	FROM products
-	WHERE id = ?
-`, id).Scan(&product).Error
+	SELECT
+		p.movie_name,
+		g.genre_name,
+		d.director_name,
+		p.release_year,
+		mf.format AS movie_format,
+		p.products_description,
+		p.run_time,
+		ml.language AS movie_language,
+		p.quantity,
+		p.price
+		FROM
+			products p
+		JOIN
+			genres g ON p.genre_id = g.id
+		JOIN
+			directors d ON p.director_id = d.id
+		JOIN
+			movie_formats mf ON p.format_id = mf.id
+		JOIN
+			movie_languages ml ON p.language_id = ml.id 
+		WHERE
+			p.id = ?
+			`, id).Scan(&product).Error
 
 
 	if err != nil {
-		return domain.Products{},errors.New("Error entering record")
+		return models.IndividualProduct{},errors.New("Error entering record")
 	}
 
 	return product,nil
+
+}
+
+func (cr *productDatabase) CheckIfAlreadyPresent(c context.Context,product domain.Products) (bool,error) {
+
+	var count int
+	err := cr.DB.Raw("select count(*) from products where movie_name = ? and format_id = ?",product.Movie_Name,product.FormatID).Scan(&count).Error
+
+	if err != nil {
+		return false,err
+	}
+
+	return count > 0,nil
+}
+
+func (cr *productDatabase) UdateQuantity(c context.Context,product domain.Products) error {
+
+	var intialQuantity int
+	err := cr.DB.Raw("select quantity from products where movie_name = ? and format_id = ?",product.Movie_Name,product.FormatID).Scan(&intialQuantity).Error
+
+	if err != nil {
+		return err
+	}
+	
+	finalQuantity := intialQuantity + product.Quantity
+	err = cr.DB.Raw("update from products set quantity = ? ",finalQuantity).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (cr *productDatabase) AddProduct(c context.Context,product domain.Products) error {
+
+	err := cr.DB.Create(&product).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (cr *productDatabase) DeleteProduct(c context.Context,product_id string) error {
+	
+	id,_ := strconv.Atoi(product_id)
+
+	result := cr.DB.Delete(&domain.Products{}, id)
+    if result.Error != nil {
+        return result.Error
+    }
+    if result.RowsAffected == 0 {
+        return errors.New("product not found")
+    }
+    return nil
 
 }

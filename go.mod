@@ -1,4 +1,4 @@
-module github.com/thnkrn/go-gin-clean-arch
+module github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch
 
 go 1.17
 

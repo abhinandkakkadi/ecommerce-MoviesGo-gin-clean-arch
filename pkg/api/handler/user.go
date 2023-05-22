@@ -8,8 +8,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/jinzhu/copier"
 
-	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
-	services "github.com/thnkrn/go-gin-clean-arch/pkg/usecase/interface"
+	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 )
 
 type UserHandler struct {
@@ -81,6 +81,12 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest,gin.H{
 			"error":err,
 		})
+		return
+	}
+
+	err := validator.New().Struct(user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,"send data's in the correct format")
 		return
 	}
 

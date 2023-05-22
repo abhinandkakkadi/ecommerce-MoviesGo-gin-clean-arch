@@ -27,7 +27,7 @@ func validateToken(token string) error {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
 
-		return []byte("secret"), nil
+		return []byte("132457689"), nil
 	})
 
 	return err

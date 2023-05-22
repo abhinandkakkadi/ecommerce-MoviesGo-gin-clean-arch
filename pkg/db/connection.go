@@ -6,8 +6,8 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	config "github.com/thnkrn/go-gin-clean-arch/pkg/config"
-	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
+	config "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/config"
+	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 )
 
 func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
@@ -16,8 +16,16 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		SkipDefaultTransaction: true,
 	})
 
+	
+
 	db.AutoMigrate(&domain.Users{})
 	db.AutoMigrate(&domain.Products{})
+	db.AutoMigrate(&domain.Admin{})
+
+	db = db.Session(&gorm.Session{
+    AllowGlobalUpdate: true, // This allows updating the zero value of the DeletedAt field
+	})
+	db = db.Set("gorm:delete_option", "OPTION(CASCADE)")	
 
 	return db, dbErr
 }

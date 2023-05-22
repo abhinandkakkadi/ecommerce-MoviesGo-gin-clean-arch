@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	services "github.com/thnkrn/go-gin-clean-arch/pkg/usecase/interface"
-	models "github.com/thnkrn/go-gin-clean-arch/pkg/utils/models"
+	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
+	models "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
 
 type OtpHandler struct {
@@ -52,12 +52,12 @@ func (cr *OtpHandler) VerifyOTP(c *gin.Context) {
 		return
 	}
 
-	err := cr.otpUseCase.VerifyOTP(c.Request.Context(),code)
+	user,err := cr.otpUseCase.VerifyOTP(c.Request.Context(),code)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK,"OTP verified succesfuly")
+	c.JSON(http.StatusOK,user)
 }
