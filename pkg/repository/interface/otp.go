@@ -6,5 +6,5 @@ import (
 
 type OtpRepository interface {
 	FindUserByMobileNumber(phone string) bool
-	UserDetailsUsingPhone(phone string) (domain.Users,error)
+	UserDetailsUsingPhone(phone string) (domain.Users, error)
 }

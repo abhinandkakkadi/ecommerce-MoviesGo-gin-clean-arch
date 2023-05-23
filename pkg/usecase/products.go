@@ -9,7 +9,6 @@ import (
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
 
-
 type productUseCase struct {
 	productRepo interfaces.ProductRepository
 }
@@ -20,24 +19,24 @@ func NewProductUseCase(repo interfaces.ProductRepository) services.ProductUseCas
 	}
 }
 
-func (cr *productUseCase) ShowAllProducts() ([]domain.ProductsBrief,error) {
+func (cr *productUseCase) ShowAllProducts() ([]domain.ProductsBrief, error) {
 
 	productsBrief, err := cr.productRepo.ShowAllProducts()
 	return productsBrief, err
 
 }
 
-func (cr *productUseCase) ShowIndividualProducts(id string) (models.IndividualProduct,error) {
+func (cr *productUseCase) ShowIndividualProducts(id string) (models.IndividualProduct, error) {
 
 	product, err := cr.productRepo.ShowIndividualProducts(id)
 	if product.Movie_Name == "" {
 		err = errors.New("record not available")
 	}
-	return product,err
+	return product, err
 
 }
 
-func (cr *productUseCase) AddProduct(product domain.Products) (error) {
+func (cr *productUseCase) AddProduct(product domain.Products) error {
 	// this logic is to add the quantity of product if admin try to add duplicate product
 	// alreadyPresent,err := cr.productRepo.CheckIfAlreadyPresent(c,product)
 

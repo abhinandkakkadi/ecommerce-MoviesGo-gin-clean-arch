@@ -10,7 +10,7 @@ type otpRepository struct {
 	DB *gorm.DB
 }
 
-func NewOtpRepository(DB *gorm.DB) interfaces.OtpRepository  {
+func NewOtpRepository(DB *gorm.DB) interfaces.OtpRepository {
 	return &otpRepository{
 		DB: DB,
 	}
@@ -19,7 +19,7 @@ func NewOtpRepository(DB *gorm.DB) interfaces.OtpRepository  {
 func (cr *otpRepository) FindUserByMobileNumber(phone string) bool {
 
 	var count int
-	if err := cr.DB.Raw("select count(*) from users where phone = ?",phone).Scan(&count).Error; err != nil {
+	if err := cr.DB.Raw("select count(*) from users where phone = ?", phone).Scan(&count).Error; err != nil {
 		return false
 	}
 
@@ -27,13 +27,13 @@ func (cr *otpRepository) FindUserByMobileNumber(phone string) bool {
 
 }
 
-func (cr *otpRepository) UserDetailsUsingPhone(phone string) (domain.Users,error) {
-	
+func (cr *otpRepository) UserDetailsUsingPhone(phone string) (domain.Users, error) {
+
 	var usersDetails domain.Users
-	if err := cr.DB.Raw("select * from users where phone = ?",phone).Scan(&usersDetails).Error; err != nil {
-		return domain.Users{},err
+	if err := cr.DB.Raw("select * from users where phone = ?", phone).Scan(&usersDetails).Error; err != nil {
+		return domain.Users{}, err
 	}
 
-	return usersDetails,nil
-	
+	return usersDetails, nil
+
 }

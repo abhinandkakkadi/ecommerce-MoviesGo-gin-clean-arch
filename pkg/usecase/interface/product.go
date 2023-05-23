@@ -6,9 +6,8 @@ import (
 )
 
 type ProductUseCase interface {
-	
-	ShowAllProducts() ([]domain.ProductsBrief,error)
-	ShowIndividualProducts(id string) (models.IndividualProduct,error)
-	AddProduct(product domain.Products) (error)
+	ShowAllProducts() ([]domain.ProductsBrief, error)
+	ShowIndividualProducts(id string) (models.IndividualProduct, error)
+	AddProduct(product domain.Products) error
 	DeleteProduct(product_id string) error
 }

@@ -13,18 +13,16 @@ import (
 )
 
 type otpUseCase struct {
-	cfg config.Config
+	cfg           config.Config
 	otpRepository interfaces.OtpRepository
 }
 
-func NewOtpUseCase(cfg config.Config,repo interfaces.OtpRepository) services.OtpUseCase {
+func NewOtpUseCase(cfg config.Config, repo interfaces.OtpRepository) services.OtpUseCase {
 	return &otpUseCase{
-		cfg: cfg,
+		cfg:           cfg,
 		otpRepository: repo,
 	}
 }
-
-
 
 func (cr *otpUseCase) SendOTP(phone string) error {
 
@@ -33,8 +31,8 @@ func (cr *otpUseCase) SendOTP(phone string) error {
 		return errors.New("the user does not exist")
 	}
 
-	helper.TwilioSetup(cr.cfg.ACCOUNTSID,cr.cfg.AUTHTOKEN)
-	_,err := helper.TwilioSendOTP(phone,cr.cfg.SERVICESSID)
+	helper.TwilioSetup(cr.cfg.ACCOUNTSID, cr.cfg.AUTHTOKEN)
+	_, err := helper.TwilioSendOTP(phone, cr.cfg.SERVICESSID)
 	if err != nil {
 		return errors.New("error ocurred while generating OTP")
 	}
@@ -43,31 +41,31 @@ func (cr *otpUseCase) SendOTP(phone string) error {
 
 }
 
-func (cr *otpUseCase) VerifyOTP(code models.VerifyData) (domain.TokenUsers,error) {
-	
-	helper.TwilioSetup(cr.cfg.ACCOUNTSID,cr.cfg.AUTHTOKEN)
-	err := helper.TwilioVerifyOTP(cr.cfg.SERVICESSID,code.Code,code.User.PhoneNumber)
+func (cr *otpUseCase) VerifyOTP(code models.VerifyData) (domain.TokenUsers, error) {
+
+	helper.TwilioSetup(cr.cfg.ACCOUNTSID, cr.cfg.AUTHTOKEN)
+	err := helper.TwilioVerifyOTP(cr.cfg.SERVICESSID, code.Code, code.User.PhoneNumber)
 	if err != nil {
-		return domain.TokenUsers{},errors.New("error while verifying")
+		return domain.TokenUsers{}, errors.New("error while verifying")
 	}
 
 	// if user is authenticated using OTP send back user details
-	userDetails,err := cr.otpRepository.UserDetailsUsingPhone(code.User.PhoneNumber)
+	userDetails, err := cr.otpRepository.UserDetailsUsingPhone(code.User.PhoneNumber)
 	if err != nil {
-		return domain.TokenUsers{},err
+		return domain.TokenUsers{}, err
 	}
 
-	tokenString,err := helper.GenerateTokenUsers(userDetails)
+	tokenString, err := helper.GenerateTokenUsers(userDetails)
 
 	var user models.UserDetails
-	err = copier.Copy(&user,&userDetails)
+	err = copier.Copy(&user, &userDetails)
 	if err != nil {
-		return domain.TokenUsers{},err
+		return domain.TokenUsers{}, err
 	}
-	
+
 	return domain.TokenUsers{
 		Users: user,
 		Token: tokenString,
-	},nil
-	
+	}, nil
+
 }

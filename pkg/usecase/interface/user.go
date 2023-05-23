@@ -5,10 +5,7 @@ import (
 )
 
 type UserUseCase interface {
+	UserSignUp(user domain.Users) (domain.TokenUsers, error)
 
-	UserSignUp(user domain.Users) (domain.TokenUsers,error)
-
-
-	LoginHandler(user domain.Users) (domain.TokenUsers,error)
-	
+	LoginHandler(user domain.Users) (domain.TokenUsers, error)
 }

@@ -23,83 +23,80 @@ func NewUserUseCase(repo interfaces.UserRepository) services.UserUseCase {
 	}
 }
 
-func (c *userUseCase) UserSignUp(user domain.Users) (domain.TokenUsers,error) {
-	
+func (c *userUseCase) UserSignUp(user domain.Users) (domain.TokenUsers, error) {
+
 	// Check whether the user already exist. If yes, show the error message, since this is signUp
 	userExist := c.userRepo.CheckUserAvailability(user)
-	
+
 	if userExist {
-		return domain.TokenUsers{},errors.New("user already exist, sign in")
+		return domain.TokenUsers{}, errors.New("user already exist, sign in")
 	}
 
 	// Hash password since details are validated
-	hashedPassword,err := bcrypt.GenerateFromPassword([]byte(user.Password),10)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
-		return domain.TokenUsers{},errors.New("internal server error")
+		return domain.TokenUsers{}, errors.New("internal server error")
 	}
 	user.Password = string(hashedPassword)
 
 	// add user details to the database
 	userData, err := c.userRepo.UserSignUp(user)
 	if err != nil {
-		return domain.TokenUsers{},err
+		return domain.TokenUsers{}, err
 	}
 
 	// crete a JWT token string for the user
-	tokenString,err := helper.GenerateTokenUsers(user)
+	tokenString, err := helper.GenerateTokenUsers(user)
 	if err != nil {
-		return domain.TokenUsers{},errors.New("could not create token due to some internal error")
+		return domain.TokenUsers{}, errors.New("could not create token due to some internal error")
 	}
 
-	// copies all the details except the password of the user 
+	// copies all the details except the password of the user
 	var userDetails models.UserDetails
-	err = copier.Copy(&userDetails,&userData)
+	err = copier.Copy(&userDetails, &userData)
 	if err != nil {
-		return domain.TokenUsers{},err
+		return domain.TokenUsers{}, err
 	}
 
 	return domain.TokenUsers{
 		Users: userDetails,
 		Token: tokenString,
-	},nil
+	}, nil
 }
 
-func (c *userUseCase) LoginHandler(user domain.Users) (domain.TokenUsers,error) {
+func (c *userUseCase) LoginHandler(user domain.Users) (domain.TokenUsers, error) {
 
 	// checking if a username exist with this email address
 	ok := c.userRepo.CheckUserAvailability(user)
 	if !ok {
-		return domain.TokenUsers{},errors.New("the user does not exist")
+		return domain.TokenUsers{}, errors.New("the user does not exist")
 	}
 
 	// Get the user details in order to check the password, in this case ( The same function can be reused in future )
-	user_details,err := c.userRepo.FindUserByEmail(user)
+	user_details, err := c.userRepo.FindUserByEmail(user)
 	if err != nil {
-		return domain.TokenUsers{},err
+		return domain.TokenUsers{}, err
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user_details.Password),[]byte(user.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(user_details.Password), []byte(user.Password))
 	if err != nil {
-		return domain.TokenUsers{},errors.New("password incorrect")
+		return domain.TokenUsers{}, errors.New("password incorrect")
 	}
 
-	tokenString,err := helper.GenerateTokenUsers(user)
+	tokenString, err := helper.GenerateTokenUsers(user)
 	if err != nil {
-		return domain.TokenUsers{},errors.New("could not create token")
+		return domain.TokenUsers{}, errors.New("could not create token")
 	}
 
 	var userDetails models.UserDetails
-	err = copier.Copy(&userDetails,&user_details)
+	err = copier.Copy(&userDetails, &user_details)
 	if err != nil {
-		return domain.TokenUsers{},err
+		return domain.TokenUsers{}, err
 	}
-	
+
 	return domain.TokenUsers{
 		Users: userDetails,
 		Token: tokenString,
-	},nil
-
+	}, nil
 
 }
-
-

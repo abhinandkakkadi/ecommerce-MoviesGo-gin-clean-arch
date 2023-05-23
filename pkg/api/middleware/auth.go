@@ -34,5 +34,3 @@ func validateToken(token string) error {
 	return err
 
 }
-
-
