@@ -22,10 +22,5 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	db.AutoMigrate(&domain.Products{})
 	db.AutoMigrate(&domain.Admin{})
 
-	db = db.Session(&gorm.Session{
-    AllowGlobalUpdate: true, // This allows updating the zero value of the DeletedAt field
-	})
-	db = db.Set("gorm:delete_option", "OPTION(CASCADE)")	
-
 	return db, dbErr
 }

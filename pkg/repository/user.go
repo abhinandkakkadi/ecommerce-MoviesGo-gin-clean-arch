@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"context"
 	"errors"
 	"fmt"
 
@@ -18,7 +17,7 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 	return &userDatabase{DB}
 }
 
-// check whether the user is already present in the database
+// check whether the user is already present in the database . If there recommend to login
 	func (c *userDatabase) CheckUserAvailability(user domain.Users) bool {
 		
 		var count int
@@ -26,12 +25,12 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 		if err := c.DB.Raw(query).Scan(&count).Error; err != nil {
 			return false
 		}
+		// if count is greater than 0 that means the user already exist
 		return count > 0
 		
 	}
 
-// retreive the user details form the database
-
+// retrieve the user details form the database
 	func (c *userDatabase) FindUserByEmail(user domain.Users) (domain.Users,error) {
 
 		var user_details domain.Users
@@ -49,43 +48,19 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 
 	}
 
-func (c *userDatabase) GenerateUser(user domain.Users) (domain.Users,error) {
-	query := fmt.Sprintf("insert into users (id,name,email,password,phone) values ('%d','%s','%s','%s','%s')",user.ID,user.Name,user.Email,user.Password,user.Phone)
+	func (c *userDatabase) UserSignUp(user domain.Users) (domain.Users,error) {
+		
+		query := fmt.Sprintf("insert into users (id,name,email,password,phone) values ('%d','%s','%s','%s','%s')",user.ID,user.Name,user.Email,user.Password,user.Phone)
 	
-	if err := c.DB.Exec(query).Error; err != nil {
-		return domain.Users{},err
-	}
+		if err := c.DB.Exec(query).Error; err != nil {
+			return domain.Users{},err
+		}
 
-	return user,nil
+		return user,nil
 }
 
-func (c *userDatabase) LoginHandler(ctx context.Context, user domain.Users) (domain.Users,error) {
+func (c *userDatabase) LoginHandler(user domain.Users) (domain.Users,error) {
 	err := c.DB.Save(&user).Error
 	return user,err
 }
 
-func (c *userDatabase) FindAll(ctx context.Context) ([]domain.Users, error) {
-	var users []domain.Users
-	err := c.DB.Find(&users).Error
-
-	return users, err
-}
-
-func (c *userDatabase) FindByID(ctx context.Context, id uint) (domain.Users, error) {
-	var user domain.Users
-	err := c.DB.First(&user, id).Error
-
-	return user, err
-}
-
-func (c *userDatabase) Save(ctx context.Context, user domain.Users) (domain.Users, error) {
-	err := c.DB.Save(&user).Error
-
-	return user, err
-}
-
-func (c *userDatabase) Delete(ctx context.Context, user domain.Users) error {
-	err := c.DB.Delete(&user).Error
-
-	return err
-}

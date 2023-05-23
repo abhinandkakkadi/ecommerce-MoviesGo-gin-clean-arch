@@ -3,14 +3,13 @@ package usecase
 import (
 	"errors"
 
-	"github.com/jinzhu/copier"
 	config "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/config"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
-	"golang.org/x/net/context"
+	"github.com/jinzhu/copier"
 )
 
 type otpUseCase struct {
@@ -27,7 +26,7 @@ func NewOtpUseCase(cfg config.Config,repo interfaces.OtpRepository) services.Otp
 
 
 
-func (cr *otpUseCase) SendOTP(ctx context.Context,phone string) error {
+func (cr *otpUseCase) SendOTP(phone string) error {
 
 	ok := cr.otpRepository.FindUserByMobileNumber(phone)
 	if !ok {
@@ -36,24 +35,24 @@ func (cr *otpUseCase) SendOTP(ctx context.Context,phone string) error {
 
 	helper.TwilioSetup(cr.cfg.ACCOUNTSID,cr.cfg.AUTHTOKEN)
 	_,err := helper.TwilioSendOTP(phone,cr.cfg.SERVICESSID)
-
 	if err != nil {
-		return errors.New("error occured while generating OTP")
+		return errors.New("error ocurred while generating OTP")
 	}
 
 	return nil
+
 }
 
-func (cr *otpUseCase) VerifyOTP(ctx context.Context, code models.VerifyData) (domain.TokenUsers,error) {
+func (cr *otpUseCase) VerifyOTP(code models.VerifyData) (domain.TokenUsers,error) {
 	
 	helper.TwilioSetup(cr.cfg.ACCOUNTSID,cr.cfg.AUTHTOKEN)
 	err := helper.TwilioVerifyOTP(cr.cfg.SERVICESSID,code.Code,code.User.PhoneNumber)
-
 	if err != nil {
 		return domain.TokenUsers{},errors.New("error while verifying")
 	}
 
-	userDetails,err := cr.otpRepository.UserDetailsUsingPhone(ctx,code.User.PhoneNumber)
+	// if user is authenticated using OTP send back user details
+	userDetails,err := cr.otpRepository.UserDetailsUsingPhone(code.User.PhoneNumber)
 	if err != nil {
 		return domain.TokenUsers{},err
 	}
@@ -61,7 +60,6 @@ func (cr *otpUseCase) VerifyOTP(ctx context.Context, code models.VerifyData) (do
 	tokenString,err := helper.GenerateTokenUsers(userDetails)
 
 	var user models.UserDetails
-
 	err = copier.Copy(&user,&userDetails)
 	if err != nil {
 		return domain.TokenUsers{},err
@@ -71,4 +69,5 @@ func (cr *otpUseCase) VerifyOTP(ctx context.Context, code models.VerifyData) (do
 		Users: user,
 		Token: tokenString,
 	},nil
+	
 }

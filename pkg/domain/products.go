@@ -1,24 +1,21 @@
 package domain
 
-import "time"
-
 type Products struct {
 	ID						uint 			`json:"id" gorm:"unique;not null"`
 	Movie_Name		string		`json:"movie_name"`
 	GenreID				uint				`json:"genre_id"`
 	Genre         Genre			`json:"-" gorm:"foreignkey:GenreID;constraint:OnDelete:CASCADE"`
 	DirectorID		uint	    `json:"director_id"`
-	Directors			Directors			`json:"-" gorm:"foreignkey:DirectorID"`
+	Directors			Directors			`json:"-" gorm:"foreignkey:DirectorID;constraint:OnDelete:CASCADE"`
 	Release_Year	string		`json:"release_year"`
 	FormatID			uint				`json:"format_id"`
-	Movie_Format	Movie_Format		`json:"-" gorm:"foreignkey:FormatID"`
+	Movie_Format	Movie_Format		`json:"-" gorm:"foreignkey:FormatID;constraint:OnDelete:CASCADE"`
 	Products_Description  string	`json:"products_discription"`
 	Run_time			float64				`json:"runtime"`
 	LanguageID		uint				`json:"language_id"`	
-	Movie_Language	Movie_Language		`json:"-" gorm:"foreignkey:LanguageID"`
+	Movie_Language	Movie_Language		`json:"-" gorm:"foreignkey:LanguageID;constraint:OnDelete:CASCADE"`
 	Quantity			int		`json:"quantity"`
 	Price					float64		`json:"price"`
-	DeletedAt    *time.Time `gorm:"column:archived_at;index"`
 }
 
 type ProductsBrief struct {

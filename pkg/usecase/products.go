@@ -1,9 +1,7 @@
 package usecase
 
 import (
-	"context"
 	"errors"
-	"fmt"
 
 	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
@@ -22,42 +20,42 @@ func NewProductUseCase(repo interfaces.ProductRepository) services.ProductUseCas
 	}
 }
 
-func (cr *productUseCase) ShowAllProducts(c context.Context) ([]domain.ProductsBrief,error) {
+func (cr *productUseCase) ShowAllProducts() ([]domain.ProductsBrief,error) {
 
-	productsBrief, err := cr.productRepo.ShowAllProducts(c)
+	productsBrief, err := cr.productRepo.ShowAllProducts()
 	return productsBrief, err
+
 }
 
-func (cr *productUseCase) ShowIndividualProducts(c context.Context,id string) (models.IndividualProduct,error) {
+func (cr *productUseCase) ShowIndividualProducts(id string) (models.IndividualProduct,error) {
 
-	product, err := cr.productRepo.ShowIndividualProducts(c,id)
-	
+	product, err := cr.productRepo.ShowIndividualProducts(id)
 	if product.Movie_Name == "" {
-		err = errors.New("Record not avaiable")
+		err = errors.New("record not available")
 	}
 	return product,err
 
 }
 
-func (cr *productUseCase) AddProduct(c context.Context,product domain.Products) (error) {
+func (cr *productUseCase) AddProduct(product domain.Products) (error) {
+	// this logic is to add the quantity of product if admin try to add duplicate product
+	// alreadyPresent,err := cr.productRepo.CheckIfAlreadyPresent(c,product)
 
-	alreadyPresent,err := cr.productRepo.CheckIfAlreadyPresent(c,product)
+	// if err != nil {
+	// 	return err
+	// }
 
-	if err != nil {
-		return err
-	}
+	// if alreadyPresent {
+	// 	fmt.Println("it came here")
+	// 	err := cr.productRepo.UpdateQuantity(c,product)
+	// 	if err != nil {
+	// 		return err
+	// 	}
 
-	if alreadyPresent {
-		fmt.Println("it came here")
-		err := cr.productRepo.UdateQuantity(c,product)
-		if err != nil {
-			return err
-		}
+	// 	return nil
+	// }
 
-		return nil
-	}
-
-	err = cr.productRepo.AddProduct(c,product)
+	err := cr.productRepo.AddProduct(product)
 
 	if err != nil {
 		return err
@@ -67,9 +65,9 @@ func (cr *productUseCase) AddProduct(c context.Context,product domain.Products) 
 
 }
 
-func (cr *productUseCase) DeleteProduct(c context.Context, product_id string) error {
+func (cr *productUseCase) DeleteProduct(product_id string) error {
 
-	err := cr.productRepo.DeleteProduct(c,product_id)
+	err := cr.productRepo.DeleteProduct(product_id)
 	if err != nil {
 		return err
 	}

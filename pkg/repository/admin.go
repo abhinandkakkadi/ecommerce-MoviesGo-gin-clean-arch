@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 
@@ -23,7 +22,7 @@ func NewAdminRepository(DB *gorm.DB)  interfaces.AdminRepository {
 	}
 }
 
-func (cr *adminRepository) LoginHandler(c context.Context,adminDetails domain.Admin) (domain.Admin,error) {
+func (cr *adminRepository) LoginHandler(adminDetails domain.Admin) (domain.Admin,error) {
 	
 	var adminCompareDetails domain.Admin
 	if err := cr.DB.Raw("select * from admins where email = ? ",adminDetails.Email).Scan(&adminCompareDetails).Error; err != nil {
@@ -41,22 +40,24 @@ func (cr *adminRepository) CheckAdminAvailability(admin domain.Admin) bool {
 	}
 
 	return count > 0
+
 }
 
 
 
-func (cr *adminRepository) SignupHandler(c context.Context,admin domain.Admin) (domain.Admin,error) {
+func (cr *adminRepository) SignUpHandler(admin domain.Admin) (domain.Admin,error) {
 
 	query := fmt.Sprintf("insert into admins (id,name,email,password) values ('%d','%s','%s','%s')",admin.ID,admin.Name,admin.Email,admin.Password)
-	
 	if err := cr.DB.Exec(query).Error; err != nil {
 		return domain.Admin{},err
 	}
 
 	return admin,nil
+
 }
 
-func (cr *adminRepository) GetUsers(c context.Context) ([]models.UserDetails,error) {
+// Get users details for authenticated admins
+func (cr *adminRepository) GetUsers() ([]models.UserDetails,error) {
 
 	var userDetails []models.UserDetails
 	
@@ -65,9 +66,10 @@ func (cr *adminRepository) GetUsers(c context.Context) ([]models.UserDetails,err
 	}
 
 	return userDetails,nil
+
 }
 
-func (cr *adminRepository) GetGenres(c context.Context) ([]domain.Genre,error) {
+func (cr *adminRepository) GetGenres() ([]domain.Genre,error) {
 
 	var genres []domain.Genre
 	if err := cr.DB.Raw("select * from genres").Scan(&genres).Error; err != nil {
@@ -75,34 +77,59 @@ func (cr *adminRepository) GetGenres(c context.Context) ([]domain.Genre,error) {
 	}
 
 	return genres,nil
+
 }
 
-func (cr *adminRepository) AddGenre(c context.Context,genre domain.Genre) (domain.Genre,error) {
+// CATEGORY MANAGEMENT
+func (cr *adminRepository) AddGenre(genre domain.Genre) error {
 
 	if err := cr.DB.Exec("insert into genres (id,genre_name) values (?,?)",genre.ID,genre.Genre_Name).Error; err != nil {
-		return domain.Genre{},err
+		return err
 	}
-	return genre,nil
+	return nil
+
 }
 
+func (cr *adminRepository) AddDirector(director domain.Directors) error {
 
-func (cr *adminRepository) Delete(c context.Context,genre_id string) error {
+	if err := cr.DB.Exec("insert into directors (id,director_name) values (?,?)",director.ID,director.Director_Name).Error; err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (cr *adminRepository) AddFormat(format domain.Movie_Format) error {
+
+	if err := cr.DB.Exec("insert into movie_formats (id,format) values (?,?)",format.ID,format.Format).Error; err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (cr *adminRepository) AddLanguage(language domain.Movie_Language) error {
+
+	if err := cr.DB.Exec("insert into movie_languages (id,language) values (?,?)",language.ID,language.Language).Error; err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (cr *adminRepository) Delete(genre_id string) error {
 	
 	id,_ := strconv.Atoi(genre_id)
-
 	query := fmt.Sprintf("delete from genres where id = '%d'",id)
-	
 	if err := cr.DB.Exec(query).Error; err != nil {
 		return err
 	}
 
 	return nil
+
 }
 
-
-
-
-func (cr *adminRepository) GetUserByID(c context.Context,id string) (domain.Users,error) {
+func (cr *adminRepository) GetUserByID(id string) (domain.Users,error) {
 
 	user_id,_ := strconv.Atoi(id)
 
@@ -116,8 +143,8 @@ func (cr *adminRepository) GetUserByID(c context.Context,id string) (domain.User
 	return userDetails,nil
 }
 
-func (cr *adminRepository) UpdateUserByID(c context.Context,user domain.Users) error {
-	fmt.Println(user)
+func (cr *adminRepository) UpdateBlockUserByID(user domain.Users) error {
+	
 	err := cr.DB.Exec("update users set blocked = ? where id = ?", user.Blocked, user.ID).Error
 	if err != nil {
 		fmt.Println("Error updating user:", err)
@@ -125,4 +152,5 @@ func (cr *adminRepository) UpdateUserByID(c context.Context,user domain.Users) e
 	}
 
 	return nil
+
 }

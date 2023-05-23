@@ -4,15 +4,14 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/go-playground/validator/v10"
-	"github.com/jinzhu/copier"
 	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
+	"github.com/go-playground/validator/v10"
+	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/net/context"
 )
 
 type adminUseCase struct {
@@ -28,9 +27,9 @@ func NewAdminUseCase(repo interfaces.AdminRepository) services.AdminUseCase  {
 
 
 
-func (cr *adminUseCase) LoginHandler(c context.Context,adminDetails domain.Admin) (domain.TokenAdmin,error) {
+func (cr *adminUseCase) LoginHandler(adminDetails domain.Admin) (domain.TokenAdmin,error) {
 
-	adminCompareDetails,err := cr.adminRepository.LoginHandler(c,adminDetails)
+	adminCompareDetails,err := cr.adminRepository.LoginHandler(adminDetails)
 	if err != nil {
 		return domain.TokenAdmin{},err
 	}
@@ -63,14 +62,13 @@ func (cr *adminUseCase) LoginHandler(c context.Context,adminDetails domain.Admin
 
 }
 
-func (cr *adminUseCase) SignupHandler(c context.Context,admin domain.Admin) (domain.TokenAdmin,error) {
+func (cr *adminUseCase) SignUpHandler(admin domain.Admin) (domain.TokenAdmin,error) {
 
 	if err := validator.New().Struct(admin); err != nil {
 		return domain.TokenAdmin{},err
 	}
 
 	userExist := cr.adminRepository.CheckAdminAvailability(admin)
-	
 	if userExist {
 		return domain.TokenAdmin{},errors.New("admin already exist, sign in")
 	}
@@ -81,7 +79,7 @@ func (cr *adminUseCase) SignupHandler(c context.Context,admin domain.Admin) (dom
 	}
 	admin.Password = string(hashedPassword)
 
-	admin,err = cr.adminRepository.SignupHandler(c,admin)
+	admin,err = cr.adminRepository.SignUpHandler(admin)
 	if err != nil {
 		return domain.TokenAdmin{},err
 	}
@@ -104,58 +102,82 @@ func (cr *adminUseCase) SignupHandler(c context.Context,admin domain.Admin) (dom
 		Token: tokenString,
 	},nil
 
-
 }
 
 
-func (cr *adminUseCase) GetUsers(c context.Context) ([]models.UserDetails,error) {
+func (cr *adminUseCase) GetUsers() ([]models.UserDetails,error) {
 
-	userDetails,err := cr.adminRepository.GetUsers(c)
+	userDetails,err := cr.adminRepository.GetUsers()
 	if err != nil {
 		return []models.UserDetails{},err
 	}
+
 	return userDetails,nil
 	
 }
 
-func (cr *adminUseCase) GetGenres(c context.Context) ([]domain.Genre,error) {
-	fmt.Println("the code reached here")
-	genres,err := cr.adminRepository.GetGenres(c)
+func (cr *adminUseCase) GetGenres() ([]domain.Genre,error) {
+	
+	genres,err := cr.adminRepository.GetGenres()
 	if err != nil {
 		return []domain.Genre{},err
 	}
-	fmt.Println("the code reached here")
+	
 	return genres,nil
 	
 }
 
-func (cr *adminUseCase) AddGenre(c context.Context,genre domain.Genre) (domain.Genre,error) {
+func (cr *adminUseCase) AddCategory(category domain.CategoryManagement) (domain.CategoryManagement,error) {
 
-	genre_added,err := cr.adminRepository.AddGenre(c,genre)
-	if err != nil {
-		return domain.Genre{},err
+	if category.Genre.ID != 0 {
+		err := cr.adminRepository.AddGenre(category.Genre)
+		if err != nil {
+			return domain.CategoryManagement{},err
+		}
 	}
 
-	return genre_added,nil
+	if category.Director.ID != 0 {
+		err := cr.adminRepository.AddDirector(category.Director)
+		if err != nil {
+			return domain.CategoryManagement{},err
+		}
+	}
+
+	if category.Format.ID != 0 {
+		err := cr.adminRepository.AddFormat(category.Format)
+		if err != nil {
+			return domain.CategoryManagement{},err
+		}
+	}
+
+	if category.Language.ID != 0 {
+		err := cr.adminRepository.AddLanguage(category.Language)
+		if err != nil {
+			return domain.CategoryManagement{},err
+		}
+	}
+	
+	return category,nil
+
 }
 
-func (cr *adminUseCase) Delete(c context.Context,genre_id string) error {
+func (cr *adminUseCase) Delete(genre_id string) error {
 
-	err := cr.adminRepository.Delete(c,genre_id)
+	err := cr.adminRepository.Delete(genre_id)
 	if err != nil {
 		return err
 	}
 	return nil
+
 }
 
 
-func (cr *adminUseCase) BlockUser(c context.Context,id string) error {
+func (cr *adminUseCase) BlockUser(id string) error {
 
-	user,err := cr.adminRepository.GetUserByID(c,id)
+	user,err := cr.adminRepository.GetUserByID(id)
 	if err != nil {
 		return err
 	}
-	fmt.Println(user)
 
 	if user.Blocked {
 		user.Blocked = false
@@ -163,10 +185,9 @@ func (cr *adminUseCase) BlockUser(c context.Context,id string) error {
 		user.Blocked = true
 	}
 
-	err = cr.adminRepository.UpdateUserByID(c,user)
-
+	err = cr.adminRepository.UpdateBlockUserByID(user)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	return nil

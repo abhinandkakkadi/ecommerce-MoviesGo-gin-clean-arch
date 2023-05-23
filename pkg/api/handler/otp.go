@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	models "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
+	"github.com/gin-gonic/gin"
 )
 
 type OtpHandler struct {
@@ -28,23 +28,20 @@ func (cr *OtpHandler) SendOTP(c *gin.Context) {
 		})
 	}
 
-	// err := cr.otpUseCase.VerifyMobileNumberAlreadyPresent(c.Request.Context(),phone.PhoneNumber)
-
-	err := cr.otpUseCase.SendOTP(c.Request.Context(),phone.PhoneNumber)
-
+	err := cr.otpUseCase.SendOTP(phone.PhoneNumber)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK,"OTP Sent Succesfully")
+	c.JSON(http.StatusOK,"OTP Sent successfully")
+
 }
 
 // verify OTP
 func (cr *OtpHandler) VerifyOTP(c *gin.Context) {
 
 	var code models.VerifyData
-
 	if err := c.BindJSON(&code); err != nil {
 		c.JSON(http.StatusBadRequest,gin.H{
 			"error":"bad request",
@@ -52,12 +49,12 @@ func (cr *OtpHandler) VerifyOTP(c *gin.Context) {
 		return
 	}
 
-	user,err := cr.otpUseCase.VerifyOTP(c.Request.Context(),code)
-
+	user,err := cr.otpUseCase.VerifyOTP(code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,err.Error())
 		return
 	}
 
 	c.JSON(http.StatusOK,user)
+	
 }

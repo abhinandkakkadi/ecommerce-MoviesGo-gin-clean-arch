@@ -1,8 +1,6 @@
 package interfaces
 
 import (
-	"context"
-
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
@@ -12,10 +10,10 @@ import (
 
 
 type ProductRepository interface {
-	ShowAllProducts(ctx context.Context) ([]domain.ProductsBrief, error)
-	ShowIndividualProducts(ctx context.Context,id string)(models.IndividualProduct,error)
-	CheckIfAlreadyPresent(c context.Context,product domain.Products) (bool,error)
-	UdateQuantity(c context.Context,product domain.Products) error
-	AddProduct(c context.Context,product domain.Products) error
-	DeleteProduct(c context.Context,product_id string) error
+	ShowAllProducts() ([]domain.ProductsBrief, error)
+	ShowIndividualProducts(id string)(models.IndividualProduct,error)
+	// CheckIfAlreadyPresent(c context.Context,product domain.Products) (bool,error)
+	UpdateQuantity(product domain.Products) error
+	AddProduct(product domain.Products) error
+	DeleteProduct(product_id string) error
 }

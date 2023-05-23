@@ -12,3 +12,5 @@ type IndividualProduct struct {
 	Quantity	 int				`json:"quantity"`
 	Price	 		 float64				`json:"price"`
 }
+
+

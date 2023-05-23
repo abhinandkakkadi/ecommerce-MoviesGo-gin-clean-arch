@@ -21,19 +21,19 @@ func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
 
 func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
-	products,err  := cr.productUseCase.ShowAllProducts(c.Request.Context())
-
+	products,err  := cr.productUseCase.ShowAllProducts()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,err.Error())
 	}
 
 	c.JSON(http.StatusCreated,products)
+
 }
 
 func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 	
 	id := c.Param("id")
-	product,err := cr.productUseCase.ShowIndividualProducts(c.Request.Context(),id)
+	product,err := cr.productUseCase.ShowIndividualProducts(id)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,err.Error())
@@ -41,20 +41,19 @@ func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK,product)
+	
 }
 
 
 func (cr *ProductHandler) AddProduct(c *gin.Context) {
 
 	var product domain.Products
-
 	if err := c.BindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest,"error while binding")
 		return
 	}
 
-	err := cr.productUseCase.AddProduct(c.Request.Context(),product)
-
+	err := cr.productUseCase.AddProduct(product)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,gin.H{
 			"error":err,
@@ -63,6 +62,7 @@ func (cr *ProductHandler) AddProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK,"success updating the product details")
+
 }
 
 
@@ -70,13 +70,12 @@ func (cr *ProductHandler) AddProduct(c *gin.Context) {
 func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 
 	product_id := c.Param("id")
-	err := cr.productUseCase.DeleteProduct(c.Request.Context(), product_id)
-
+	err := cr.productUseCase.DeleteProduct(product_id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK,"Succesfully deleted")
+	c.JSON(http.StatusOK,"successfully deleted")
 
 }
