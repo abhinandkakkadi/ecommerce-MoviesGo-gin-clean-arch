@@ -14,68 +14,65 @@ type ProductHandler struct {
 }
 
 func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
-		return &ProductHandler{
-			productUseCase: useCase,
-		}
+	return &ProductHandler{
+		productUseCase: useCase,
+	}
 }
 
 func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
-	products,err  := cr.productUseCase.ShowAllProducts()
+	products, err := cr.productUseCase.ShowAllProducts()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,err.Error())
+		c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
-	c.JSON(http.StatusCreated,products)
+	c.JSON(http.StatusCreated, products)
 
 }
 
 func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
-	
+
 	id := c.Param("id")
-	product,err := cr.productUseCase.ShowIndividualProducts(id)
+	product, err := cr.productUseCase.ShowIndividualProducts(id)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,err.Error())
+		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK,product)
-	
-}
+	c.JSON(http.StatusOK, product)
 
+}
 
 func (cr *ProductHandler) AddProduct(c *gin.Context) {
 
 	var product domain.Products
 	if err := c.BindJSON(&product); err != nil {
-		c.JSON(http.StatusBadRequest,"error while binding")
+		c.JSON(http.StatusBadRequest, "error while binding")
 		return
 	}
 
 	err := cr.productUseCase.AddProduct(product)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,gin.H{
-			"error":err,
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err,
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK,"success updating the product details")
+	c.JSON(http.StatusOK, "success updating the product details")
 
 }
-
-
 
 func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 
 	product_id := c.Param("id")
 	err := cr.productUseCase.DeleteProduct(product_id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,err.Error())
+		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK,"successfully deleted")
+	c.JSON(http.StatusOK, "successfully deleted")
 
 }
