@@ -19,15 +19,18 @@ func NewProductRepository(DB *gorm.DB) interfaces.ProductRepository {
 	return &productDatabase{DB}
 }
 
-func (c *productDatabase) ShowAllProducts() ([]domain.ProductsBrief, error) {
-
-	var productsBrief []domain.ProductsBrief
-	err := c.DB.Raw(`
-		SELECT products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language
+func (c *productDatabase) ShowAllProducts(page int) ([]models.ProductsBrief, error) {
+	if page == 0 {
+		page = 1
+	}
+	offset := (page - 1)*2
+	var productsBrief []models.ProductsBrief
+	err := c.DB.Limit(1).Raw(`
+		SELECT products.id, products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language
 		FROM products
 		JOIN genres ON products.genre_id = genres.id
-		JOIN movie_languages ON products.language_id = movie_languages.id
-	`).Scan(&productsBrief).Error
+		JOIN movie_languages ON products.language_id = movie_languages.id limit ? offset ?
+	`,2,offset).Scan(&productsBrief).Error
 
 	if err != nil {
 		return nil, err
@@ -37,13 +40,14 @@ func (c *productDatabase) ShowAllProducts() ([]domain.ProductsBrief, error) {
 
 }
 
-func (c *productDatabase) ShowIndividualProducts(id string) (models.IndividualProduct, error) {
+func (c *productDatabase) ShowIndividualProducts(id string) (models.ProductResponse, error) {
 
-	var product models.IndividualProduct
+	var product models.ProductResponse
 	product_id, _ := strconv.Atoi(id)
 
 	err := c.DB.Raw(`
 	SELECT
+		p.id,
 		p.movie_name,
 		g.genre_name,
 		d.director_name,
@@ -69,7 +73,7 @@ func (c *productDatabase) ShowIndividualProducts(id string) (models.IndividualPr
 			`, product_id).Scan(&product).Error
 
 	if err != nil {
-		return models.IndividualProduct{}, errors.New("error entering record")
+		return models.ProductResponse{}, errors.New("error entering record")
 	}
 	return product, nil
 
@@ -95,14 +99,47 @@ func (cr *productDatabase) UpdateQuantity(product domain.Products) error {
 
 }
 
-func (cr *productDatabase) AddProduct(product domain.Products) error {
+func (cr *productDatabase) AddProduct(product models.ProductsReceiver) (models.ProductResponse,error) {
 
-	err := cr.DB.Create(&product).Error
+	var id int
+	err := cr.DB.Raw("INSERT INTO products (movie_name, genre_id, director_id, release_year,format_id,products_description,run_time,language_id,quantity,price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id", product.Movie_Name,product.GenreID,product.DirectorID,product.Release_Year,product.FormatID,product.Products_Description,product.Run_time,product.LanguageID,product.Quantity,product.Price).Scan(&id).Error
 	if err != nil {
-		return err
+		return models.ProductResponse{},err
 	}
 
-	return nil
+	var productResponse models.ProductResponse
+	err = cr.DB.Raw(`
+	SELECT
+		p.id,
+		p.movie_name,
+		g.genre_name,
+		d.director_name,
+		p.release_year,
+		mf.format,
+		p.products_description,
+		p.run_time,
+		ml.language AS movie_language,
+		p.quantity,
+		p.price
+		FROM
+			products p
+		JOIN
+			genres g ON p.genre_id = g.id
+		JOIN
+			directors d ON p.director_id = d.id
+		JOIN
+			movie_formats mf ON p.format_id = mf.id
+		JOIN
+			movie_languages ml ON p.language_id = ml.id 
+		WHERE
+			p.id = ?
+			`, id).Scan(&productResponse).Error
+	
+			if err != nil {
+				return models.ProductResponse{},err
+			}
+
+	return productResponse,nil
 
 }
 

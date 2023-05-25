@@ -8,7 +8,7 @@ import (
 type AdminUseCase interface {
 	LoginHandler(adminDetails domain.Admin) (domain.TokenAdmin, error)
 	SignUpHandler(admin domain.Admin) (domain.TokenAdmin, error)
-	GetUsers() ([]models.UserDetails, error)
+	GetUsers() ([]models.UserDetailsResponse, error)
 	GetGenres() ([]domain.Genre, error)
 	AddCategory(genre domain.CategoryManagement) (domain.CategoryManagement, error)
 	Delete(genre_id string) error

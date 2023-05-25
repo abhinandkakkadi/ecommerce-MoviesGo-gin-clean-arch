@@ -1,11 +1,11 @@
 package interfaces
 
 import (
-	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
 
 type UserUseCase interface {
-	UserSignUp(user domain.Users) (domain.TokenUsers, error)
+	UserSignUp(user models.UserDetails) (models.TokenUsers, error)
 
-	LoginHandler(user domain.Users) (domain.TokenUsers, error)
+	LoginHandler(user models.UserDetails) (models.TokenUsers, error)
 }

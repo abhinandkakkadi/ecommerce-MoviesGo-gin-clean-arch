@@ -1,7 +1,5 @@
 package domain
 
-import "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
-
 type Users struct {
 	ID       uint   `json:"id" gorm:"unique;not null"`
 	Name     string `json:"name"`
@@ -11,7 +9,4 @@ type Users struct {
 	Blocked  bool   `json:"blocked" gorm:"default:false"`
 }
 
-type TokenUsers struct {
-	Users models.UserDetails
-	Token string
-}
+

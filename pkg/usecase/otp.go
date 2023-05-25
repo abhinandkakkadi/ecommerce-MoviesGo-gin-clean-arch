@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	config "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/config"
-	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
@@ -41,29 +40,29 @@ func (cr *otpUseCase) SendOTP(phone string) error {
 
 }
 
-func (cr *otpUseCase) VerifyOTP(code models.VerifyData) (domain.TokenUsers, error) {
+func (cr *otpUseCase) VerifyOTP(code models.VerifyData) (models.TokenUsers, error) {
 
 	helper.TwilioSetup(cr.cfg.ACCOUNTSID, cr.cfg.AUTHTOKEN)
 	err := helper.TwilioVerifyOTP(cr.cfg.SERVICESSID, code.Code, code.User.PhoneNumber)
 	if err != nil {
-		return domain.TokenUsers{}, errors.New("error while verifying")
+		return models.TokenUsers{}, errors.New("error while verifying")
 	}
 
 	// if user is authenticated using OTP send back user details
 	userDetails, err := cr.otpRepository.UserDetailsUsingPhone(code.User.PhoneNumber)
 	if err != nil {
-		return domain.TokenUsers{}, err
+		return models.TokenUsers{}, err
 	}
 
 	tokenString, err := helper.GenerateTokenUsers(userDetails)
 
-	var user models.UserDetails
+	var user models.UserDetailsResponse
 	err = copier.Copy(&user, &userDetails)
 	if err != nil {
-		return domain.TokenUsers{}, err
+		return models.TokenUsers{}, err
 	}
 
-	return domain.TokenUsers{
+	return models.TokenUsers{
 		Users: user,
 		Token: tokenString,
 	}, nil

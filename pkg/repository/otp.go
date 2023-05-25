@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"gorm.io/gorm"
 )
 
@@ -27,11 +27,11 @@ func (cr *otpRepository) FindUserByMobileNumber(phone string) bool {
 
 }
 
-func (cr *otpRepository) UserDetailsUsingPhone(phone string) (domain.Users, error) {
+func (cr *otpRepository) UserDetailsUsingPhone(phone string) (models.UserDetailsResponse, error) {
 
-	var usersDetails domain.Users
+	var usersDetails models.UserDetailsResponse
 	if err := cr.DB.Raw("select * from users where phone = ?", phone).Scan(&usersDetails).Error; err != nil {
-		return domain.Users{}, err
+		return models.UserDetailsResponse{}, err
 	}
 
 	return usersDetails, nil

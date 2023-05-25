@@ -3,7 +3,6 @@ package usecase
 import (
 	"errors"
 
-	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
@@ -19,14 +18,14 @@ func NewProductUseCase(repo interfaces.ProductRepository) services.ProductUseCas
 	}
 }
 
-func (cr *productUseCase) ShowAllProducts() ([]domain.ProductsBrief, error) {
+func (cr *productUseCase) ShowAllProducts(page int) ([]models.ProductsBrief, error) {
 
-	productsBrief, err := cr.productRepo.ShowAllProducts()
+	productsBrief, err := cr.productRepo.ShowAllProducts(page)
 	return productsBrief, err
 
 }
 
-func (cr *productUseCase) ShowIndividualProducts(id string) (models.IndividualProduct, error) {
+func (cr *productUseCase) ShowIndividualProducts(id string) (models.ProductResponse, error) {
 
 	product, err := cr.productRepo.ShowIndividualProducts(id)
 	if product.Movie_Name == "" {
@@ -36,7 +35,7 @@ func (cr *productUseCase) ShowIndividualProducts(id string) (models.IndividualPr
 
 }
 
-func (cr *productUseCase) AddProduct(product domain.Products) error {
+func (cr *productUseCase) AddProduct(product models.ProductsReceiver) (models.ProductResponse,error) {
 	// this logic is to add the quantity of product if admin try to add duplicate product
 	// alreadyPresent,err := cr.productRepo.CheckIfAlreadyPresent(c,product)
 
@@ -54,13 +53,13 @@ func (cr *productUseCase) AddProduct(product domain.Products) error {
 	// 	return nil
 	// }
 
-	err := cr.productRepo.AddProduct(product)
+	productResponse,err := cr.productRepo.AddProduct(product)
 
 	if err != nil {
-		return err
+		return models.ProductResponse{},err
 	}
 
-	return nil
+	return productResponse,nil
 
 }
 

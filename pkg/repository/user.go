@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +18,7 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 }
 
 // check whether the user is already present in the database . If there recommend to login
-func (c *userDatabase) CheckUserAvailability(user domain.Users) bool {
+func (c *userDatabase) CheckUserAvailability(user models.UserDetails) bool {
 
 	var count int
 	query := fmt.Sprintf("select count(*) from users where email='%s'", user.Email)
@@ -31,9 +31,9 @@ func (c *userDatabase) CheckUserAvailability(user domain.Users) bool {
 }
 
 // retrieve the user details form the database
-func (c *userDatabase) FindUserByEmail(user domain.Users) (domain.Users, error) {
+func (c *userDatabase) FindUserByEmail(user models.UserDetails) (models.UserSignInResponse, error) {
 
-	var user_details domain.Users
+	var user_details models.UserSignInResponse
 
 	err := c.DB.Raw(`
 		SELECT *
@@ -41,25 +41,27 @@ func (c *userDatabase) FindUserByEmail(user domain.Users) (domain.Users, error) 
 		`, user.Email).Scan(&user_details).Error
 
 	if err != nil {
-		return domain.Users{}, errors.New("error checking user details")
+		return models.UserSignInResponse{}, errors.New("error checking user details")
 	}
 
 	return user_details, nil
 
 }
 
-func (c *userDatabase) UserSignUp(user domain.Users) (domain.Users, error) {
+func (c *userDatabase) UserSignUp(user models.UserDetails) (models.UserDetailsResponse, error) {
+	
+	var userDetails models.UserDetailsResponse
+	err := c.DB.Raw("INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?) RETURNING id, name, email, phone", user.Name, user.Email, user.Password, user.Phone).Scan(&userDetails).Error
 
-	query := fmt.Sprintf("insert into users (id,name,email,password,phone) values ('%d','%s','%s','%s','%s')", user.ID, user.Name, user.Email, user.Password, user.Phone)
-
-	if err := c.DB.Exec(query).Error; err != nil {
-		return domain.Users{}, err
+	if err != nil {
+		return models.UserDetailsResponse{}, err
 	}
 
-	return user, nil
+	return userDetails, nil
 }
 
-func (c *userDatabase) LoginHandler(user domain.Users) (domain.Users, error) {
-	err := c.DB.Save(&user).Error
-	return user, err
+func (c *userDatabase) LoginHandler(user models.UserDetails) (models.UserDetailsResponse, error) {
+	var userResponse models.UserDetailsResponse
+	err := c.DB.Save(&userResponse).Error
+	return userResponse, err
 }

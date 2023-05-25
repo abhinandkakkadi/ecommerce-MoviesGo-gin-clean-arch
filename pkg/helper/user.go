@@ -3,24 +3,26 @@ package helper
 import (
 	"time"
 
-	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"github.com/golang-jwt/jwt"
 )
 
 type authCustomClaimsUsers struct {
-	Name  string `json:"name"`
+	
+	Id    int `json:"id"`
 	Email string `json:"email"`
 	jwt.StandardClaims
+
 }
 
 func init() {
 
 }
 
-func GenerateTokenUsers(user domain.Users) (string, error) {
+func GenerateTokenUsers(user models.UserDetailsResponse) (string, error) {
 
 	claims := &authCustomClaimsUsers{
-		Name:  user.Name,
+		Id:    user.Id,
 		Email: user.Email,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),

@@ -53,12 +53,12 @@ func (cr *adminRepository) SignUpHandler(admin domain.Admin) (domain.Admin, erro
 }
 
 // Get users details for authenticated admins
-func (cr *adminRepository) GetUsers() ([]models.UserDetails, error) {
+func (cr *adminRepository) GetUsers() ([]models.UserDetailsResponse, error) {
 
-	var userDetails []models.UserDetails
+	var userDetails []models.UserDetailsResponse
 
 	if err := cr.DB.Raw("select id,name,email,phone from users").Scan(&userDetails).Error; err != nil {
-		return []models.UserDetails{}, err
+		return []models.UserDetailsResponse{}, err
 	}
 
 	return userDetails, nil

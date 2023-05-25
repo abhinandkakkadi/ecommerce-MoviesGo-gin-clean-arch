@@ -99,11 +99,11 @@ func (cr *adminUseCase) SignUpHandler(admin domain.Admin) (domain.TokenAdmin, er
 
 }
 
-func (cr *adminUseCase) GetUsers() ([]models.UserDetails, error) {
+func (cr *adminUseCase) GetUsers() ([]models.UserDetailsResponse, error) {
 
 	userDetails, err := cr.adminRepository.GetUsers()
 	if err != nil {
-		return []models.UserDetails{}, err
+		return []models.UserDetailsResponse{}, err
 	}
 
 	return userDetails, nil

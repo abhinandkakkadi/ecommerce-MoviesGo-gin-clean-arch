@@ -9,7 +9,7 @@ type AdminRepository interface {
 	LoginHandler(adminDetails domain.Admin) (domain.Admin, error)
 	SignUpHandler(admin domain.Admin) (domain.Admin, error)
 	CheckAdminAvailability(admin domain.Admin) bool
-	GetUsers() ([]models.UserDetails, error)
+	GetUsers() ([]models.UserDetailsResponse, error)
 	GetGenres() ([]domain.Genre, error)
 	AddGenre(genre domain.Genre) error
 	AddDirector(director domain.Directors) error

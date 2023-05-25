@@ -10,3 +10,4 @@ type AdminDetails struct {
 	Name  string `json:"name" gorm:"validate:required"`
 	Email string `json:"email" gorm:"validate:required"`
 }
+

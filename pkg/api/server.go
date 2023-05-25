@@ -10,7 +10,7 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.ProductHandler, otpHandler *handler.OtpHandler, adminHandler *handler.AdminHandler) *ServerHTTP {
+func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.ProductHandler, otpHandler *handler.OtpHandler, adminHandler *handler.AdminHandler,cartHandler *handler.CartHandler) *ServerHTTP {
 	router := gin.New()
 
 	// Use logger from Gin
@@ -23,7 +23,19 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 	router.POST("/verify-otp", otpHandler.VerifyOTP)
 	product := router.Group("/products")
 	product.GET("", productHandler.ShowAllProducts)
+	product.GET("/page/:page", productHandler.ShowAllProducts)
 	product.GET("/:id", productHandler.ShowIndividualProducts)
+
+	router.Use(middleware.AuthMiddleware())
+	{	
+		user := router.Group("/cart") 
+		{
+			user.POST("/addtocart/:id",cartHandler.AddToCart)
+		}
+	
+	}
+
+	
 
 	// ADMIN SIDE
 	router.POST("/adminsignup", adminHandler.SignUpHandler)
