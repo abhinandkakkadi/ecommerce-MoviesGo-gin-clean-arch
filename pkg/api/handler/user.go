@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -111,6 +113,97 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 		StatusCode: http.StatusOK,
 		Message: "User successfully logged in",
 		Data: user_details,
+		Error: nil,
+	})
+
+}
+
+
+
+func (cr *UserHandler) AddAddress(c *gin.Context) {
+
+	userID, _ := c.Get("user_id")
+
+	var address models.AddressInfo
+
+	if err := c.BindJSON(&address); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message: "fields provided are in wrong format",
+			Data: nil,
+			Error: err.Error(),
+		})
+		return
+	}
+
+	err := validator.New().Struct(address)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message: "constraints does not match",
+			Data: nil,
+			Error: err.Error(),
+		})
+	}
+
+	addressResponse, err := cr.userUseCase.AddAddress(address,userID.(int))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message: "failed adding address",
+			Data: nil,
+			Error: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message: "address added successfully",
+		Data: addressResponse,
+		Error: nil,
+	})
+
+}
+
+
+func (cr *UserHandler) UpdateAddress(c *gin.Context) {
+
+	id := c.Param("id")
+	addressId,_ := strconv.Atoi(id)
+	userID, _ := c.Get("user_id")
+	user_id := userID.(int)
+	var address models.AddressInfo
+	if err := c.BindJSON(&address); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message: "fields provided are in wrong format",
+			Data: nil,
+			Error: err.Error(),
+		})
+		return
+	}
+
+	fmt.Println(address)
+	address.UserID = uint(user_id)
+	fmt.Println(address)
+	updatedAddress,err := cr.userUseCase.UpdateAddress(address,addressId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message: "failed updating address",
+			Data: nil,
+			Error: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message: "address updated successfully",
+		Data: updatedAddress,
 		Error: nil,
 	})
 

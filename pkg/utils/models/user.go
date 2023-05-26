@@ -22,9 +22,33 @@ type TokenUsers struct {
 }
 
 type UserSignInResponse struct {
-	Id 	 int `json:"id"`
+	Id 	 uint `json:"id"`
+	UserID	 uint  	`json:"user_id"`
 	Name  string `json:"name"`
 	Email string `json:"email" validate:"email"`
 	Phone string `json:"phone"`
 	Password	string	`json:"password"`
 }
+
+type AddressInfo struct {
+
+	UserID	 uint  	`json:"user_id"`
+	HouseName string `json:"house_name" validate:"required"`
+	State     string `json:"state" validate:"required"`
+	Pin       string	`json:"pin" validate:"required"`
+	Street    string  `json:"street"`
+	City      string  `json:"city"`
+
+}
+
+type AddressInfoResponse struct {
+	ID			 uint   `json:"id"`
+	UserID	 uint  	`json:"user_id"`
+	HouseName string `json:"house_name" validate:"required"`
+	State     string `json:"state" validate:"required"`
+	Pin       string	`json:"pin" validate:"required"`
+	Street    string  `json:"street"`
+	City      string  `json:"city"`
+
+}
+

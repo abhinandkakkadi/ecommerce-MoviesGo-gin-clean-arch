@@ -28,15 +28,23 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 
 	router.Use(middleware.AuthMiddleware())
 	{	
-		user := router.Group("/cart") 
+		cart := router.Group("/cart") 
 		{
-			user.POST("/addtocart/:id",cartHandler.AddToCart)
+			cart.POST("/addtocart/:id",cartHandler.AddToCart)
+			cart.POST("/removefromcart/:id",cartHandler.RemoveFromCart)
+			cart.GET("",cartHandler.DisplayCart)
+			cart.DELETE("",cartHandler.EmptyCart)
+		}
+
+		address := router.Group("/address")
+    {
+			address.POST("",userHandler.AddAddress)
+			address.PUT("/:id",userHandler.UpdateAddress)
 		}
 	
 	}
 
 	
-
 	// ADMIN SIDE
 	router.POST("/adminsignup", adminHandler.SignUpHandler)
 	router.POST("/adminlogin", adminHandler.LoginHandler)

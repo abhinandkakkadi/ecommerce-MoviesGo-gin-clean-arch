@@ -1,5 +1,7 @@
 package domain
 
+import "gorm.io/gorm"
+
 type Users struct {
 	ID       uint   `json:"id" gorm:"unique;not null"`
 	Name     string `json:"name"`
@@ -7,6 +9,18 @@ type Users struct {
 	Password string `json:"password" validate:"min=8,max=20"`
 	Phone    string `json:"phone"`
 	Blocked  bool   `json:"blocked" gorm:"default:false"`
+}
+
+type Address struct {
+	gorm.Model
+	Id			 uint		`json:"id" gorm:"unique;not null"`
+	UserID	 uint  	`json:"user_id"`
+	Users		 Users  `json:"-" gorm:"foreignkey:UserID"`
+	HouseName string `json:"house_name" validate:"required"`
+	Street    string  `json:"street" validate:"required"`
+	City      string  `json:"city" validate:"required"`
+	State     string `json:"state" validate:"required"`
+	Pin       string	`json:"pin" validate:"required"`
 }
 
 

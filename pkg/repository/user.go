@@ -65,3 +65,40 @@ func (c *userDatabase) LoginHandler(user models.UserDetails) (models.UserDetails
 	err := c.DB.Save(&userResponse).Error
 	return userResponse, err
 }
+
+
+func (cr *userDatabase) AddAddress(address models.AddressInfo,userID int) ([]models.AddressInfoResponse,error) {
+	
+	address.UserID = uint(userID)
+	fmt.Println(address)
+	err := cr.DB.Exec("insert into addresses (user_id,house_name,state,pin,street,city) values (?, ?, ?, ?, ?, ?)",address.UserID,address.HouseName,address.State,address.Pin,address.Street,address.City).Error; 
+	if err != nil {
+		return []models.AddressInfoResponse{},err
+	}
+
+	var addressResponse []models.AddressInfoResponse
+	err = cr.DB.Raw("select * from addresses where user_id = ?",address.UserID).Scan(&addressResponse).Error; 
+	if err != nil {
+		return []models.AddressInfoResponse{},err
+	}
+
+	return addressResponse,nil
+	
+}
+
+func (cr *userDatabase) UpdateAddress(address models.AddressInfo,addressID int) (models.AddressInfoResponse,error) {
+	
+	fmt.Println(address)
+	err := cr.DB.Exec("update addresses set house_name = ?, state = ?, pin = ?, street = ?, city = ? where id = ? and user_id = ?",address.HouseName,address.State,address.Pin,address.Street,address.City,addressID,address.UserID).Error
+	if err != nil {
+		return models.AddressInfoResponse{},err
+	}
+
+	var addressResponse models.AddressInfoResponse
+	err = cr.DB.Raw("select * from addresses where id = ?",addressID).Scan(&addressResponse).Error; 
+	if err != nil {
+		return models.AddressInfoResponse{},err
+	}
+
+	return addressResponse,nil
+}

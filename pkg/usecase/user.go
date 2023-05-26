@@ -106,3 +106,19 @@ func (c *userUseCase) LoginHandler(user models.UserDetails) (models.TokenUsers, 
 	}, nil
 
 }
+
+
+func (cr *userUseCase) AddAddress(address models.AddressInfo,userID int) ([]models.AddressInfoResponse,error) {
+
+	 addressResponse,err := cr.userRepo.AddAddress(address,userID)
+	 if err != nil {
+		return []models.AddressInfoResponse{},err
+	 }
+
+	 return addressResponse,nil
+}
+
+func (cr *userUseCase) UpdateAddress(address models.AddressInfo,addressID int) (models.AddressInfoResponse,error) {
+
+	return cr.userRepo.UpdateAddress(address,addressID)
+}
