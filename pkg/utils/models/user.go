@@ -15,6 +15,12 @@ type UserDetailsResponse struct {
 	Phone string `json:"phone"`
 }
 
+type UsersProfileDetails struct {
+	Name     string `json:"name"`
+	Email    string `json:"email" validate:"email"`
+	Phone    string `json:"phone"`
+}
+
 type TokenUsers struct {
 	Users UserDetailsResponse
 	Token string

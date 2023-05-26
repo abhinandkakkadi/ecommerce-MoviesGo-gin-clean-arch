@@ -150,3 +150,8 @@ func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		Grand_Total:         grandTotal.TotalPrice,
 	}, nil
 }
+
+func (cr *userUseCase) UserDetails(userID int) (models.UsersProfileDetails,error) {
+
+	return cr.userRepo.UserDetails(userID)
+}

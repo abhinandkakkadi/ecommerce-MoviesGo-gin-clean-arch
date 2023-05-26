@@ -228,3 +228,29 @@ func (cr *UserHandler) CheckOut(c *gin.Context) {
 		Error:      nil,
 	})
 }
+
+
+func (cr *UserHandler) UserDetails(c *gin.Context) {
+
+	userID, _ := c.Get("user_id")
+	
+	userDetails,err := cr.userUseCase.UserDetails(userID.(int))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "failed to retrieve details",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "User Details",
+		Data:       userDetails,
+		Error:      nil,
+	})
+
+
+} 

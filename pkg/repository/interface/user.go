@@ -13,4 +13,5 @@ type UserRepository interface {
 	UpdateAddress(address models.AddressInfo, addressID int) (models.AddressInfoResponse, error)
 	GetAllAddresses(userID int) ([]models.AddressInfoResponse, error)
 	GetAllPaymentOption() ([]models.PaymentDetails, error)
+	UserDetails(userID int) (models.UsersProfileDetails,error) 
 }
