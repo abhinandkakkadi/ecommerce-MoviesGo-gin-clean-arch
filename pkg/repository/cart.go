@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
@@ -181,11 +182,29 @@ func (cr *cartRepository) EmptyCart(userID int) ([]models.Cart, error) {
 
 func (cr *cartRepository) GetAllItemsFromCart(userID int) ([]models.Cart, error) {
 
-	var cartResponse []models.Cart
+	var count int
 
-	if err := cr.DB.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error; err != nil {
+	 var cartResponse []models.Cart
+	 err := cr.DB.Raw("select count(*) from carts where user_id = ?", userID).Scan(&count).Error
+	 if err != nil {
+			return []models.Cart{},err
+	 }
+
+	 if count == 0 {
+		return []models.Cart{},nil
+	 }
+
+	 err = cr.DB.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error;
+	 if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			if len(cartResponse) == 0 {
+				return []models.Cart{}, nil
+			}
+			return []models.Cart{}, err
+		}
 		return []models.Cart{}, err
 	}
 
 	return cartResponse, nil
+	
 }

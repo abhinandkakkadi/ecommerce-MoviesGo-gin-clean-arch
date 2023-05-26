@@ -48,7 +48,7 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusInternalServerError, response.Response{
+	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
 		Error:      nil,
 		Data:       orderSuccessResponse,
