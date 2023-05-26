@@ -126,13 +126,13 @@ func (cr *userDatabase) GetAllPaymentOption() ([]models.PaymentDetails, error) {
 
 }
 
-func (cr *userDatabase) UserDetails(userID int) (models.UsersProfileDetails,error) {
+func (cr *userDatabase) UserDetails(userID int) (models.UsersProfileDetails, error) {
 
 	var userDetails models.UsersProfileDetails
-	err := cr.DB.Raw("select name,email,phone from users where id = ?",userID).Scan(&userDetails).Error
+	err := cr.DB.Raw("select name,email,phone from users where id = ?", userID).Scan(&userDetails).Error
 	if err != nil {
-		return models.UsersProfileDetails{},err 
+		return models.UsersProfileDetails{}, err
 	}
 
-	return userDetails,nil
+	return userDetails, nil
 }

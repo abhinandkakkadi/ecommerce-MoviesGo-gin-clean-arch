@@ -151,7 +151,21 @@ func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 	}, nil
 }
 
-func (cr *userUseCase) UserDetails(userID int) (models.UsersProfileDetails,error) {
+func (cr *userUseCase) UserDetails(userID int) (models.UsersProfileDetails, error) {
 
 	return cr.userRepo.UserDetails(userID)
+
+}
+
+
+func (cr *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse,error) {
+
+	userAddress,err := cr.userRepo.GetAllAddresses(userID)
+
+	if err != nil {
+		return []models.AddressInfoResponse{},nil
+	}	
+
+	return userAddress,nil
+	
 }

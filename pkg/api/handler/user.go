@@ -229,12 +229,11 @@ func (cr *UserHandler) CheckOut(c *gin.Context) {
 	})
 }
 
-
 func (cr *UserHandler) UserDetails(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
-	
-	userDetails,err := cr.userUseCase.UserDetails(userID.(int))
+
+	userDetails, err := cr.userUseCase.UserDetails(userID.(int))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -252,5 +251,27 @@ func (cr *UserHandler) UserDetails(c *gin.Context) {
 		Error:      nil,
 	})
 
+}
 
-} 
+func (cr *UserHandler) GetAllAddress(c *gin.Context) {
+
+	userID, _ := c.Get("user_id")
+	userAddress, err := cr.userUseCase.GetAllAddress(userID.(int))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "failed to retrieve details",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "User Address",
+		Data:       userAddress,
+		Error:      nil,
+	})
+
+}

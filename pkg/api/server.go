@@ -44,7 +44,8 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 
 		users := router.Group("/users")
 		{
-			users.GET("",userHandler.UserDetails)
+			users.GET("", userHandler.UserDetails)
+			users.GET("/address",userHandler.GetAllAddress)
 		}
 
 		router.GET("/checkout", userHandler.CheckOut)

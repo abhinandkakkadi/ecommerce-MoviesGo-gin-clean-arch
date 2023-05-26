@@ -11,5 +11,6 @@ type UserUseCase interface {
 	AddAddress(address models.AddressInfo, userID int) ([]models.AddressInfoResponse, error)
 	UpdateAddress(address models.AddressInfo, addressID int) (models.AddressInfoResponse, error)
 	Checkout(userID int) (models.CheckoutDetails, error)
-	UserDetails(userID int) (models.UsersProfileDetails,error)
+	UserDetails(userID int) (models.UsersProfileDetails, error)
+	GetAllAddress(userID int) ([]models.AddressInfoResponse,error)
 }
