@@ -12,7 +12,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		// Retrieve the JWT token from the Authorization header
 		authHeader := c.GetHeader("Authorization")
 		tokenString := helper.GetTokenFromHeader(authHeader)
-		
 
 		// Validate the token and extract the user ID
 		userID, err := helper.ExtractUserIDFromToken(tokenString)
@@ -28,5 +27,3 @@ func AuthMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
-
-

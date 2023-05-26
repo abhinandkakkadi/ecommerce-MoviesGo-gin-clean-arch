@@ -13,14 +13,12 @@ type Users struct {
 
 type Address struct {
 	gorm.Model
-	Id			 uint		`json:"id" gorm:"unique;not null"`
-	UserID	 uint  	`json:"user_id"`
-	Users		 Users  `json:"-" gorm:"foreignkey:UserID"`
+	Id        uint   `json:"id" gorm:"unique;not null"`
+	UserID    uint   `json:"user_id"`
+	Users     Users  `json:"-" gorm:"foreignkey:UserID"`
 	HouseName string `json:"house_name" validate:"required"`
-	Street    string  `json:"street" validate:"required"`
-	City      string  `json:"city" validate:"required"`
+	Street    string `json:"street" validate:"required"`
+	City      string `json:"city" validate:"required"`
 	State     string `json:"state" validate:"required"`
-	Pin       string	`json:"pin" validate:"required"`
+	Pin       string `json:"pin" validate:"required"`
 }
-
-

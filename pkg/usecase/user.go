@@ -14,11 +14,13 @@ import (
 
 type userUseCase struct {
 	userRepo interfaces.UserRepository
+	cartRepo interfaces.CartRepository
 }
 
-func NewUserUseCase(repo interfaces.UserRepository) services.UserUseCase {
+func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.CartRepository) services.UserUseCase {
 	return &userUseCase{
 		userRepo: repo,
+		cartRepo: cartRepositiry,
 	}
 }
 
@@ -81,7 +83,6 @@ func (c *userUseCase) LoginHandler(user models.UserDetails) (models.TokenUsers, 
 		return models.TokenUsers{}, err
 	}
 
-
 	err = bcrypt.CompareHashAndPassword([]byte(user_details.Password), []byte(user.Password))
 	if err != nil {
 		return models.TokenUsers{}, errors.New("password incorrect")
@@ -93,13 +94,11 @@ func (c *userUseCase) LoginHandler(user models.UserDetails) (models.TokenUsers, 
 		return models.TokenUsers{}, err
 	}
 
-
 	tokenString, err := helper.GenerateTokenUsers(userDetails)
 	if err != nil {
 		return models.TokenUsers{}, errors.New("could not create token")
 	}
 
-	
 	return models.TokenUsers{
 		Users: userDetails,
 		Token: tokenString,
@@ -107,18 +106,47 @@ func (c *userUseCase) LoginHandler(user models.UserDetails) (models.TokenUsers, 
 
 }
 
+func (cr *userUseCase) AddAddress(address models.AddressInfo, userID int) ([]models.AddressInfoResponse, error) {
 
-func (cr *userUseCase) AddAddress(address models.AddressInfo,userID int) ([]models.AddressInfoResponse,error) {
+	addressResponse, err := cr.userRepo.AddAddress(address, userID)
+	if err != nil {
+		return []models.AddressInfoResponse{}, err
+	}
 
-	 addressResponse,err := cr.userRepo.AddAddress(address,userID)
-	 if err != nil {
-		return []models.AddressInfoResponse{},err
-	 }
-
-	 return addressResponse,nil
+	return addressResponse, nil
 }
 
-func (cr *userUseCase) UpdateAddress(address models.AddressInfo,addressID int) (models.AddressInfoResponse,error) {
+func (cr *userUseCase) UpdateAddress(address models.AddressInfo, addressID int) (models.AddressInfoResponse, error) {
 
-	return cr.userRepo.UpdateAddress(address,addressID)
+	return cr.userRepo.UpdateAddress(address, addressID)
+}
+
+func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
+
+	allUserAddress, err := cr.userRepo.GetAllAddresses(userID)
+	if err != nil {
+		return models.CheckoutDetails{}, err
+	}
+
+	paymentDetails, err := cr.userRepo.GetAllPaymentOption()
+	if err != nil {
+		return models.CheckoutDetails{}, err
+	}
+
+	cartItems, err := cr.cartRepo.GetAllItemsFromCart(userID)
+	if err != nil {
+		return models.CheckoutDetails{}, err
+	}
+
+	grandTotal, err := cr.cartRepo.GetTotalPrice(userID)
+	if err != nil {
+		return models.CheckoutDetails{}, err
+	}
+
+	return models.CheckoutDetails{
+		AddressInfoResponse: allUserAddress,
+		Payment_Method:      paymentDetails,
+		Cart:                cartItems,
+		Grand_Total:         grandTotal.TotalPrice,
+	}, nil
 }

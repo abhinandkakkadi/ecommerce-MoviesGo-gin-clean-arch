@@ -35,7 +35,7 @@ func (cr *productUseCase) ShowIndividualProducts(id string) (models.ProductRespo
 
 }
 
-func (cr *productUseCase) AddProduct(product models.ProductsReceiver) (models.ProductResponse,error) {
+func (cr *productUseCase) AddProduct(product models.ProductsReceiver) (models.ProductResponse, error) {
 	// this logic is to add the quantity of product if admin try to add duplicate product
 	// alreadyPresent,err := cr.productRepo.CheckIfAlreadyPresent(c,product)
 
@@ -53,13 +53,13 @@ func (cr *productUseCase) AddProduct(product models.ProductsReceiver) (models.Pr
 	// 	return nil
 	// }
 
-	productResponse,err := cr.productRepo.AddProduct(product)
+	productResponse, err := cr.productRepo.AddProduct(product)
 
 	if err != nil {
-		return models.ProductResponse{},err
+		return models.ProductResponse{}, err
 	}
 
-	return productResponse,nil
+	return productResponse, nil
 
 }
 

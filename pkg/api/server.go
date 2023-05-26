@@ -10,7 +10,7 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.ProductHandler, otpHandler *handler.OtpHandler, adminHandler *handler.AdminHandler,cartHandler *handler.CartHandler) *ServerHTTP {
+func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.ProductHandler, otpHandler *handler.OtpHandler, adminHandler *handler.AdminHandler, cartHandler *handler.CartHandler, orderHandler *handler.OrderHandler) *ServerHTTP {
 	router := gin.New()
 
 	// Use logger from Gin
@@ -27,24 +27,27 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 	product.GET("/:id", productHandler.ShowIndividualProducts)
 
 	router.Use(middleware.AuthMiddleware())
-	{	
-		cart := router.Group("/cart") 
+	{
+		cart := router.Group("/cart")
 		{
-			cart.POST("/addtocart/:id",cartHandler.AddToCart)
-			cart.POST("/removefromcart/:id",cartHandler.RemoveFromCart)
-			cart.GET("",cartHandler.DisplayCart)
-			cart.DELETE("",cartHandler.EmptyCart)
+			cart.POST("/addtocart/:id", cartHandler.AddToCart)
+			cart.POST("/removefromcart/:id", cartHandler.RemoveFromCart)
+			cart.GET("", cartHandler.DisplayCart)
+			cart.DELETE("", cartHandler.EmptyCart)
 		}
 
 		address := router.Group("/address")
-    {
-			address.POST("",userHandler.AddAddress)
-			address.PUT("/:id",userHandler.UpdateAddress)
+		{
+			address.POST("", userHandler.AddAddress)
+			address.PUT("/:id", userHandler.UpdateAddress)
 		}
-	
+
+		router.GET("/checkout", userHandler.CheckOut)
+
+		router.POST("/order", orderHandler.OrderItemsFromCart)
+
 	}
 
-	
 	// ADMIN SIDE
 	router.POST("/adminsignup", adminHandler.SignUpHandler)
 	router.POST("/adminlogin", adminHandler.LoginHandler)

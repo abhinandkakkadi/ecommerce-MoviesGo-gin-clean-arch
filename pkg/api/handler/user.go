@@ -31,9 +31,9 @@ func (cr *UserHandler) UserSignUp(c *gin.Context) {
 	if err := c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "fields provided are in wrong format",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
@@ -44,9 +44,9 @@ func (cr *UserHandler) UserSignUp(c *gin.Context) {
 		c.JSON(http.StatusBadRequest,
 			response.Response{
 				StatusCode: http.StatusBadRequest,
-				Message: "constraints not satisfied",
-				Data: nil,
-				Error: err.Error(),
+				Message:    "constraints not satisfied",
+				Data:       nil,
+				Error:      err.Error(),
 			})
 		return
 	}
@@ -56,18 +56,18 @@ func (cr *UserHandler) UserSignUp(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
-			Message: "User could not signed up",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "User could not signed up",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, response.Response{
 		StatusCode: http.StatusCreated,
-		Message: "User successfully signed up",
-		Data: userCreated,
-		Error: err.Error(),
+		Message:    "User successfully signed up",
+		Data:       userCreated,
+		Error:      err.Error(),
 	})
 
 }
@@ -80,9 +80,9 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 	if err := c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "fields provided are in wrong format",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
@@ -91,9 +91,9 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "constraints not satisfied",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "constraints not satisfied",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
@@ -103,22 +103,20 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
-			Message: "User could not be logged in",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "User could not be logged in",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 	}
 
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
-		Message: "User successfully logged in",
-		Data: user_details,
-		Error: nil,
+		Message:    "User successfully logged in",
+		Data:       user_details,
+		Error:      nil,
 	})
 
 }
-
-
 
 func (cr *UserHandler) AddAddress(c *gin.Context) {
 
@@ -129,9 +127,9 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 	if err := c.BindJSON(&address); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "fields provided are in wrong format",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
@@ -140,47 +138,46 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
-			Message: "constraints does not match",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "constraints does not match",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 	}
 
-	addressResponse, err := cr.userUseCase.AddAddress(address,userID.(int))
+	addressResponse, err := cr.userUseCase.AddAddress(address, userID.(int))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
-			Message: "failed adding address",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "failed adding address",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
-		Message: "address added successfully",
-		Data: addressResponse,
-		Error: nil,
+		Message:    "address added successfully",
+		Data:       addressResponse,
+		Error:      nil,
 	})
 
 }
 
-
 func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 
 	id := c.Param("id")
-	addressId,_ := strconv.Atoi(id)
+	addressId, _ := strconv.Atoi(id)
 	userID, _ := c.Get("user_id")
 	user_id := userID.(int)
 	var address models.AddressInfo
 	if err := c.BindJSON(&address); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "fields provided are in wrong format",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
@@ -188,23 +185,46 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 	fmt.Println(address)
 	address.UserID = uint(user_id)
 	fmt.Println(address)
-	updatedAddress,err := cr.userUseCase.UpdateAddress(address,addressId)
+	updatedAddress, err := cr.userUseCase.UpdateAddress(address, addressId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
-			Message: "failed updating address",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "failed updating address",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
-		Message: "address updated successfully",
-		Data: updatedAddress,
-		Error: nil,
+		Message:    "address updated successfully",
+		Data:       updatedAddress,
+		Error:      nil,
 	})
 
+}
+
+func (cr *UserHandler) CheckOut(c *gin.Context) {
+
+	userID, _ := c.Get("user_id")
+	checkoutDetails, err := cr.userUseCase.Checkout(userID.(int))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "failed to retrieve details",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Checkout Page loaded successfully",
+		Data:       checkoutDetails,
+		Error:      nil,
+	})
 }

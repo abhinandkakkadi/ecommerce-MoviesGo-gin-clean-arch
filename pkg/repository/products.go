@@ -23,14 +23,14 @@ func (c *productDatabase) ShowAllProducts(page int) ([]models.ProductsBrief, err
 	if page == 0 {
 		page = 1
 	}
-	offset := (page - 1)*2
+	offset := (page - 1) * 2
 	var productsBrief []models.ProductsBrief
 	err := c.DB.Limit(1).Raw(`
 		SELECT products.id, products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language
 		FROM products
 		JOIN genres ON products.genre_id = genres.id
 		JOIN movie_languages ON products.language_id = movie_languages.id limit ? offset ?
-	`,2,offset).Scan(&productsBrief).Error
+	`, 2, offset).Scan(&productsBrief).Error
 
 	if err != nil {
 		return nil, err
@@ -99,12 +99,12 @@ func (cr *productDatabase) UpdateQuantity(product domain.Products) error {
 
 }
 
-func (cr *productDatabase) AddProduct(product models.ProductsReceiver) (models.ProductResponse,error) {
+func (cr *productDatabase) AddProduct(product models.ProductsReceiver) (models.ProductResponse, error) {
 
 	var id int
-	err := cr.DB.Raw("INSERT INTO products (movie_name, genre_id, director_id, release_year,format_id,products_description,run_time,language_id,quantity,price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id", product.Movie_Name,product.GenreID,product.DirectorID,product.Release_Year,product.FormatID,product.Products_Description,product.Run_time,product.LanguageID,product.Quantity,product.Price).Scan(&id).Error
+	err := cr.DB.Raw("INSERT INTO products (movie_name, genre_id, director_id, release_year,format_id,products_description,run_time,language_id,quantity,price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id", product.Movie_Name, product.GenreID, product.DirectorID, product.Release_Year, product.FormatID, product.Products_Description, product.Run_time, product.LanguageID, product.Quantity, product.Price).Scan(&id).Error
 	if err != nil {
-		return models.ProductResponse{},err
+		return models.ProductResponse{}, err
 	}
 
 	var productResponse models.ProductResponse
@@ -134,12 +134,12 @@ func (cr *productDatabase) AddProduct(product models.ProductsReceiver) (models.P
 		WHERE
 			p.id = ?
 			`, id).Scan(&productResponse).Error
-	
-			if err != nil {
-				return models.ProductResponse{},err
-			}
 
-	return productResponse,nil
+	if err != nil {
+		return models.ProductResponse{}, err
+	}
+
+	return productResponse, nil
 
 }
 

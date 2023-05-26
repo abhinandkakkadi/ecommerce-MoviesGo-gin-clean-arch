@@ -21,6 +21,9 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	db.AutoMigrate(&domain.Admin{})
 	db.AutoMigrate(&domain.Cart{})
 	db.AutoMigrate(&domain.Address{})
+	db.AutoMigrate(&domain.PaymentMethod{})
+	db.AutoMigrate(&domain.Order{})
+	db.AutoMigrate(&domain.OrderItem{})
 
 	return db, dbErr
 }

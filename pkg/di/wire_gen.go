@@ -22,8 +22,9 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	if err != nil {
 		return nil, err
 	}
+	cartRepository := repository.NewCartRepository(gormDB)
 	userRepository := repository.NewUserRepository(gormDB)
-	userUseCase := usecase.NewUserUseCase(userRepository)
+	userUseCase := usecase.NewUserUseCase(userRepository, cartRepository)
 	userHandler := handler.NewUserHandler(userUseCase)
 	productRepository := repository.NewProductRepository(gormDB)
 	productUseCase := usecase.NewProductUseCase(productRepository)
@@ -34,9 +35,14 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	adminRepository := repository.NewAdminRepository(gormDB)
 	adminUseCase := usecase.NewAdminUseCase(adminRepository)
 	adminHandler := handler.NewAdminHandler(adminUseCase)
-	cartRepository := repository.NewCartRepository(gormDB)
+
 	cartuseCase := usecase.NewCartUseCase(cartRepository)
 	cartHandler := handler.NewCartHandler(cartuseCase)
-	serverHTTP := http.NewServerHTTP(userHandler, productHandler, otpHandler, adminHandler,cartHandler)
+
+	orderRepository := repository.NewOrderRepository(gormDB)
+	orderUseCase := usecase.NewOrderUseCase(orderRepository, cartRepository)
+	orderHandler := handler.NewOrderHandler(orderUseCase)
+
+	serverHTTP := http.NewServerHTTP(userHandler, productHandler, otpHandler, adminHandler, cartHandler, orderHandler)
 	return serverHTTP, nil
 }

@@ -26,9 +26,9 @@ func (cr *OtpHandler) SendOTP(c *gin.Context) {
 	if err := c.BindJSON(&phone); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "fields provided are in wrong format",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 	}
 
@@ -36,18 +36,18 @@ func (cr *OtpHandler) SendOTP(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
-			Message: "Could not send OTP",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "Could not send OTP",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
-		Message: "OTP sent successfully",
-		Data: nil,
-		Error: nil,
+		Message:    "OTP sent successfully",
+		Data:       nil,
+		Error:      nil,
 	})
 
 }
@@ -59,9 +59,9 @@ func (cr *OtpHandler) VerifyOTP(c *gin.Context) {
 	if err := c.BindJSON(&code); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "fields provided are in wrong format",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
@@ -70,18 +70,18 @@ func (cr *OtpHandler) VerifyOTP(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "Could not verify OTP",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "Could not verify OTP",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusBadRequest,
-		Message: "Successfully verified OTP",
-		Data: nil,
-		Error: user,
+		Message:    "Successfully verified OTP",
+		Data:       nil,
+		Error:      user,
 	})
 
 }

@@ -22,26 +22,26 @@ func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
 }
 
 func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
-	
+
 	pageStr := c.Param("page")
-	page,_ := strconv.Atoi(pageStr)
+	page, _ := strconv.Atoi(pageStr)
 
 	products, err := cr.productUseCase.ShowAllProducts(page)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
-			Message: "Could not retrieve products",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "Could not retrieve products",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
-	
+
 	c.JSON(http.StatusCreated, response.Response{
 		StatusCode: http.StatusOK,
-		Message: "Successfully Retrieved all products",
-		Data: products,
-		Error: nil,
+		Message:    "Successfully Retrieved all products",
+		Data:       products,
+		Error:      nil,
 	})
 
 }
@@ -54,18 +54,18 @@ func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "path variables in wrong format",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "path variables in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusBadRequest,
-		Message: "Product details retrieved successfully",
-		Data: product,
-		Error: nil,
+		Message:    "Product details retrieved successfully",
+		Data:       product,
+		Error:      nil,
 	})
 
 }
@@ -76,29 +76,29 @@ func (cr *ProductHandler) AddProduct(c *gin.Context) {
 	if err := c.BindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "fields provided are in wrong format",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
 
-	productResponse,err := cr.productUseCase.AddProduct(product)
+	productResponse, err := cr.productUseCase.AddProduct(product)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
-			Message: "Could not add the product",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "Could not add the product",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
-		Message: "Successfully added products",
-		Data: productResponse,
-		Error: nil,
+		Message:    "Successfully added products",
+		Data:       productResponse,
+		Error:      nil,
 	})
 
 }
@@ -110,18 +110,18 @@ func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "fields provided are in wrong format",
-			Data: nil,
-			Error: err.Error(),
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusBadRequest,
-		Message: "Successfully deleted the item",
-		Data: nil,
-		Error: nil,
+		Message:    "Successfully deleted the item",
+		Data:       nil,
+		Error:      nil,
 	})
 
 }

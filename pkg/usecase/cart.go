@@ -10,104 +10,102 @@ type cartUseCase struct {
 	cartRepository interfaces.CartRepository
 }
 
-
 func NewCartUseCase(repository interfaces.CartRepository) services.CartUseCase {
-	
+
 	return &cartUseCase{
 		cartRepository: repository,
 	}
 
 }
 
-func (cr *cartUseCase) AddToCart(product_id int,userID int) (models.CartResponse,error) {
+func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartResponse, error) {
 
-	cartDetails,err := cr.cartRepository.AddToCart(product_id,userID)
+	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID)
 
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
 
-	cartTotal,err := cr.cartRepository.GetTotalPrice(userID)
+	cartTotal, err := cr.cartRepository.GetTotalPrice(userID)
 
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
 
 	cartResponse := models.CartResponse{
-		UserName: cartTotal.UserName,
+		UserName:   cartTotal.UserName,
 		TotalPrice: cartTotal.TotalPrice,
-		Cart: cartDetails,
+		Cart:       cartDetails,
 	}
 
-	return cartResponse,nil
+	return cartResponse, nil
 }
 
-func (cr *cartUseCase) RemoveFromCart(product_id int,userID int) (models.CartResponse,error) {
+func (cr *cartUseCase) RemoveFromCart(product_id int, userID int) (models.CartResponse, error) {
 
-	updatedCart,err := cr.cartRepository.RemoveFromCart(product_id,userID)
+	updatedCart, err := cr.cartRepository.RemoveFromCart(product_id, userID)
 
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
 
-	cartTotal,err := cr.cartRepository.GetTotalPrice(userID)
+	cartTotal, err := cr.cartRepository.GetTotalPrice(userID)
 
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
 
 	cartResponse := models.CartResponse{
-		UserName: cartTotal.UserName,
+		UserName:   cartTotal.UserName,
 		TotalPrice: cartTotal.TotalPrice,
-		Cart: updatedCart,
+		Cart:       updatedCart,
 	}
 
-	return cartResponse,nil
+	return cartResponse, nil
 }
 
+func (cr *cartUseCase) DisplayCart(userID int) (models.CartResponse, error) {
 
-func (cr *cartUseCase) DisplayCart(userID int) (models.CartResponse,error) {
-
-	displayCart,err :=  cr.cartRepository.DisplayCart(userID)
+	displayCart, err := cr.cartRepository.DisplayCart(userID)
 
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
 
-	cartTotal,err := cr.cartRepository.GetTotalPrice(userID)
+	cartTotal, err := cr.cartRepository.GetTotalPrice(userID)
 
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
 
 	cartResponse := models.CartResponse{
-		UserName: cartTotal.UserName,
+		UserName:   cartTotal.UserName,
 		TotalPrice: cartTotal.TotalPrice,
-		Cart: displayCart,
+		Cart:       displayCart,
 	}
 
-	return cartResponse,nil
+	return cartResponse, nil
 }
 
-func (cr *cartUseCase) EmptyCart(userID int) (models.CartResponse,error) {
+func (cr *cartUseCase) EmptyCart(userID int) (models.CartResponse, error) {
 
-	emptyCart,err := cr.cartRepository.EmptyCart(userID)
+	emptyCart, err := cr.cartRepository.EmptyCart(userID)
 
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
 
-	cartTotal,err := cr.cartRepository.GetTotalPrice(userID)
+	cartTotal, err := cr.cartRepository.GetTotalPrice(userID)
 
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
 
 	cartResponse := models.CartResponse{
-		UserName: cartTotal.UserName,
+		UserName:   cartTotal.UserName,
 		TotalPrice: cartTotal.TotalPrice,
-		Cart: emptyCart,
+		Cart:       emptyCart,
 	}
 
-	return cartResponse,nil
+	return cartResponse, nil
 }

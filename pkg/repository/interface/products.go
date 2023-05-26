@@ -10,6 +10,6 @@ type ProductRepository interface {
 	ShowIndividualProducts(id string) (models.ProductResponse, error)
 	// CheckIfAlreadyPresent(c context.Context,product domain.Products) (bool,error)
 	UpdateQuantity(product domain.Products) error
-	AddProduct(product models.ProductsReceiver) (models.ProductResponse,error)
+	AddProduct(product models.ProductsReceiver) (models.ProductResponse, error)
 	DeleteProduct(product_id string) error
 }

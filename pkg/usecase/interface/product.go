@@ -7,6 +7,6 @@ import (
 type ProductUseCase interface {
 	ShowAllProducts(page int) ([]models.ProductsBrief, error)
 	ShowIndividualProducts(id string) (models.ProductResponse, error)
-	AddProduct(product models.ProductsReceiver) (models.ProductResponse,error) 
+	AddProduct(product models.ProductsReceiver) (models.ProductResponse, error)
 	DeleteProduct(product_id string) error
 }

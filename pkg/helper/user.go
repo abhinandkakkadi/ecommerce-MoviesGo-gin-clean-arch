@@ -8,11 +8,9 @@ import (
 )
 
 type authCustomClaimsUsers struct {
-	
-	Id    int `json:"id"`
+	Id    int    `json:"id"`
 	Email string `json:"email"`
 	jwt.StandardClaims
-
 }
 
 func init() {

@@ -18,8 +18,6 @@ type Products struct {
 	Price                float64        `json:"price"`
 }
 
-
-
 type Genre struct {
 	ID         uint   `json:"id" gorm:"unique; not null"`
 	Genre_Name string `json:"genre_name"`

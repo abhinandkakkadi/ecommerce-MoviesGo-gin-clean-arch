@@ -6,7 +6,6 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-
 func GetTokenFromHeader(header string) string {
 	// Example header format: "Bearer <token>"
 	if len(header) > 7 && header[:7] == "Bearer " {
