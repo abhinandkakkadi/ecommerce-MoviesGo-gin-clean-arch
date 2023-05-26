@@ -42,10 +42,10 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 			address.PUT("/:id", userHandler.UpdateAddress)
 		}
 
-		users := router.Group("/users") 
-		{
-			// users.GET("",userHandler.UserDetails)
-		}
+		// users := router.Group("/users") 
+		// {
+		// 	// users.GET("",userHandler.UserDetails)
+		// }
 
 		router.GET("/checkout", userHandler.CheckOut)
 
