@@ -35,3 +35,21 @@ func (cr *orderUseCase) OrderItemsFromCart(orderBody models.OrderIncoming) (doma
 	return orderSuccessResponse, nil
 
 }
+
+func (cr *orderUseCase) GetOrderDetails(userID int) ([]models.FullOrderDetails,error)  {
+
+	fullOrderDetails,err := cr.orderRepository.GetOrderAddress(userID)
+	if err != nil {
+		return []models.FullOrderDetails{},err
+	}
+
+	return fullOrderDetails,nil
+
+}
+
+
+func (cr *orderUseCase) CancelOrder(orderID string) (string,error) {
+
+	return cr.orderRepository.CancelOrder(orderID)
+
+}

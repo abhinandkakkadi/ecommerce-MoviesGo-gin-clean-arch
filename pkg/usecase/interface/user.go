@@ -1,6 +1,8 @@
 package interfaces
 
 import (
+	"context"
+
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
 
@@ -13,4 +15,6 @@ type UserUseCase interface {
 	Checkout(userID int) (models.CheckoutDetails, error)
 	UserDetails(userID int) (models.UsersProfileDetails, error)
 	GetAllAddress(userID int) ([]models.AddressInfoResponse,error)
+	UpdateUserDetails(body models.UsersProfileDetails, ctx context.Context) (models.UsersProfileDetails,error)
+	UpdatePassword(ctx context.Context,body models.UpdatePassword) error
 }

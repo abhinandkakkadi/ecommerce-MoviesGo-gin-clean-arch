@@ -44,10 +44,18 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 
 		users := router.Group("/users")
 		{
-			users.GET("", userHandler.UserDetails)
-			users.GET("/address",userHandler.GetAllAddress)
-		}
 
+			users.GET("", userHandler.UserDetails)
+			users.PUT("",userHandler.UpdateUserDetails)
+			users.GET("/address",userHandler.GetAllAddress)
+			users.POST("/address",userHandler.AddAddress)
+			users.GET("/orders",orderHandler.GetOrderDetails)
+			users.PUT("/cancel-order/:id",orderHandler.CancelOrder)
+			users.PUT("/update-password",userHandler.UpdatePassword)
+			
+
+		}
+    
 		router.GET("/checkout", userHandler.CheckOut)
 
 		router.POST("/order", orderHandler.OrderItemsFromCart)

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -67,7 +68,7 @@ func (cr *UserHandler) UserSignUp(c *gin.Context) {
 		StatusCode: http.StatusCreated,
 		Message:    "User successfully signed up",
 		Data:       userCreated,
-		Error:      err.Error(),
+		Error:      nil,
 	})
 
 }
@@ -107,6 +108,7 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 			Data:       nil,
 			Error:      err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, response.Response{
@@ -274,4 +276,83 @@ func (cr *UserHandler) GetAllAddress(c *gin.Context) {
 		Error:      nil,
 	})
 
+}
+
+
+func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
+
+	user_id, _ := c.Get("user_id")
+	ctx := context.Background()
+	
+
+	ctx = context.WithValue(ctx,"userID",user_id.(int))
+
+
+	var body models.UsersProfileDetails	
+	if err := c.BindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	updatedDetails,err := cr.userUseCase.UpdateUserDetails(body,ctx)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "failed update user",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Updated User Details",
+		Data:       updatedDetails,
+		Error:      nil,
+	})
+}
+
+ 
+func (cr *UserHandler) UpdatePassword(c *gin.Context) {
+
+	user_id, _ := c.Get("user_id")
+	ctx := context.Background()
+	ctx = context.WithValue(ctx,"userID",user_id.(int))
+
+	var body models.UpdatePassword
+	if err := c.BindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+	// fmt.Printf(body.NewPassword)
+	fmt.Println(body.ConfirmNewPassword)
+
+	err := cr.userUseCase.UpdatePassword(ctx,body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "failed updating password",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Password updated successfully ",
+		Data:       nil,
+		Error:      nil,
+	})
 }

@@ -60,3 +60,50 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 
 	return orderSuccessResponse, nil
 }
+
+
+func (cr *orderRepository) GetOrderAddress(userID int) ([]models.FullOrderDetails,error) {
+
+	var orderDetails []models.OrderDetails
+	cr.DB.Raw("select order_id,grand_total,shipment_status from orders where user_id = ?",userID).Scan(&orderDetails)
+	fmt.Println(orderDetails)
+
+	var fullOrderDetails []models.FullOrderDetails
+
+	for _,o := range orderDetails {
+		
+		var orderProductDetails []models.OrderProductDetails
+		cr.DB.Raw("select order_items.product_id,products.movie_name,order_items.quantity,order_items.total_price from order_items inner join products on order_items.product_id = products.id where order_items.order_id = ?",o.OrderId).Scan(&orderProductDetails)
+		fullOrderDetails = append(fullOrderDetails, models.FullOrderDetails{OrderDetails: o,OrderProductDetails:orderProductDetails})
+
+	}
+
+	return fullOrderDetails,nil
+
+
+}
+
+func (cr *orderRepository) CancelOrder(orderID string) (string,error) {
+
+	var shipmentStatus string
+	fmt.Println(orderID)
+	err := cr.DB.Raw("select shipment_status from orders where order_id = ?",orderID).Scan(&shipmentStatus).Error
+	if err != nil {
+		return "",err
+	}
+
+	fmt.Println(shipmentStatus)
+	fmt.Println("ok")
+	if shipmentStatus == "delivered" {
+		return "Item already delivered, cannot cancel",nil
+	}
+	 
+	shipmentStatus = "cancelled"
+	err = cr.DB.Exec("update orders set shipment_status = ?  where order_id = ?",shipmentStatus,orderID).Error
+	if err != nil {
+		return "",err
+	}
+
+
+	return "Order successfully cancelled",nil
+}

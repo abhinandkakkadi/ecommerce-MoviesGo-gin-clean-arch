@@ -1,7 +1,9 @@
 package usecase
 
 import (
+	"context"
 	"errors"
+	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -167,5 +169,63 @@ func (cr *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse,e
 	}	
 
 	return userAddress,nil
+	
+}
+
+func (cr *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails,ctx context.Context) (models.UsersProfileDetails,error) {
+	fmt.Println(userDetails)
+	
+	var userID int
+	var ok bool
+	if userID,ok = ctx.Value("userID").(int); !ok {
+		return models.UsersProfileDetails{},errors.New("error retreiving user details")
+	}
+
+	fmt.Println(userID)
+	if userDetails.Email != ""  {
+		cr.userRepo.UpdateUserEmail(userDetails.Email,userID)
+	}
+
+	if userDetails.Name != "" {
+		cr.userRepo.UpdateUserName(userDetails.Name,userID)
+	}
+
+	if userDetails.Phone != "" {
+		cr.userRepo.UpdateUserPhone(userDetails.Phone,userID)
+	}
+
+	return cr.userRepo.UserDetails(userID)
+
+}
+
+
+func (cr *userUseCase) UpdatePassword(ctx context.Context,body models.UpdatePassword) error {
+
+	var userID int
+	var ok bool
+	if userID,ok = ctx.Value("userID").(int); !ok {
+		return errors.New("error retreiving user details")
+	}
+
+	userPassword,err := cr.userRepo.UserPassword(userID)
+	if err != nil {
+		return err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(userPassword), []byte(body.OldPassword))
+	if err != nil {
+		return errors.New("password incorrect")
+	}
+	fmt.Println(body)
+	if body.NewPassword != body.ConfirmNewPassword {
+		return errors.New("password does not match")
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(body.NewPassword), 10)
+	if err != nil {
+		return errors.New("internal server error")
+	}
+
+	return cr.userRepo.UpdateUserPassword(string(hashedPassword),userID)
 	
 }

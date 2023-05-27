@@ -27,14 +27,15 @@ type Order struct {
 type OrderItem struct {
 	ID         uint     `json:"id" gorm:"primaryKey;not null"`
 	OrderID    string   `json:"order_id"`
-	Order      Order    `json:"-" gorm:"foreignkey:OrderID"`
+	Order      Order    `json:"-" gorm:"foreignkey:OrderID;constraint:OnDelete:CASCADE"`
 	ProductID  uint     `json:"product_id"`
 	Products   Products `json:"-" gorm:"foreignkey:ProductID"`
 	Quantity   int      `json:"quantity"`
 	TotalPrice float64  `json:"total_price"`
 }
 
+
 type OrderSuccessResponse struct {
-	OrderID        string `json:"order_id"`
-	ShipmentStatus string `json:"order_status"`
+	OrderID    string    `json:"order_id"`
+	ShipmentStatus  string  `json:"order_status"`
 }

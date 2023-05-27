@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
@@ -55,4 +56,54 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		Message:    "Successfully created the order",
 	})
 
+}
+
+
+func (cr *OrderHandler) GetOrderDetails(c *gin.Context) {
+
+	id, _ := c.Get("user_id")
+	userID := id.(int)
+
+	fullOrderDetails,err := cr.orderUseCase.GetOrderDetails(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "Could not do the order",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Error:      nil,
+		Data:       fullOrderDetails,
+		Message:    "Full Order Details",
+	})
+	
+}
+
+func (cr *OrderHandler) CancelOrder(c *gin.Context) {
+
+	orderID := c.Param("id")
+	fmt.Println(orderID)
+	message,err := cr.orderUseCase.CancelOrder(orderID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "Could not cancel the order",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Error:      nil,
+		Data:       message,
+		Message:    "Cancel Successfull",
+	})
+	
 }
