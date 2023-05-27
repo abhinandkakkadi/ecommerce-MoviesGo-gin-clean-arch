@@ -15,10 +15,9 @@ type UserRepository interface {
 	GetAllPaymentOption() ([]models.PaymentDetails, error)
 	UserDetails(userID int) (models.UsersProfileDetails, error)
 	// UpdateUserDetails(userDetails models.UsersProfileDetails) (models.UsersProfileDetails,error)
-	UpdateUserEmail(email string,userID int) error
-	UpdateUserName(name string,userID int) error
-	UpdateUserPhone(phone string,userID int) error
-	UpdateUserPassword(password string,userID int) error
-	UserPassword(userID int) (string,error)
-	
+	UpdateUserEmail(email string, userID int) error
+	UpdateUserName(name string, userID int) error
+	UpdateUserPhone(phone string, userID int) error
+	UpdateUserPassword(password string, userID int) error
+	UserPassword(userID int) (string, error)
 }

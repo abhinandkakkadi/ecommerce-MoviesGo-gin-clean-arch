@@ -14,7 +14,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		tokenString := helper.GetTokenFromHeader(authHeader)
 
 		// Validate the token and extract the user ID
-		userID,userEmail,err := helper.ExtractUserIDFromToken(tokenString)
+		userID, userEmail, err := helper.ExtractUserIDFromToken(tokenString)
 		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
@@ -22,9 +22,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		// Add the user ID to the Gin context
 		c.Set("user_id", userID)
-		c.Set("user_email",userEmail)
-
-		
+		c.Set("user_email", userEmail)
 
 		// Call the next handler
 		c.Next()

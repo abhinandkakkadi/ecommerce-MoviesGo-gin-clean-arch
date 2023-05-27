@@ -16,8 +16,8 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 	// Use logger from Gin
 	router.Use(gin.Logger())
 
-	routes.UserRoutes(router.Group("/"),userHandler,otpHandler,productHandler,cartHandler,orderHandler)
-	routes.AdminRoutes(router.Group("/admin"),adminHandler,productHandler)
+	routes.UserRoutes(router.Group("/"), userHandler, otpHandler, productHandler, cartHandler, orderHandler)
+	routes.AdminRoutes(router.Group("/admin"), adminHandler, productHandler)
 
 	return &ServerHTTP{engine: router}
 }

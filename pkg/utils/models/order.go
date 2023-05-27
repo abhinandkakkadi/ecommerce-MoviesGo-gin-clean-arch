@@ -19,23 +19,19 @@ type OrderSuccessResponse struct {
 // }
 
 type OrderDetails struct {
-	
-	OrderId    				string    
-	GrandTotal 			  float64   
-	ShipmentStatus    string
-
+	OrderId        string
+	GrandTotal     float64
+	ShipmentStatus string
 }
 
 type OrderProductDetails struct {
-
-	ProductID  uint				`json:"product_id"`
+	ProductID  uint    `json:"product_id"`
 	MovieName  string  `json:"movie_name"`
-	Quantity   int      `json:"quantity"`
-	TotalPrice float64  `json:"total_price"`
-	
+	Quantity   int     `json:"quantity"`
+	TotalPrice float64 `json:"total_price"`
 }
 
 type FullOrderDetails struct {
-	OrderDetails  OrderDetails
-	OrderProductDetails  []OrderProductDetails
+	OrderDetails        OrderDetails
+	OrderProductDetails []OrderProductDetails
 }

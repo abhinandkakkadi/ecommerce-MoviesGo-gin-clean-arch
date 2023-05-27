@@ -26,7 +26,7 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) {
 
 	// var adminDetails models.AdminLogin
 	var adminDetails domain.Admin
-  fmt.Println("it is here")
+	fmt.Println("it is here")
 	if err := c.BindJSON(&adminDetails); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,

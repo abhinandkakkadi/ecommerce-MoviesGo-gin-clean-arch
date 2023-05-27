@@ -36,7 +36,7 @@ func (c *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	}
 	fmt.Println(user)
 	if user.Password != user.ConfirmPassword {
-		return models.TokenUsers{},errors.New("password does not match")
+		return models.TokenUsers{}, errors.New("password does not match")
 	}
 
 	// Hash password since details are validated
@@ -159,26 +159,25 @@ func (cr *userUseCase) UserDetails(userID int) (models.UsersProfileDetails, erro
 
 }
 
+func (cr *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, error) {
 
-func (cr *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse,error) {
-
-	userAddress,err := cr.userRepo.GetAllAddresses(userID)
+	userAddress, err := cr.userRepo.GetAllAddresses(userID)
 
 	if err != nil {
-		return []models.AddressInfoResponse{},nil
-	}	
+		return []models.AddressInfoResponse{}, nil
+	}
 
-	return userAddress,nil
-	
+	return userAddress, nil
+
 }
 
-func (cr *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails,ctx context.Context) (models.UsersProfileDetails,error) {
+func (cr *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails, ctx context.Context) (models.UsersProfileDetails, error) {
 	fmt.Println(userDetails)
-	
+
 	var userID int
 	var ok bool
-	if userID,ok = ctx.Value("userID").(int); !ok {
-		return models.UsersProfileDetails{},errors.New("error retreiving user details")
+	if userID, ok = ctx.Value("userID").(int); !ok {
+		return models.UsersProfileDetails{}, errors.New("error retreiving user details")
 	}
 
 	userExist := cr.userRepo.CheckUserAvailability(userDetails.Email)
@@ -187,33 +186,31 @@ func (cr *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails,
 		return models.UsersProfileDetails{}, errors.New("user already exist, choose different email")
 	}
 
-
-	if userDetails.Email != ""  {
-		cr.userRepo.UpdateUserEmail(userDetails.Email,userID)
+	if userDetails.Email != "" {
+		cr.userRepo.UpdateUserEmail(userDetails.Email, userID)
 	}
 
 	if userDetails.Name != "" {
-		cr.userRepo.UpdateUserName(userDetails.Name,userID)
+		cr.userRepo.UpdateUserName(userDetails.Name, userID)
 	}
 
 	if userDetails.Phone != "" {
-		cr.userRepo.UpdateUserPhone(userDetails.Phone,userID)
+		cr.userRepo.UpdateUserPhone(userDetails.Phone, userID)
 	}
 
 	return cr.userRepo.UserDetails(userID)
 
 }
 
-
-func (cr *userUseCase) UpdatePassword(ctx context.Context,body models.UpdatePassword) error {
+func (cr *userUseCase) UpdatePassword(ctx context.Context, body models.UpdatePassword) error {
 
 	var userID int
 	var ok bool
-	if userID,ok = ctx.Value("userID").(int); !ok {
+	if userID, ok = ctx.Value("userID").(int); !ok {
 		return errors.New("error retreiving user details")
 	}
 
-	userPassword,err := cr.userRepo.UserPassword(userID)
+	userPassword, err := cr.userRepo.UserPassword(userID)
 	if err != nil {
 		return err
 	}
@@ -232,6 +229,6 @@ func (cr *userUseCase) UpdatePassword(ctx context.Context,body models.UpdatePass
 		return errors.New("internal server error")
 	}
 
-	return cr.userRepo.UpdateUserPassword(string(hashedPassword),userID)
-	
+	return cr.userRepo.UpdateUserPassword(string(hashedPassword), userID)
+
 }

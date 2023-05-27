@@ -15,7 +15,6 @@ type UserDetailsResponse struct {
 	Phone string `json:"phone"`
 }
 
-
 type UsersProfileDetails struct {
 	Name  string `json:"name"`
 	Email string `json:"email" validate:"email"`
@@ -69,7 +68,7 @@ type CheckoutDetails struct {
 }
 
 type UpdatePassword struct {
-	OldPassword    string   `json:"old-password"`
-	NewPassword    string   `json:"newpassword"`
-	ConfirmNewPassword   string   `json:"confirm-newpassword"`
+	OldPassword        string `json:"old-password"`
+	NewPassword        string `json:"newpassword"`
+	ConfirmNewPassword string `json:"confirm-newpassword"`
 }

@@ -42,8 +42,8 @@ func (cr *adminRepository) CheckAdminAvailability(admin models.AdminSignUp) bool
 }
 
 func (cr *adminRepository) SignUpHandler(admin models.AdminSignUp) (models.AdminDetailsResponse, error) {
-  var adminDetails models.AdminDetailsResponse
-	if err := cr.DB.Raw("insert into admins (name,email,password) values (?, ?, ?) RETURNING id, name, email",admin.Name, admin.Email, admin.Password).Scan(&adminDetails).Error; err != nil {
+	var adminDetails models.AdminDetailsResponse
+	if err := cr.DB.Raw("insert into admins (name,email,password) values (?, ?, ?) RETURNING id, name, email", admin.Name, admin.Email, admin.Password).Scan(&adminDetails).Error; err != nil {
 		return models.AdminDetailsResponse{}, err
 	}
 
@@ -60,7 +60,7 @@ func (cr *adminRepository) GetUsers(page int) ([]models.UserDetailsResponse, err
 	offset := (page - 1) * 2
 	var userDetails []models.UserDetailsResponse
 
-	if err := cr.DB.Raw("select id,name,email,phone from users limit ? offset ?",2,offset).Scan(&userDetails).Error; err != nil {
+	if err := cr.DB.Raw("select id,name,email,phone from users limit ? offset ?", 2, offset).Scan(&userDetails).Error; err != nil {
 		return []models.UserDetailsResponse{}, err
 	}
 

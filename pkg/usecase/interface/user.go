@@ -14,7 +14,7 @@ type UserUseCase interface {
 	UpdateAddress(address models.AddressInfo, addressID int) (models.AddressInfoResponse, error)
 	Checkout(userID int) (models.CheckoutDetails, error)
 	UserDetails(userID int) (models.UsersProfileDetails, error)
-	GetAllAddress(userID int) ([]models.AddressInfoResponse,error)
-	UpdateUserDetails(body models.UsersProfileDetails, ctx context.Context) (models.UsersProfileDetails,error)
-	UpdatePassword(ctx context.Context,body models.UpdatePassword) error
+	GetAllAddress(userID int) ([]models.AddressInfoResponse, error)
+	UpdateUserDetails(body models.UsersProfileDetails, ctx context.Context) (models.UsersProfileDetails, error)
+	UpdatePassword(ctx context.Context, body models.UpdatePassword) error
 }

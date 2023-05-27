@@ -58,13 +58,12 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
 }
 
-
 func (cr *OrderHandler) GetOrderDetails(c *gin.Context) {
 
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
-	fullOrderDetails,err := cr.orderUseCase.GetOrderDetails(userID)
+	fullOrderDetails, err := cr.orderUseCase.GetOrderDetails(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -81,7 +80,7 @@ func (cr *OrderHandler) GetOrderDetails(c *gin.Context) {
 		Data:       fullOrderDetails,
 		Message:    "Full Order Details",
 	})
-	
+
 }
 
 func (cr *OrderHandler) CancelOrder(c *gin.Context) {
@@ -91,7 +90,7 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
-	message,err := cr.orderUseCase.CancelOrder(orderID,userID)
+	message, err := cr.orderUseCase.CancelOrder(orderID, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -108,5 +107,5 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 		Data:       message,
 		Message:    "Cancel Successfull",
 	})
-	
+
 }

@@ -70,7 +70,7 @@ func (cr *userDatabase) AddAddress(address models.AddressInfo, userID int) ([]mo
 
 	address.UserID = uint(userID)
 	fmt.Println(address)
-	err := cr.DB.Exec("insert into addresses (user_id,name,house_name,state,pin,street,city) values (?, ?, ?, ?, ?, ?, ?)", address.UserID, address.Name,address.HouseName, address.State, address.Pin, address.Street, address.City).Error
+	err := cr.DB.Exec("insert into addresses (user_id,name,house_name,state,pin,street,city) values (?, ?, ?, ?, ?, ?, ?)", address.UserID, address.Name, address.HouseName, address.State, address.Pin, address.Street, address.City).Error
 	if err != nil {
 		return []models.AddressInfoResponse{}, err
 	}
@@ -137,19 +137,9 @@ func (cr *userDatabase) UserDetails(userID int) (models.UsersProfileDetails, err
 	return userDetails, nil
 }
 
-func (cr *userDatabase) UpdateUserEmail(email string,userID int) error {
-	
-	err := cr.DB.Exec("update users set email = ? where id = ?",email,userID).Error
-	if err != nil {
-		return err
-	}
-	return nil
-	
-}
+func (cr *userDatabase) UpdateUserEmail(email string, userID int) error {
 
-func (cr *userDatabase) UpdateUserPhone(phone string,userID int) error {
-	
-	err := cr.DB.Exec("update users set phone = ? where id = ?",phone,userID).Error
+	err := cr.DB.Exec("update users set email = ? where id = ?", email, userID).Error
 	if err != nil {
 		return err
 	}
@@ -157,9 +147,9 @@ func (cr *userDatabase) UpdateUserPhone(phone string,userID int) error {
 
 }
 
-func (cr *userDatabase) UpdateUserName(name string,userID int) error {
-	
-	err := cr.DB.Exec("update users set name = ? where id = ?",name,userID).Error
+func (cr *userDatabase) UpdateUserPhone(phone string, userID int) error {
+
+	err := cr.DB.Exec("update users set phone = ? where id = ?", phone, userID).Error
 	if err != nil {
 		return err
 	}
@@ -167,9 +157,9 @@ func (cr *userDatabase) UpdateUserName(name string,userID int) error {
 
 }
 
-func (cr *userDatabase) UpdateUserPassword(password string,userID int) error {
-	
-	err := cr.DB.Exec("update users set password = ? where id = ?",password,userID).Error
+func (cr *userDatabase) UpdateUserName(name string, userID int) error {
+
+	err := cr.DB.Exec("update users set name = ? where id = ?", name, userID).Error
 	if err != nil {
 		return err
 	}
@@ -177,15 +167,23 @@ func (cr *userDatabase) UpdateUserPassword(password string,userID int) error {
 
 }
 
+func (cr *userDatabase) UpdateUserPassword(password string, userID int) error {
 
+	err := cr.DB.Exec("update users set password = ? where id = ?", password, userID).Error
+	if err != nil {
+		return err
+	}
+	return nil
 
-func (cr *userDatabase) UserPassword(userID int) (string,error) {
-	
+}
+
+func (cr *userDatabase) UserPassword(userID int) (string, error) {
+
 	var userPassword string
-	err := cr.DB.Raw("select password from users where id = ?",userID).Scan(&userPassword).Error
+	err := cr.DB.Raw("select password from users where id = ?", userID).Scan(&userPassword).Error
 	if err != nil {
-		return "",err
+		return "", err
 	}
-	return userPassword,nil
+	return userPassword, nil
 
 }

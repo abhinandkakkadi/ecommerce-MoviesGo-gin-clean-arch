@@ -278,17 +278,14 @@ func (cr *UserHandler) GetAllAddress(c *gin.Context) {
 
 }
 
-
 func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
 
 	user_id, _ := c.Get("user_id")
 	ctx := context.Background()
-	
 
-	ctx = context.WithValue(ctx,"userID",user_id.(int))
+	ctx = context.WithValue(ctx, "userID", user_id.(int))
 
-
-	var body models.UsersProfileDetails	
+	var body models.UsersProfileDetails
 	if err := c.BindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
@@ -299,7 +296,7 @@ func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
 		return
 	}
 
-	updatedDetails,err := cr.userUseCase.UpdateUserDetails(body,ctx)
+	updatedDetails, err := cr.userUseCase.UpdateUserDetails(body, ctx)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -318,12 +315,11 @@ func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
 	})
 }
 
- 
 func (cr *UserHandler) UpdatePassword(c *gin.Context) {
 
 	user_id, _ := c.Get("user_id")
 	ctx := context.Background()
-	ctx = context.WithValue(ctx,"userID",user_id.(int))
+	ctx = context.WithValue(ctx, "userID", user_id.(int))
 
 	var body models.UpdatePassword
 	if err := c.BindJSON(&body); err != nil {
@@ -338,7 +334,7 @@ func (cr *UserHandler) UpdatePassword(c *gin.Context) {
 	// fmt.Printf(body.NewPassword)
 	fmt.Println(body.ConfirmNewPassword)
 
-	err := cr.userUseCase.UpdatePassword(ctx,body)
+	err := cr.userUseCase.UpdatePassword(ctx, body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
