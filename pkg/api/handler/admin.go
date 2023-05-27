@@ -1,10 +1,13 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/response"
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +26,7 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) {
 
 	// var adminDetails models.AdminLogin
 	var adminDetails domain.Admin
-
+  fmt.Println("it is here")
 	if err := c.BindJSON(&adminDetails); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -56,7 +59,7 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) {
 
 func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 
-	var admin domain.Admin
+	var admin models.AdminSignUp
 	if err := c.BindJSON(&admin); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
@@ -88,7 +91,9 @@ func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 
 func (cr *AdminHandler) GetUsers(c *gin.Context) {
 
-	users, err := cr.adminUseCase.GetUsers()
+	pageStr := c.Param("page")
+	page, _ := strconv.Atoi(pageStr)
+	users, err := cr.adminUseCase.GetUsers(page)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,

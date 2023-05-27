@@ -83,6 +83,17 @@ func (cr *orderRepository) GetOrderAddress(userID int) ([]models.FullOrderDetail
 
 }
 
+func (cr *orderRepository) UserOrderRelationship(orderID string,userID int) (int,error) {
+
+	var testUserID int
+	err := cr.DB.Raw("select user_id from orders where order_id = ?",orderID).Scan(&testUserID).Error
+	if err != nil {
+		return -1,err
+	}
+	return testUserID,nil
+	
+}
+
 func (cr *orderRepository) CancelOrder(orderID string) (string,error) {
 
 	var shipmentStatus string

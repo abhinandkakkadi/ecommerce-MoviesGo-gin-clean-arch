@@ -88,7 +88,10 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 
 	orderID := c.Param("id")
 	fmt.Println(orderID)
-	message,err := cr.orderUseCase.CancelOrder(orderID)
+	id, _ := c.Get("user_id")
+	userID := id.(int)
+
+	message,err := cr.orderUseCase.CancelOrder(orderID,userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,

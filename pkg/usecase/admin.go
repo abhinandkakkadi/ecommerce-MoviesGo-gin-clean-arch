@@ -37,27 +37,34 @@ func (cr *adminUseCase) LoginHandler(adminDetails domain.Admin) (domain.TokenAdm
 		return domain.TokenAdmin{}, err
 	}
 
-	tokenString, err := helper.GenerateTokenAdmin(adminCompareDetails)
+	var adminDetailsResponse models.AdminDetailsResponse
+
+	err = copier.Copy(&adminDetailsResponse, &adminCompareDetails)
+	if err != nil {
+		return domain.TokenAdmin{}, err
+	}
+
+	tokenString, err := helper.GenerateTokenAdmin(adminDetailsResponse)
 
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
 
-	var admin models.AdminDetails
+	// var admin models.AdminDetails
 
-	err = copier.Copy(&admin, &adminCompareDetails)
-	if err != nil {
-		return domain.TokenAdmin{}, err
-	}
+	// err = copier.Copy(&admin, &adminCompareDetails)
+	// if err != nil {
+	// 	return domain.TokenAdmin{}, err
+	// }
 
 	return domain.TokenAdmin{
-		Admin: admin,
+		Admin: adminDetailsResponse,
 		Token: tokenString,
 	}, nil
 
 }
 
-func (cr *adminUseCase) SignUpHandler(admin domain.Admin) (domain.TokenAdmin, error) {
+func (cr *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdmin, error) {
 
 	if err := validator.New().Struct(admin); err != nil {
 		return domain.TokenAdmin{}, err
@@ -74,23 +81,23 @@ func (cr *adminUseCase) SignUpHandler(admin domain.Admin) (domain.TokenAdmin, er
 	}
 	admin.Password = string(hashedPassword)
 
-	admin, err = cr.adminRepository.SignUpHandler(admin)
+	adminDetails, err := cr.adminRepository.SignUpHandler(admin)
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
 
-	tokenString, err := helper.GenerateTokenAdmin(admin)
+	tokenString, err := helper.GenerateTokenAdmin(adminDetails)
 
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
 
-	var adminDetails models.AdminDetails
+	// var adminDetails models.AdminDetails
 
-	err = copier.Copy(&adminDetails, &admin)
-	if err != nil {
-		return domain.TokenAdmin{}, err
-	}
+	// err = copier.Copy(&adminDetails, &adminToken)
+	// if err != nil {
+	// 	return domain.TokenAdmin{}, err
+	// }
 
 	return domain.TokenAdmin{
 		Admin: adminDetails,
@@ -99,9 +106,9 @@ func (cr *adminUseCase) SignUpHandler(admin domain.Admin) (domain.TokenAdmin, er
 
 }
 
-func (cr *adminUseCase) GetUsers() ([]models.UserDetailsResponse, error) {
+func (cr *adminUseCase) GetUsers(page int) ([]models.UserDetailsResponse, error) {
 
-	userDetails, err := cr.adminRepository.GetUsers()
+	userDetails, err := cr.adminRepository.GetUsers(page)
 	if err != nil {
 		return []models.UserDetailsResponse{}, err
 	}

@@ -5,7 +5,7 @@ type UserDetails struct {
 	Email           string `json:"email" validate:"email"`
 	Phone           string `json:"phone"`
 	Password        string `json:"password"`
-	ConfirmPassword string `json:"confirm-password"`
+	ConfirmPassword string `json:"confirmpassword"`
 }
 
 type UserDetailsResponse struct {

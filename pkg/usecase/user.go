@@ -29,15 +29,15 @@ func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.Ca
 func (c *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
 
 	// Check whether the user already exist. If yes, show the error message, since this is signUp
-	userExist := c.userRepo.CheckUserAvailability(user)
+	userExist := c.userRepo.CheckUserAvailability(user.Email)
 
 	if userExist {
 		return models.TokenUsers{}, errors.New("user already exist, sign in")
 	}
-
-	// if user.Password != user.ConfirmPassword {
-	// 	return domain.TokenUsers{},errors.New("password does not match")
-	// }
+	fmt.Println(user)
+	if user.Password != user.ConfirmPassword {
+		return models.TokenUsers{},errors.New("password does not match")
+	}
 
 	// Hash password since details are validated
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
@@ -74,7 +74,7 @@ func (c *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 func (c *userUseCase) LoginHandler(user models.UserDetails) (models.TokenUsers, error) {
 
 	// checking if a username exist with this email address
-	ok := c.userRepo.CheckUserAvailability(user)
+	ok := c.userRepo.CheckUserAvailability(user.Email)
 	if !ok {
 		return models.TokenUsers{}, errors.New("the user does not exist")
 	}
@@ -181,7 +181,13 @@ func (cr *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails,
 		return models.UsersProfileDetails{},errors.New("error retreiving user details")
 	}
 
-	fmt.Println(userID)
+	userExist := cr.userRepo.CheckUserAvailability(userDetails.Email)
+
+	if userExist {
+		return models.UsersProfileDetails{}, errors.New("user already exist, choose different email")
+	}
+
+
 	if userDetails.Email != ""  {
 		cr.userRepo.UpdateUserEmail(userDetails.Email,userID)
 	}

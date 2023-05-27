@@ -18,10 +18,10 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 }
 
 // check whether the user is already present in the database . If there recommend to login
-func (c *userDatabase) CheckUserAvailability(user models.UserDetails) bool {
+func (c *userDatabase) CheckUserAvailability(email string) bool {
 
 	var count int
-	query := fmt.Sprintf("select count(*) from users where email='%s'", user.Email)
+	query := fmt.Sprintf("select count(*) from users where email='%s'", email)
 	if err := c.DB.Raw(query).Scan(&count).Error; err != nil {
 		return false
 	}

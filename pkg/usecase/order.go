@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"errors"
+
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
@@ -48,7 +50,17 @@ func (cr *orderUseCase) GetOrderDetails(userID int) ([]models.FullOrderDetails,e
 }
 
 
-func (cr *orderUseCase) CancelOrder(orderID string) (string,error) {
+func (cr *orderUseCase) CancelOrder(orderID string,userID int) (string,error) {
+
+	// check whether the orderID corresponds to the given user (other user with token may try to send orderID as path variables)
+	userTest,err := cr.orderRepository.UserOrderRelationship(orderID,userID)
+	if err != nil {
+		return "",err
+	}
+
+	if userTest != userID {
+		return "",errors.New("the order is not done by this user")
+	}
 
 	return cr.orderRepository.CancelOrder(orderID)
 

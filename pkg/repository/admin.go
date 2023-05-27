@@ -30,7 +30,7 @@ func (cr *adminRepository) LoginHandler(adminDetails domain.Admin) (domain.Admin
 	return adminCompareDetails, nil
 }
 
-func (cr *adminRepository) CheckAdminAvailability(admin domain.Admin) bool {
+func (cr *adminRepository) CheckAdminAvailability(admin models.AdminSignUp) bool {
 
 	var count int
 	if err := cr.DB.Raw("select count(*) from admins where email = ?", admin.Email).Scan(&count).Error; err != nil {
@@ -41,23 +41,26 @@ func (cr *adminRepository) CheckAdminAvailability(admin domain.Admin) bool {
 
 }
 
-func (cr *adminRepository) SignUpHandler(admin domain.Admin) (domain.Admin, error) {
-
-	query := fmt.Sprintf("insert into admins (id,name,email,password) values ('%d','%s','%s','%s')", admin.ID, admin.Name, admin.Email, admin.Password)
-	if err := cr.DB.Exec(query).Error; err != nil {
-		return domain.Admin{}, err
+func (cr *adminRepository) SignUpHandler(admin models.AdminSignUp) (models.AdminDetailsResponse, error) {
+  var adminDetails models.AdminDetailsResponse
+	if err := cr.DB.Raw("insert into admins (name,email,password) values (?, ?, ?) RETURNING id, name, email",admin.Name, admin.Email, admin.Password).Scan(&adminDetails).Error; err != nil {
+		return models.AdminDetailsResponse{}, err
 	}
 
-	return admin, nil
+	return adminDetails, nil
 
 }
 
 // Get users details for authenticated admins
-func (cr *adminRepository) GetUsers() ([]models.UserDetailsResponse, error) {
+func (cr *adminRepository) GetUsers(page int) ([]models.UserDetailsResponse, error) {
 
+	if page == 0 {
+		page = 1
+	}
+	offset := (page - 1) * 2
 	var userDetails []models.UserDetailsResponse
 
-	if err := cr.DB.Raw("select id,name,email,phone from users").Scan(&userDetails).Error; err != nil {
+	if err := cr.DB.Raw("select id,name,email,phone from users limit ? offset ?",2,offset).Scan(&userDetails).Error; err != nil {
 		return []models.UserDetailsResponse{}, err
 	}
 

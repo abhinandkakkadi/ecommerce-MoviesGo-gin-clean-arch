@@ -3,7 +3,7 @@ package helper
 import (
 	"time"
 
-	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"github.com/golang-jwt/jwt"
 )
 
@@ -13,7 +13,7 @@ type authCustomClaimsAdmin struct {
 	jwt.StandardClaims
 }
 
-func GenerateTokenAdmin(admin domain.Admin) (string, error) {
+func GenerateTokenAdmin(admin models.AdminDetailsResponse) (string, error) {
 
 	claims := &authCustomClaimsAdmin{
 		Name:  admin.Name,
