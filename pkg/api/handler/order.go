@@ -134,4 +134,9 @@ func (cr *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 }
 
 
-// func (cr *OrderHandler) ApproveOrder(c *gin.Context)
+func (cr *OrderHandler) ApproveOrder(c *gin.Context) {
+
+	orderId := c.Param("order_id")
+	cr.orderUseCase.ApproveOrder(orderId)
+	
+}

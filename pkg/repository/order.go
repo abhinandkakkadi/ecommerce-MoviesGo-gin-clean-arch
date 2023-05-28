@@ -127,3 +127,10 @@ func (cr *orderRepository) GetOrderDetailsBrief() ([]models.OrderDetails,error) 
 		return orderDetails,nil
 }
 
+func (cr *orderRepository) GetShipmentStatus(orderID string) string {
+	
+	var shipmentStatus string
+	cr.DB.Raw("select shipment_status from orders where order_id = ?",orderID).Scan(&shipmentStatus)
+	return shipmentStatus
+	
+}

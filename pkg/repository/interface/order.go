@@ -11,5 +11,6 @@ type OrderRepository interface {
 	CancelOrder(orderID string) (string, error)
 	UserOrderRelationship(orderID string, userID int) (int, error)
 	GetOrderDetailsBrief() ([]models.OrderDetails,error)
+	GetShipmentStatus(orderID string) string
 	
 }

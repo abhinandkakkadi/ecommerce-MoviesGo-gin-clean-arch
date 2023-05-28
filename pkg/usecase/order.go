@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
@@ -101,4 +102,13 @@ func (cr *orderUseCase) GetAllOrderDetailsForAdmin() ([]models.CombinedOrderDeta
 	}
 	
 	return allCombinedOrderDetails,nil
+}
+
+
+func (cr *orderUseCase) ApproveOrder(orderID string) error {
+
+	getShipmentStatus := cr.orderRepository.GetShipmentStatus(orderID)
+	fmt.Println(getShipmentStatus)
+	return nil
+	
 }

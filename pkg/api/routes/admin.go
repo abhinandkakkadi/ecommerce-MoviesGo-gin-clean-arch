@@ -31,7 +31,7 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 		userDetails.GET("/:page", adminHandler.GetUsers)
 
 		router.GET("/orders",orderHandler.GetAllOrderDetailsForAdmin)
-		// router.GET("/approve-order/:order_id",orderHandler.ApproveOrder)
+		router.GET("/approve-order/:order_id",orderHandler.ApproveOrder)
 
 	}
 
