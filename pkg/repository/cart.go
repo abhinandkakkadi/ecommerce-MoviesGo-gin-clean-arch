@@ -22,11 +22,29 @@ func NewCartRepository(DB *gorm.DB) interfaces.CartRepository {
 func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, error) {
 
 	var count int
+	var productQuantity int
+	var cartsQuantity int
+	var cartResponse []models.Cart
 
 	if err := cr.DB.Raw("select count(*) from carts where user_id = ? and  product_id = ?", userID, product_id).Scan(&count).Error; err != nil {
 		return []models.Cart{}, err
 	}
-	fmt.Println(count)
+
+	// if the user try to add more quantity than what is already present in stock
+	if err := cr.DB.Raw("select quantity from products where id = ?",product_id).Scan(&productQuantity).Error; err != nil {
+		return []models.Cart{}, err
+	}
+	if err := cr.DB.Raw("select quantity from carts where user_id = ? and product_id = ?",userID,product_id).Scan(&cartsQuantity).Error; err != nil {
+		return []models.Cart{}, err
+	}
+	// quantity in carts is equal to quantity in STOCK  -- don't allow to add further products
+	if cartsQuantity == productQuantity {
+
+		if err := cr.DB.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error; err != nil {
+			return []models.Cart{}, err
+		}
+		return cartResponse, nil
+	}
 
 	var totalPrice float64
 	var productPrice float64
@@ -60,8 +78,6 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 
 		}
 	}
-
-	var cartResponse []models.Cart
 
 	if err := cr.DB.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error; err != nil {
 		return []models.Cart{}, err
@@ -206,5 +222,18 @@ func (cr *cartRepository) GetAllItemsFromCart(userID int) ([]models.Cart, error)
 	}
 
 	return cartResponse, nil
+
+}
+
+
+func (cr *cartRepository) CheckProduct(product_id int) (bool,error) {
+
+	var count int
+	err := cr.DB.Raw("select count(*) from products where id = ?",product_id).Scan(&count).Error
+	if err != nil {
+		return false,err
+	}
+	fmt.Println("product count",count,product_id)
+	return count > 0,nil
 
 }
