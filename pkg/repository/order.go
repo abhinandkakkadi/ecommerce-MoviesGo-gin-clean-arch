@@ -115,3 +115,15 @@ func (cr *orderRepository) CancelOrder(orderID string) (string, error) {
 
 	return "Order successfully cancelled", nil
 }
+
+func (cr *orderRepository) GetOrderDetailsBrief() ([]models.OrderDetails,error) {
+
+		var orderDetails []models.OrderDetails
+		err := cr.DB.Raw("select order_id,grand_total,shipment_status from orders").Scan(&orderDetails).Error
+		if err != nil {
+			return []models.OrderDetails{},nil
+		}
+	
+		return orderDetails,nil
+}
+

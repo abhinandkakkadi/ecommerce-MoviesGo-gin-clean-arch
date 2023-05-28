@@ -22,6 +22,16 @@ func NewAdminHandler(usecase services.AdminUseCase) *AdminHandler {
 	}
 }
 
+// LoginHandler handles the login functionality for admin
+// @Summary Admin login
+// @Description Authenticates an admin
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param adminDetails body AdminRequest true "Admin credentials"
+// @Success 200 {object} AdminResponse
+// @Failure 400 {object} ErrorResponse
+// @Router /admin/login [post]
 func (cr *AdminHandler) LoginHandler(c *gin.Context) {
 
 	// var adminDetails models.AdminLogin

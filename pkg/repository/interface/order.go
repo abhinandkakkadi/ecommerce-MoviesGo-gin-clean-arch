@@ -10,4 +10,6 @@ type OrderRepository interface {
 	GetOrderAddress(userID int) ([]models.FullOrderDetails, error)
 	CancelOrder(orderID string) (string, error)
 	UserOrderRelationship(orderID string, userID int) (int, error)
+	GetOrderDetailsBrief() ([]models.OrderDetails,error)
+	
 }

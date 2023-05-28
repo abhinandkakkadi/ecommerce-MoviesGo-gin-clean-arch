@@ -109,3 +109,29 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 	})
 
 }
+
+
+func (cr *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
+
+	allOrderDetails,err := cr.orderUseCase.GetAllOrderDetailsForAdmin()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "Could not retrieve order details",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Error:      nil,
+		Data:       allOrderDetails,
+		Message:    "Order Details Retrieved successfully",
+	})
+	
+}
+
+
+// func (cr *OrderHandler) ApproveOrder(c *gin.Context)

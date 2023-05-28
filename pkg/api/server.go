@@ -17,7 +17,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 	router.Use(gin.Logger())
 
 	routes.UserRoutes(router.Group("/"), userHandler, otpHandler, productHandler, cartHandler, orderHandler)
-	routes.AdminRoutes(router.Group("/admin"), adminHandler, productHandler)
+	routes.AdminRoutes(router.Group("/admin"), adminHandler, productHandler,orderHandler)
 
 	return &ServerHTTP{engine: router}
 }
