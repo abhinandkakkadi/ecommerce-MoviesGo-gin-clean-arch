@@ -20,6 +20,6 @@ type UserRepository interface {
 	UpdateUserPhone(phone string, userID int) error
 	UpdateUserPassword(password string, userID int) error
 	UserPassword(userID int) (string, error)
-	FindUserByOrderID(orderID string) (models.UsersProfileDetails,error)
-	FindUserAddressByOrderID(orderID string) (models.AddressInfo,error)
+	FindUserByOrderID(orderID string) (models.UsersProfileDetails, error)
+	FindUserAddressByOrderID(orderID string) (models.AddressInfo, error)
 }

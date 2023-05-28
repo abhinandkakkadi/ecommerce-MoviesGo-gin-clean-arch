@@ -188,26 +188,24 @@ func (cr *userDatabase) UserPassword(userID int) (string, error) {
 
 }
 
-func (cr *userDatabase) FindUserByOrderID(orderId string) (models.UsersProfileDetails,error)  {
-
-	
+func (cr *userDatabase) FindUserByOrderID(orderId string) (models.UsersProfileDetails, error) {
 
 	var userDetails models.UsersProfileDetails
-	err := cr.DB.Raw("select users.name,users.email,users.phone from users inner join orders on orders.user_id = users.id where order_id = ?",orderId).Scan(&userDetails).Error
+	err := cr.DB.Raw("select users.name,users.email,users.phone from users inner join orders on orders.user_id = users.id where order_id = ?", orderId).Scan(&userDetails).Error
 	if err != nil {
-		return models.UsersProfileDetails{},err
+		return models.UsersProfileDetails{}, err
 	}
-	
-	return userDetails,nil
+
+	return userDetails, nil
 }
 
-func (cr *userDatabase) FindUserAddressByOrderID(orderID string) (models.AddressInfo,error) {
+func (cr *userDatabase) FindUserAddressByOrderID(orderID string) (models.AddressInfo, error) {
 
 	var shipmentAddress models.AddressInfo
-	err := cr.DB.Raw("select addresses.name,addresses.house_name,addresses.street,addresses.city,addresses.state,addresses.pin from addresses inner join orders on orders.address_id = addresses.id where order_id = ?",orderID).Scan(&shipmentAddress).Error
+	err := cr.DB.Raw("select addresses.name,addresses.house_name,addresses.street,addresses.city,addresses.state,addresses.pin from addresses inner join orders on orders.address_id = addresses.id where order_id = ?", orderID).Scan(&shipmentAddress).Error
 	if err != nil {
-		return models.AddressInfo{},err
+		return models.AddressInfo{}, err
 	}
-	
-	return shipmentAddress,nil
+
+	return shipmentAddress, nil
 }

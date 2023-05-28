@@ -9,6 +9,6 @@ type OrderUseCase interface {
 	OrderItemsFromCart(orderBody models.OrderIncoming) (domain.OrderSuccessResponse, error)
 	GetOrderDetails(userID int) ([]models.FullOrderDetails, error)
 	CancelOrder(orderID string, userID int) (string, error)
-	GetAllOrderDetailsForAdmin() ([]models.CombinedOrderDetails,error)
-	ApproveOrder(orderId string) (string,error)
+	GetAllOrderDetailsForAdmin() ([]models.CombinedOrderDetails, error)
+	ApproveOrder(orderId string) (string, error)
 }

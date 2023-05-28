@@ -36,24 +36,18 @@ type FullOrderDetails struct {
 	OrderProductDetails []OrderProductDetails
 }
 
-
 // ORDER DETAILS
 
-
-
-
 type CombinedOrderDetails struct {
-
-	OrderId        string 	`json:"order_id"`
-	GrandTotal     float64	`json:"grand_total"`
-	ShipmentStatus string		`json:"shipment_status"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Phone string `json:"phone"`
-	HouseName string `json:"house_name" validate:"required"`
-	State     string `json:"state" validate:"required"`
-	Pin       string `json:"pin" validate:"required"`
-	Street    string `json:"street"`
-	City      string `json:"city"`
-	
+	OrderId        string  `json:"order_id"`
+	GrandTotal     float64 `json:"grand_total"`
+	ShipmentStatus string  `json:"shipment_status"`
+	Name           string  `json:"name"`
+	Email          string  `json:"email"`
+	Phone          string  `json:"phone"`
+	HouseName      string  `json:"house_name" validate:"required"`
+	State          string  `json:"state" validate:"required"`
+	Pin            string  `json:"pin" validate:"required"`
+	Street         string  `json:"street"`
+	City           string  `json:"city"`
 }

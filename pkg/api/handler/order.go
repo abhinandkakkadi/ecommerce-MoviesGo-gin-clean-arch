@@ -110,10 +110,9 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 
 }
 
-
 func (cr *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 
-	allOrderDetails,err := cr.orderUseCase.GetAllOrderDetailsForAdmin()
+	allOrderDetails, err := cr.orderUseCase.GetAllOrderDetailsForAdmin()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -130,14 +129,13 @@ func (cr *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 		Data:       allOrderDetails,
 		Message:    "Order Details Retrieved successfully",
 	})
-	
-}
 
+}
 
 func (cr *OrderHandler) ApproveOrder(c *gin.Context) {
 
 	orderId := c.Param("order_id")
-	message,err := cr.orderUseCase.ApproveOrder(orderId)
+	message, err := cr.orderUseCase.ApproveOrder(orderId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -155,5 +153,4 @@ func (cr *OrderHandler) ApproveOrder(c *gin.Context) {
 		Message:    "Order Details Retrieved successfully",
 	})
 
-	
 }

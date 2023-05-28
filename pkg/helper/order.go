@@ -5,26 +5,24 @@ import (
 	"github.com/jinzhu/copier"
 )
 
+func CombinedOrderDetails(orderDetails models.OrderDetails, userDetails models.UsersProfileDetails, userAddress models.AddressInfo) (models.CombinedOrderDetails, error) {
 
-func CombinedOrderDetails(orderDetails models.OrderDetails,userDetails models.UsersProfileDetails,userAddress models.AddressInfo) (models.CombinedOrderDetails,error) {
+	var orderCombinedDetails models.CombinedOrderDetails
 
-		var orderCombinedDetails models.CombinedOrderDetails
+	err := copier.Copy(&orderCombinedDetails, &orderDetails)
+	if err != nil {
+		return models.CombinedOrderDetails{}, err
+	}
 
-	
-		err := copier.Copy(&orderCombinedDetails, &orderDetails)
-		if err != nil {
-			return models.CombinedOrderDetails{},err
-		}
+	err = copier.Copy(&orderCombinedDetails, &userDetails)
+	if err != nil {
+		return models.CombinedOrderDetails{}, err
+	}
 
-		err = copier.Copy(&orderCombinedDetails, &userDetails)
-		if err != nil {
-			return models.CombinedOrderDetails{},err
-		}
+	err = copier.Copy(&orderCombinedDetails, &userAddress)
+	if err != nil {
+		return models.CombinedOrderDetails{}, err
+	}
 
-		err = copier.Copy(&orderCombinedDetails, &userAddress)
-		if err != nil {
-			return models.CombinedOrderDetails{},err
-		}
-		
-		return orderCombinedDetails,nil
+	return orderCombinedDetails, nil
 }

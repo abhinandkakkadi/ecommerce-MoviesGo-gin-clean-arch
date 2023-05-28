@@ -116,44 +116,44 @@ func (cr *orderRepository) CancelOrder(orderID string) (string, error) {
 	return "Order successfully cancelled", nil
 }
 
-func (cr *orderRepository) GetOrderDetailsBrief() ([]models.OrderDetails,error) {
+func (cr *orderRepository) GetOrderDetailsBrief() ([]models.OrderDetails, error) {
 
-		var orderDetails []models.OrderDetails
-		err := cr.DB.Raw("select order_id,grand_total,shipment_status from orders").Scan(&orderDetails).Error
-		if err != nil {
-			return []models.OrderDetails{},nil
-		}
-	
-		return orderDetails,nil
-}
-
-func (cr *orderRepository) CheckOrderID(orderID string) (bool,error) {
-
-	var count int
-	err := cr.DB.Raw("select count(*) from orders where order_id = ?",orderID).Scan(&count).Error
+	var orderDetails []models.OrderDetails
+	err := cr.DB.Raw("select order_id,grand_total,shipment_status from orders").Scan(&orderDetails).Error
 	if err != nil {
-		return false,err
+		return []models.OrderDetails{}, nil
 	}
 
-	return count > 0,nil
+	return orderDetails, nil
+}
+
+func (cr *orderRepository) CheckOrderID(orderID string) (bool, error) {
+
+	var count int
+	err := cr.DB.Raw("select count(*) from orders where order_id = ?", orderID).Scan(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
 
 }
 
-func (cr *orderRepository) GetShipmentStatus(orderID string) (string,error) {
-	
-	var shipmentStatus string
-	err := cr.DB.Raw("select shipment_status from orders where order_id = ?",orderID).Scan(&shipmentStatus).Error
-	if err != nil {
-		return "",err
-	} 
+func (cr *orderRepository) GetShipmentStatus(orderID string) (string, error) {
 
-	return shipmentStatus,nil
-	
+	var shipmentStatus string
+	err := cr.DB.Raw("select shipment_status from orders where order_id = ?", orderID).Scan(&shipmentStatus).Error
+	if err != nil {
+		return "", err
+	}
+
+	return shipmentStatus, nil
+
 }
 
 func (cr *orderRepository) ApproveOrder(orderID string) error {
 
-	err := cr.DB.Exec("update orders set shipment_status = 'order placed',approval = true where order_id = ?",orderID).Error
+	err := cr.DB.Exec("update orders set shipment_status = 'order placed',approval = true where order_id = ?", orderID).Error
 	if err != nil {
 		return err
 	}
