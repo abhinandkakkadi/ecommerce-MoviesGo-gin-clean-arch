@@ -31,10 +31,10 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 	}
 
 	// if the user try to add more quantity than what is already present in stock
-	if err := cr.DB.Raw("select quantity from products where id = ?",product_id).Scan(&productQuantity).Error; err != nil {
+	if err := cr.DB.Raw("select quantity from products where id = ?", product_id).Scan(&productQuantity).Error; err != nil {
 		return []models.Cart{}, err
 	}
-	if err := cr.DB.Raw("select quantity from carts where user_id = ? and product_id = ?",userID,product_id).Scan(&cartsQuantity).Error; err != nil {
+	if err := cr.DB.Raw("select quantity from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&cartsQuantity).Error; err != nil {
 		return []models.Cart{}, err
 	}
 	// quantity in carts is equal to quantity in STOCK  -- don't allow to add further products
@@ -225,15 +225,14 @@ func (cr *cartRepository) GetAllItemsFromCart(userID int) ([]models.Cart, error)
 
 }
 
-
-func (cr *cartRepository) CheckProduct(product_id int) (bool,error) {
+func (cr *cartRepository) CheckProduct(product_id int) (bool, error) {
 
 	var count int
-	err := cr.DB.Raw("select count(*) from products where id = ?",product_id).Scan(&count).Error
+	err := cr.DB.Raw("select count(*) from products where id = ?", product_id).Scan(&count).Error
 	if err != nil {
-		return false,err
+		return false, err
 	}
-	fmt.Println("product count",count,product_id)
-	return count > 0,nil
+	fmt.Println("product count", count, product_id)
+	return count > 0, nil
 
 }

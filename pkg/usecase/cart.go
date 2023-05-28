@@ -22,15 +22,14 @@ func NewCartUseCase(repository interfaces.CartRepository) services.CartUseCase {
 
 func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartResponse, error) {
 
-	ok,err := cr.cartRepository.CheckProduct(product_id)
+	ok, err := cr.cartRepository.CheckProduct(product_id)
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
 
 	if !ok {
-		return models.CartResponse{},errors.New("product does not exist")
+		return models.CartResponse{}, errors.New("product does not exist")
 	}
-
 
 	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID)
 
