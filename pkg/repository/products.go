@@ -82,7 +82,7 @@ func (c *productDatabase) ShowIndividualProducts(id string) (models.ProductRespo
 func (cr *productDatabase) UpdateQuantity(product domain.Products) error {
 
 	var intialQuantity int
-	err := cr.DB.Raw("select quantity from products where movie_name = ? and format_id = ?", product.Movie_Name, product.FormatID).Scan(&intialQuantity).Error
+	err := cr.DB.Raw("select quantity from products where movie_name = ? and format_id = ?", product.MovieName, product.FormatID).Scan(&intialQuantity).Error
 
 	if err != nil {
 		return err

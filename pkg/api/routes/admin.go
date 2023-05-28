@@ -30,8 +30,10 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 		userDetails.GET("", adminHandler.GetUsers)
 		userDetails.GET("/:page", adminHandler.GetUsers)
 
-		router.GET("/orders", orderHandler.GetAllOrderDetailsForAdmin)
-		router.GET("/approve-order/:order_id", orderHandler.ApproveOrder)
+		orders := router.Group("/orders")
+		orders.GET("", orderHandler.GetAllOrderDetailsForAdmin)
+		orders.GET("/approve-order/:order_id", orderHandler.ApproveOrder)
+		orders.GET("/cancel-order/:order_id", orderHandler.CancelOrderFromAdminSide)
 
 	}
 

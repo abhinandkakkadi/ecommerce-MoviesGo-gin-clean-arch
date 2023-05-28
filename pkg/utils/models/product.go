@@ -33,3 +33,17 @@ type ProductsBrief struct {
 	Genre          string `json:"genre"`
 	Movie_Language string `json:"movie_language"`
 }
+
+type CategoryUpdate struct {
+	Genre    string `json:"genre"`
+	Director string `json:"director"`
+	Format   string `json:"format"`
+	Language string `json:"language"`
+}
+
+type CategoryUpdateCheck struct {
+	GenreCount    int
+	DirectorCount int
+	FormatCount   int
+	LanguageCount int
+}

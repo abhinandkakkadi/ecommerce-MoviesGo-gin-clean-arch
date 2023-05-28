@@ -107,6 +107,10 @@ func (cr *orderRepository) CancelOrder(orderID string) (string, error) {
 		return "Item already delivered, cannot cancel", nil
 	}
 
+	if shipmentStatus == "cancelled" {
+		return "Order already cancelled", nil
+	}
+
 	shipmentStatus = "cancelled"
 	err = cr.DB.Exec("update orders set shipment_status = ?  where order_id = ?", shipmentStatus, orderID).Error
 	if err != nil {

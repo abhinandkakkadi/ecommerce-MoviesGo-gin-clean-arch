@@ -20,3 +20,10 @@ type CategoryManagement struct {
 	Format   Movie_Format   `json:"format"`
 	Language Movie_Language `json:"language"`
 }
+
+type CategoryResponse struct {
+	Genre          []Genre
+	Directors      []Directors
+	Movie_Format   []Movie_Format
+	Movie_Language []Movie_Language
+}

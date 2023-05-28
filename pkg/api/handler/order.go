@@ -154,3 +154,27 @@ func (cr *OrderHandler) ApproveOrder(c *gin.Context) {
 	})
 
 }
+
+func (cr *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
+
+	orderID := c.Param("order_id")
+	fmt.Println(orderID)
+
+	message, err := cr.orderUseCase.CancelOrderFromAdminSide(orderID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "Could not cancel the order",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Error:      nil,
+		Data:       message,
+		Message:    "Cancel Successfull",
+	})
+}

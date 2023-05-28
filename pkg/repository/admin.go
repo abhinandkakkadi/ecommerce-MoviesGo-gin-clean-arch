@@ -79,40 +79,85 @@ func (cr *adminRepository) GetGenres() ([]domain.Genre, error) {
 
 }
 
+func (cr *adminRepository) GetDirectors() ([]domain.Directors, error) {
+
+	var directors []domain.Directors
+	if err := cr.DB.Raw("select * from directors").Scan(&directors).Error; err != nil {
+		return []domain.Directors{}, err
+	}
+
+	return directors, nil
+
+}
+
+func (cr *adminRepository) GetMovieFormat() ([]domain.Movie_Format, error) {
+	var formats []domain.Movie_Format
+	if err := cr.DB.Raw("select * from movie_formats").Scan(&formats).Error; err != nil {
+		return []domain.Movie_Format{}, err
+	}
+
+	return formats, nil
+}
+
+func (cr *adminRepository) GetMovieLanguages() ([]domain.Movie_Language, error) {
+
+	var languages []domain.Movie_Language
+	if err := cr.DB.Raw("select * from movie_languages").Scan(&languages).Error; err != nil {
+		return []domain.Movie_Language{}, err
+	}
+
+	return languages, nil
+}
+
+func (cr *adminRepository) CategoryCount(category models.CategoryUpdate) (models.CategoryUpdateCheck, error) {
+
+	var categoryCount models.CategoryUpdateCheck
+	err := cr.DB.Raw("select (select count(*) from genres where genre_name = ?) as genre_count,(select count(*) from directors where director_name = ?) as director_count,(select count(*) from movie_formats where format = ?) as format_count,(select count(*) from movie_languages where language = ?) as language_count", category.Genre, category.Director, category.Format, category.Language).Scan(&categoryCount).Error
+	if err != nil {
+		return categoryCount, nil
+	}
+	return categoryCount, nil
+
+}
+
 // CATEGORY MANAGEMENT
-func (cr *adminRepository) AddGenre(genre domain.Genre) error {
+func (cr *adminRepository) AddGenre(genre string) (domain.Genre, error) {
 
-	if err := cr.DB.Exec("insert into genres (id,genre_name) values (?,?)", genre.ID, genre.Genre_Name).Error; err != nil {
-		return err
+	var gen domain.Genre
+	if err := cr.DB.Raw("insert into genres (genre_name) values (?) returning id,genre_name", genre).Scan(&gen).Error; err != nil {
+		return domain.Genre{}, err
 	}
-	return nil
+	return gen, nil
 
 }
 
-func (cr *adminRepository) AddDirector(director domain.Directors) error {
+func (cr *adminRepository) AddDirector(director string) (domain.Directors, error) {
 
-	if err := cr.DB.Exec("insert into directors (id,director_name) values (?,?)", director.ID, director.Director_Name).Error; err != nil {
-		return err
+	var dir domain.Directors
+	if err := cr.DB.Raw("insert into directors (director_name) values (?) returning id,director_name", director).Scan(&dir).Error; err != nil {
+		return domain.Directors{}, err
 	}
-	return nil
+	return dir, nil
 
 }
 
-func (cr *adminRepository) AddFormat(format domain.Movie_Format) error {
+func (cr *adminRepository) AddFormat(format string) (domain.Movie_Format, error) {
 
-	if err := cr.DB.Exec("insert into movie_formats (id,format) values (?,?)", format.ID, format.Format).Error; err != nil {
-		return err
+	var form domain.Movie_Format
+	if err := cr.DB.Raw("insert into movie_formats (format) values  (?) returning id,format", format).Scan(&form).Error; err != nil {
+		return domain.Movie_Format{}, err
 	}
-	return nil
+	return form, nil
 
 }
 
-func (cr *adminRepository) AddLanguage(language domain.Movie_Language) error {
+func (cr *adminRepository) AddLanguage(language string) (domain.Movie_Language, error) {
 
-	if err := cr.DB.Exec("insert into movie_languages (id,language) values (?,?)", language.ID, language.Language).Error; err != nil {
-		return err
+	var lang domain.Movie_Language
+	if err := cr.DB.Raw("insert into movie_languages (language) values (?) returning id,language", language).Scan(&lang).Error; err != nil {
+		return domain.Movie_Language{}, nil
 	}
-	return nil
+	return lang, nil
 
 }
 

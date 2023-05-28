@@ -69,6 +69,12 @@ func (cr *orderUseCase) CancelOrder(orderID string, userID int) (string, error) 
 
 }
 
+func (cr *orderUseCase) CancelOrderFromAdminSide(orderID string) (string, error) {
+
+	return cr.orderRepository.CancelOrder(orderID)
+
+}
+
 func (cr *orderUseCase) GetAllOrderDetailsForAdmin() ([]models.CombinedOrderDetails, error) {
 
 	orderDetails, err := cr.orderRepository.GetOrderDetailsBrief()

@@ -117,48 +117,96 @@ func (cr *adminUseCase) GetUsers(page int) ([]models.UserDetailsResponse, error)
 
 }
 
-func (cr *adminUseCase) GetGenres() ([]domain.Genre, error) {
+func (cr *adminUseCase) GetFullCategory() (domain.CategoryResponse, error) {
 
 	genres, err := cr.adminRepository.GetGenres()
 	if err != nil {
-		return []domain.Genre{}, err
+		return domain.CategoryResponse{}, err
 	}
 
-	return genres, nil
+	directors, err := cr.adminRepository.GetDirectors()
+	if err != nil {
+		return domain.CategoryResponse{}, err
+	}
+
+	formats, err := cr.adminRepository.GetMovieFormat()
+	if err != nil {
+		return domain.CategoryResponse{}, err
+	}
+
+	languages, err := cr.adminRepository.GetMovieLanguages()
+	if err != nil {
+		return domain.CategoryResponse{}, err
+	}
+
+	return domain.CategoryResponse{
+		Genre:          genres,
+		Directors:      directors,
+		Movie_Format:   formats,
+		Movie_Language: languages,
+	}, nil
 
 }
 
-func (cr *adminUseCase) AddCategory(category domain.CategoryManagement) (domain.CategoryManagement, error) {
+func (cr *adminUseCase) AddCategory(category models.CategoryUpdate) (domain.CategoryManagement, error) {
 
-	if category.Genre.ID != 0 {
-		err := cr.adminRepository.AddGenre(category.Genre)
+	var (
+		genre    domain.Genre
+		director domain.Directors
+		format   domain.Movie_Format
+		language domain.Movie_Language
+		err      error
+	)
+	var count int
+	// to check if a category with same name exists in the database
+	categoryCount, err := cr.adminRepository.CategoryCount(category)
+	if err != nil {
+		return domain.CategoryManagement{}, nil
+	}
+
+	if category.Genre != "" && categoryCount.GenreCount == 0 {
+		count++
+		genre, err = cr.adminRepository.AddGenre(category.Genre)
 		if err != nil {
 			return domain.CategoryManagement{}, err
 		}
 	}
 
-	if category.Director.ID != 0 {
-		err := cr.adminRepository.AddDirector(category.Director)
+	if category.Director != "" && categoryCount.DirectorCount == 0 {
+		count++
+		director, err = cr.adminRepository.AddDirector(category.Director)
 		if err != nil {
 			return domain.CategoryManagement{}, err
 		}
 	}
 
-	if category.Format.ID != 0 {
-		err := cr.adminRepository.AddFormat(category.Format)
+	if category.Format != "" && categoryCount.FormatCount == 0 {
+		count++
+		format, err = cr.adminRepository.AddFormat(category.Format)
 		if err != nil {
 			return domain.CategoryManagement{}, err
 		}
 	}
 
-	if category.Language.ID != 0 {
-		err := cr.adminRepository.AddLanguage(category.Language)
+	if category.Language != "" && categoryCount.LanguageCount == 0 {
+		count++
+		language, err = cr.adminRepository.AddLanguage(category.Language)
 		if err != nil {
 			return domain.CategoryManagement{}, err
 		}
 	}
 
-	return category, nil
+	// if count = 0 that means no category was added
+	if count == 0 {
+		return domain.CategoryManagement{}, errors.New("no new category added")
+	}
+
+	return domain.CategoryManagement{
+		Genre:    genre,
+		Director: director,
+		Format:   format,
+		Language: language,
+	}, nil
 
 }
 

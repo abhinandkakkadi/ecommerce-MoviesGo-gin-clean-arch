@@ -125,7 +125,7 @@ func (cr *AdminHandler) GetUsers(c *gin.Context) {
 
 func (cr *AdminHandler) GetGenres(c *gin.Context) {
 
-	genres, err := cr.adminUseCase.GetGenres()
+	genres, err := cr.adminUseCase.GetFullCategory()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -138,7 +138,7 @@ func (cr *AdminHandler) GetGenres(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
-		Message:    "Successfully retrieved the user",
+		Message:    "Successfully retrieved the genres",
 		Data:       genres,
 		Error:      nil,
 	})
@@ -146,7 +146,7 @@ func (cr *AdminHandler) GetGenres(c *gin.Context) {
 
 func (cr *AdminHandler) AddCategory(c *gin.Context) {
 
-	var category domain.CategoryManagement
+	var category models.CategoryUpdate
 	if err := c.BindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
@@ -157,7 +157,7 @@ func (cr *AdminHandler) AddCategory(c *gin.Context) {
 		return
 	}
 
-	added_genre, err := cr.adminUseCase.AddCategory(category)
+	addedCategory, err := cr.adminUseCase.AddCategory(category)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -171,7 +171,7 @@ func (cr *AdminHandler) AddCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
 		Message:    "Successfully added the record",
-		Data:       added_genre,
+		Data:       addedCategory,
 		Error:      nil,
 	})
 
