@@ -39,7 +39,7 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 	}
 
 	if productQuantity == 0 {
-		return []models.Cart{},nil
+		return []models.Cart{}, nil
 	}
 	// quantity in carts is equal to quantity in STOCK  -- don't allow to add further products
 	if cartsQuantity == productQuantity {
