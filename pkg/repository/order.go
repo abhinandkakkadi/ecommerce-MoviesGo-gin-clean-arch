@@ -127,10 +127,35 @@ func (cr *orderRepository) GetOrderDetailsBrief() ([]models.OrderDetails,error) 
 		return orderDetails,nil
 }
 
-func (cr *orderRepository) GetShipmentStatus(orderID string) string {
+func (cr *orderRepository) CheckOrderID(orderID string) (bool,error) {
+
+	var count int
+	err := cr.DB.Raw("select count(*) from orders where order_id = ?",orderID).Scan(&count).Error
+	if err != nil {
+		return false,err
+	}
+
+	return count > 0,nil
+
+}
+
+func (cr *orderRepository) GetShipmentStatus(orderID string) (string,error) {
 	
 	var shipmentStatus string
-	cr.DB.Raw("select shipment_status from orders where order_id = ?",orderID).Scan(&shipmentStatus)
-	return shipmentStatus
+	err := cr.DB.Raw("select shipment_status from orders where order_id = ?",orderID).Scan(&shipmentStatus).Error
+	if err != nil {
+		return "",err
+	} 
+
+	return shipmentStatus,nil
 	
+}
+
+func (cr *orderRepository) ApproveOrder(orderID string) error {
+
+	err := cr.DB.Exec("update orders set shipment_status = 'order placed',approval = true where order_id = ?",orderID).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

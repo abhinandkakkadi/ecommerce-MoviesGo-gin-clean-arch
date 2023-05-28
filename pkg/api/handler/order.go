@@ -137,6 +137,23 @@ func (cr *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 func (cr *OrderHandler) ApproveOrder(c *gin.Context) {
 
 	orderId := c.Param("order_id")
-	cr.orderUseCase.ApproveOrder(orderId)
+	message,err := cr.orderUseCase.ApproveOrder(orderId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "could not approve the order",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Error:      nil,
+		Data:       message,
+		Message:    "Order Details Retrieved successfully",
+	})
+
 	
 }

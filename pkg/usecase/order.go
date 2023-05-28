@@ -105,10 +105,35 @@ func (cr *orderUseCase) GetAllOrderDetailsForAdmin() ([]models.CombinedOrderDeta
 }
 
 
-func (cr *orderUseCase) ApproveOrder(orderID string) error {
+func (cr *orderUseCase) ApproveOrder(orderID string) (string,error) {
+	fmt.Println(orderID)
+	ok,err := cr.orderRepository.CheckOrderID(orderID)
+	fmt.Println(ok)
+	if !ok {
+		return "Order ID does not exist",err
+	}
+  
+	shipmentStatus,err := cr.orderRepository.GetShipmentStatus(orderID)
+	if err != nil {
+		return "",err
+	}
+	fmt.Println(shipmentStatus)
+	if shipmentStatus == "cancelled" {
+		
+		return "The order is cancelled, cannot approve it",nil
+	}
 
-	getShipmentStatus := cr.orderRepository.GetShipmentStatus(orderID)
-	fmt.Println(getShipmentStatus)
-	return nil
+	if shipmentStatus == "processing" {
+		fmt.Println("reached here")
+		err := cr.orderRepository.ApproveOrder(orderID)
+		
+		if err != nil {
+			return "",err
+		}
+
+		return "order approved successfully",nil
+	}
+
+	return "order already approved",nil
 	
 }
