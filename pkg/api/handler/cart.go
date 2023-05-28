@@ -37,7 +37,7 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 			StatusCode: 402,
 			Error:      err.Error(),
 			Data:       nil,
-			Message:    "sorry bro",
+			Message:    "could not add product to the cart",
 		})
 		return
 	}

@@ -31,7 +31,7 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 	id := uuid.New().ID()
 	str := strconv.Itoa(int(id))
 	orderDetails.OrderId = str[:8]
-
+	// details being added to the orders table
 	orderDetails.AddressID = orderBody.AddressID
 	orderDetails.PaymentMethodID = orderBody.PaymentID
 	orderDetails.UserID = int(orderBody.UserID)
@@ -42,7 +42,7 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 		orderDetails.GrandTotal += c.TotalPrice
 	}
 	cr.DB.Create(&orderDetails)
-
+  // details being added to the orderItems table - which shows details about the individual products
 	for _, c := range cartItems {
 		fmt.Println(c)
 		orderItemDetails.OrderID = orderDetails.OrderId
@@ -52,6 +52,9 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 
 		cr.DB.Omit("id").Create(&orderItemDetails)
 		cr.DB.Exec("delete from carts where user_id = ? and product_id = ?", orderDetails.UserID, c.ProductID)
+		fmt.Println(c.Quantity)
+		fmt.Println(c.ProductID)
+		cr.DB.Exec("update products set quantity = quantity - ? where id = ?",c.Quantity,c.ProductID)
 	}
 
 	var orderSuccessResponse domain.OrderSuccessResponse

@@ -37,6 +37,10 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 	if err := cr.DB.Raw("select quantity from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&cartsQuantity).Error; err != nil {
 		return []models.Cart{}, err
 	}
+
+	if productQuantity == 0 {
+		return []models.Cart{},nil
+	}
 	// quantity in carts is equal to quantity in STOCK  -- don't allow to add further products
 	if cartsQuantity == productQuantity {
 
@@ -89,6 +93,7 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 func (cr *cartRepository) GetTotalPrice(userID int) (models.CartTotal, error) {
 
 	var cartTotal models.CartTotal
+	// return 0 id the record is not present
 	err := cr.DB.Raw("select COALESCE(SUM(total_price), 0) from carts where user_id = ?", userID).Scan(&cartTotal.TotalPrice).Error
 	if err != nil {
 		return models.CartTotal{}, err
