@@ -120,6 +120,7 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 
 }
 
+// handler to add a new address for the user
 func (cr *UserHandler) AddAddress(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
@@ -167,6 +168,7 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 
 }
 
+// update existing address using address id
 func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 
 	id := c.Param("id")
@@ -208,6 +210,7 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 
 }
 
+// checkout section for users after adding items to the cart and adding address 
 func (cr *UserHandler) CheckOut(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
@@ -255,6 +258,7 @@ func (cr *UserHandler) UserDetails(c *gin.Context) {
 
 }
 
+// get all the address added by the user
 func (cr *UserHandler) GetAllAddress(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
@@ -278,6 +282,7 @@ func (cr *UserHandler) GetAllAddress(c *gin.Context) {
 
 }
 
+// update details of uer in user profile section (can update optional details)
 func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
 
 	user_id, _ := c.Get("user_id")
@@ -315,6 +320,7 @@ func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
 	})
 }
 
+// update password of the user
 func (cr *UserHandler) UpdatePassword(c *gin.Context) {
 
 	user_id, _ := c.Get("user_id")

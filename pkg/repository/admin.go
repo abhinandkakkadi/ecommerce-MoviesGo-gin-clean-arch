@@ -30,6 +30,7 @@ func (cr *adminRepository) LoginHandler(adminDetails domain.Admin) (domain.Admin
 	return adminCompareDetails, nil
 }
 
+// check if an admin with specified email already exist
 func (cr *adminRepository) CheckAdminAvailability(admin models.AdminSignUp) bool {
 
 	var count int
@@ -53,7 +54,7 @@ func (cr *adminRepository) SignUpHandler(admin models.AdminSignUp) (models.Admin
 
 // Get users details for authenticated admins
 func (cr *adminRepository) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
-
+	// pagination purpose - 
 	if page == 0 {
 		page = 1
 	}
@@ -110,7 +111,7 @@ func (cr *adminRepository) GetMovieLanguages() ([]domain.Movie_Language, error) 
 }
 
 func (cr *adminRepository) CategoryCount(category models.CategoryUpdate) (models.CategoryUpdateCheck, error) {
-
+	// sub query to check if category name added by the admin already exist (add category where count = 0)
 	var categoryCount models.CategoryUpdateCheck
 	err := cr.DB.Raw("select (select count(*) from genres where genre_name = ?) as genre_count,(select count(*) from directors where director_name = ?) as director_count,(select count(*) from movie_formats where format = ?) as format_count,(select count(*) from movie_languages where language = ?) as language_count", category.Genre, category.Director, category.Format, category.Language).Scan(&categoryCount).Error
 	if err != nil {
@@ -187,6 +188,7 @@ func (cr *adminRepository) GetUserByID(id string) (domain.Users, error) {
 	return userDetails, nil
 }
 
+// function which will both block and unblock a user
 func (cr *adminRepository) UpdateBlockUserByID(user domain.Users) error {
 
 	err := cr.DB.Exec("update users set blocked = ? where id = ?", user.Blocked, user.ID).Error

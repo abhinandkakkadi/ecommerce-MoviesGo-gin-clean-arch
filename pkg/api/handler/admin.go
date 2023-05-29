@@ -32,7 +32,7 @@ func NewAdminHandler(usecase services.AdminUseCase) *AdminHandler {
 // @Success 200 {object} AdminResponse
 // @Failure 400 {object} ErrorResponse
 // @Router /admin/login [post]
-func (cr *AdminHandler) LoginHandler(c *gin.Context) {
+func (cr *AdminHandler) LoginHandler(c *gin.Context) {  // login handler for the admin
 
 	// var adminDetails models.AdminLogin
 	var adminDetails domain.Admin
@@ -66,7 +66,7 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) {
 	})
 
 }
-
+// signup handler for admin
 func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 
 	var admin models.AdminSignUp
@@ -99,6 +99,7 @@ func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 
 }
 
+// handler to get user details 
 func (cr *AdminHandler) GetUsers(c *gin.Context) {
 
 	pageStr := c.Param("page")
@@ -122,7 +123,7 @@ func (cr *AdminHandler) GetUsers(c *gin.Context) {
 	})
 
 }
-
+// handler to get teh categories (have to rename it as GetCategory)
 func (cr *AdminHandler) GetGenres(c *gin.Context) {
 
 	genres, err := cr.adminUseCase.GetFullCategory()
@@ -144,6 +145,7 @@ func (cr *AdminHandler) GetGenres(c *gin.Context) {
 	})
 }
 
+// handler to add new category (genres,language,directors,movie formats)
 func (cr *AdminHandler) AddCategory(c *gin.Context) {
 
 	var category models.CategoryUpdate
@@ -177,6 +179,7 @@ func (cr *AdminHandler) AddCategory(c *gin.Context) {
 
 }
 
+// handler to delete genre ( have to modify this to delete the whole category)
 func (cr *AdminHandler) DeleteGenre(c *gin.Context) {
 
 	genre_id := c.Param("id")
@@ -198,7 +201,7 @@ func (cr *AdminHandler) DeleteGenre(c *gin.Context) {
 	})
 
 }
-
+// handler to block the user
 func (cr *AdminHandler) BlockUser(c *gin.Context) {
 
 	id := c.Param("id")
@@ -222,6 +225,7 @@ func (cr *AdminHandler) BlockUser(c *gin.Context) {
 
 }
 
+// handler to unblock the user
 func (cr *AdminHandler) UnBlockUser(c *gin.Context) {
 
 	id := c.Param("id")

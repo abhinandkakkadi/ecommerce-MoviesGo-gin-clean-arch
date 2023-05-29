@@ -21,6 +21,7 @@ func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
 	}
 }
 
+// show all products details in a brief manner
 func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 	pageStr := c.Param("page")
@@ -46,6 +47,7 @@ func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 }
 
+// show products details at the admin side (brief)
 func (cr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 	pageStr := c.Param("page")
@@ -71,6 +73,7 @@ func (cr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 }
 
+// show detailed details about  the product including product decription
 func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 
 	id := c.Param("id")
@@ -95,6 +98,7 @@ func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 
 }
 
+// handler to add a new product by authenticated admin
 func (cr *ProductHandler) AddProduct(c *gin.Context) {
 
 	var product models.ProductsReceiver
@@ -128,6 +132,7 @@ func (cr *ProductHandler) AddProduct(c *gin.Context) {
 
 }
 
+// handler to delete an existing product by admin 
 func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 
 	product_id := c.Param("id")

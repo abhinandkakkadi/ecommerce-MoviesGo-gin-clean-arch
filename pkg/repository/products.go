@@ -40,6 +40,7 @@ func (c *productDatabase) ShowAllProducts(page int) ([]models.ProductsBrief, err
 
 }
 
+// detailed product details
 func (c *productDatabase) ShowIndividualProducts(id string) (models.ProductResponse, error) {
 
 	var product models.ProductResponse
@@ -142,6 +143,7 @@ func (cr *productDatabase) AddProduct(product models.ProductsReceiver) (models.P
 	return productResponse, nil
 
 }
+
 
 func (cr *productDatabase) DeleteProduct(product_id string) error {
 

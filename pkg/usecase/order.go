@@ -27,6 +27,7 @@ func NewOrderUseCase(orderRepo interfaces.OrderRepository, cartRepo interfaces.C
 
 func (cr *orderUseCase) OrderItemsFromCart(orderBody models.OrderIncoming) (domain.OrderSuccessResponse, error) {
 
+	// get all items a slice of carts 
 	cartItems, err := cr.cartRepository.GetAllItemsFromCart(int(orderBody.UserID))
 
 	if err != nil {
@@ -42,6 +43,7 @@ func (cr *orderUseCase) OrderItemsFromCart(orderBody models.OrderIncoming) (doma
 
 }
 
+// get order details 
 func (cr *orderUseCase) GetOrderDetails(userID int) ([]models.FullOrderDetails, error) {
 
 	fullOrderDetails, err := cr.orderRepository.GetOrderAddress(userID)
@@ -55,7 +57,7 @@ func (cr *orderUseCase) GetOrderDetails(userID int) ([]models.FullOrderDetails, 
 
 func (cr *orderUseCase) CancelOrder(orderID string, userID int) (string, error) {
 
-	// check whether the orderID corresponds to the given user (other user with token may try to send orderID as path variables)
+	// check whether the orderID corresponds to the given user (other user with token may try to send orderID as path variables) (have to add this logic to so many places)
 	userTest, err := cr.orderRepository.UserOrderRelationship(orderID, userID)
 	if err != nil {
 		return "", err
@@ -83,23 +85,27 @@ func (cr *orderUseCase) GetAllOrderDetailsForAdmin() ([]models.CombinedOrderDeta
 	}
 
 	var allCombinedOrderDetails []models.CombinedOrderDetails
+
+
+	// we will take the order details from orders table,  and for each order we combine it with the corresponding user details and address of that particular user that made the order
 	for _, o := range orderDetails {
 
+		// get users details who made that order
 		userDetails, err := cr.userRepository.FindUserByOrderID(o.OrderId)
 		if err != nil {
 			return []models.CombinedOrderDetails{}, err
 		}
-
+		//  get shipping address for that particular order
 		userAddress, err := cr.userRepository.FindUserAddressByOrderID(o.OrderId)
 		if err != nil {
 			return []models.CombinedOrderDetails{}, err
 		}
-
+		// combine all the three details
 		combinedOrderDetails, err := helper.CombinedOrderDetails(o, userDetails, userAddress)
 		if err != nil {
 			return []models.CombinedOrderDetails{}, err
 		}
-
+		// combine all of these details and append it to a slice 
 		allCombinedOrderDetails = append(allCombinedOrderDetails, combinedOrderDetails)
 
 	}
@@ -107,14 +113,18 @@ func (cr *orderUseCase) GetAllOrderDetailsForAdmin() ([]models.CombinedOrderDeta
 	return allCombinedOrderDetails, nil
 }
 
+
+
 func (cr *orderUseCase) ApproveOrder(orderID string) (string, error) {
-	fmt.Println(orderID)
+
+	// check whether the specified orderID exist
 	ok, err := cr.orderRepository.CheckOrderID(orderID)
 	fmt.Println(ok)
 	if !ok {
 		return "Order ID does not exist", err
 	}
 
+	// check the shipment status - if the status cancelled, don't approve it
 	shipmentStatus, err := cr.orderRepository.GetShipmentStatus(orderID)
 	if err != nil {
 		return "", err
@@ -136,6 +146,7 @@ func (cr *orderUseCase) ApproveOrder(orderID string) (string, error) {
 		return "order approved successfully", nil
 	}
 
+	// if the shipment status is not processing or cancelled. Then it is defenetely cancelled
 	return "order already approved", nil
 
 }

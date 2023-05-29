@@ -26,11 +26,13 @@ func NewAdminUseCase(repo interfaces.AdminRepository) services.AdminUseCase {
 
 func (cr *adminUseCase) LoginHandler(adminDetails domain.Admin) (domain.TokenAdmin, error) {
 
+	// getting details of the admin based on the email provided
 	adminCompareDetails, err := cr.adminRepository.LoginHandler(adminDetails)
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
-
+	
+	// compare password from database and that provided from admins
 	err = bcrypt.CompareHashAndPassword([]byte(adminCompareDetails.Password), []byte(adminDetails.Password))
 	fmt.Println(err)
 	if err != nil {
@@ -39,10 +41,12 @@ func (cr *adminUseCase) LoginHandler(adminDetails domain.Admin) (domain.TokenAdm
 
 	var adminDetailsResponse models.AdminDetailsResponse
 
+	//  copy all details except password and sent it back to the front end
 	err = copier.Copy(&adminDetailsResponse, &adminCompareDetails)
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
+
 
 	tokenString, err := helper.GenerateTokenAdmin(adminDetailsResponse)
 
@@ -64,12 +68,15 @@ func (cr *adminUseCase) LoginHandler(adminDetails domain.Admin) (domain.TokenAdm
 
 }
 
+// signup handler for the admin
 func (cr *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdmin, error) {
 
+	// validator package to check the constraints specified in the struct which is used to retrieve these details
 	if err := validator.New().Struct(admin); err != nil {
 		return domain.TokenAdmin{}, err
 	}
 
+	// check whether the admin already exist in the database - 
 	userExist := cr.adminRepository.CheckAdminAvailability(admin)
 	if userExist {
 		return domain.TokenAdmin{}, errors.New("admin already exist, sign in")
@@ -106,6 +113,7 @@ func (cr *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdm
 
 }
 
+
 func (cr *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
 
 	userDetails, err := cr.adminRepository.GetUsers(page)
@@ -117,6 +125,7 @@ func (cr *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) 
 
 }
 
+// business logic to get all the category 
 func (cr *adminUseCase) GetFullCategory() (domain.CategoryResponse, error) {
 
 	genres, err := cr.adminRepository.GetGenres()
@@ -148,6 +157,7 @@ func (cr *adminUseCase) GetFullCategory() (domain.CategoryResponse, error) {
 
 }
 
+// add new category 
 func (cr *adminUseCase) AddCategory(category models.CategoryUpdate) (domain.CategoryManagement, error) {
 
 	var (
@@ -220,6 +230,7 @@ func (cr *adminUseCase) Delete(genre_id string) error {
 
 }
 
+// block user
 func (cr *adminUseCase) BlockUser(id string) error {
 
 	user, err := cr.adminRepository.GetUserByID(id)
@@ -242,6 +253,7 @@ func (cr *adminUseCase) BlockUser(id string) error {
 
 }
 
+// unblock user
 func (cr *adminUseCase) UnBlockUser(id string) error {
 
 	user, err := cr.adminRepository.GetUserByID(id)

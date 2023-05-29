@@ -26,6 +26,7 @@ func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.Ca
 	}
 }
 
+
 func (c *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
 
 	// Check whether the user already exist. If yes, show the error message, since this is signUp
@@ -132,23 +133,28 @@ func (cr *userUseCase) UpdateAddress(address models.AddressInfo, addressID int) 
 	return cr.userRepo.UpdateAddress(address, addressID)
 }
 
+// user checkout section
 func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 
+	// list all address added by the user
 	allUserAddress, err := cr.userRepo.GetAllAddresses(userID)
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}
 
+	// get available payment options 
 	paymentDetails, err := cr.userRepo.GetAllPaymentOption()
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}
 
+	// get all items from users cart
 	cartItems, err := cr.cartRepo.GetAllItemsFromCart(userID)
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}
-
+	 
+	// get grand total of all the product
 	grandTotal, err := cr.cartRepo.GetTotalPrice(userID)
 	if err != nil {
 		return models.CheckoutDetails{}, err
@@ -168,6 +174,7 @@ func (cr *userUseCase) UserDetails(userID int) (models.UsersProfileDetails, erro
 
 }
 
+
 func (cr *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, error) {
 
 	userAddress, err := cr.userRepo.GetAllAddresses(userID)
@@ -181,20 +188,21 @@ func (cr *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, 
 }
 
 func (cr *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails, ctx context.Context) (models.UsersProfileDetails, error) {
-	fmt.Println(userDetails)
-
+	
 	var userID int
 	var ok bool
-	if userID, ok = ctx.Value("userID").(int); !ok {
+	// sent value through context - just for studying purpose - not required in this case
+	if userID, ok = ctx.Value("userID").(int); !ok {  
 		return models.UsersProfileDetails{}, errors.New("error retreiving user details")
 	}
 
 	userExist := cr.userRepo.CheckUserAvailability(userDetails.Email)
 
+	// update with email that does not already exist
 	if userExist {
 		return models.UsersProfileDetails{}, errors.New("user already exist, choose different email")
 	}
-
+	// which all field are not empty (which are provided from the front end should be updated)
 	if userDetails.Email != "" {
 		cr.userRepo.UpdateUserEmail(userDetails.Email, userID)
 	}
@@ -216,7 +224,7 @@ func (cr *userUseCase) UpdatePassword(ctx context.Context, body models.UpdatePas
 	var userID int
 	var ok bool
 	if userID, ok = ctx.Value("userID").(int); !ok {
-		return errors.New("error retreiving user details")
+		return errors.New("error retrieving user details")
 	}
 
 	userPassword, err := cr.userRepo.UserPassword(userID)

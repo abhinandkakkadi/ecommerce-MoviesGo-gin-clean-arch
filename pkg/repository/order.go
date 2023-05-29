@@ -21,13 +21,14 @@ func NewOrderRepository(DB *gorm.DB) interfaces.OrderRepository {
 	}
 }
 
+
 func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, cartItems []models.Cart) (domain.OrderSuccessResponse, error) {
 
-	fmt.Println(cartItems)
 
 	var orderDetails domain.Order
 	var orderItemDetails domain.OrderItem
-
+  
+	// add general order details - that is to be added to orders table
 	id := uuid.New().ID()
 	str := strconv.Itoa(int(id))
 	orderDetails.OrderId = str[:8]
@@ -38,18 +39,21 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 	orderDetails.Approval = false
 	orderDetails.ShipmentStatus = "processing"
 
+	// get grand total iterating through each products in carts
 	for _, c := range cartItems {
 		orderDetails.GrandTotal += c.TotalPrice
 	}
 	cr.DB.Create(&orderDetails)
 	// details being added to the orderItems table - which shows details about the individual products
 	for _, c := range cartItems {
+		// for each order save details of products and associated details and use order_id as foreign key ( for each order multiple product will be there)
 		fmt.Println(c)
 		orderItemDetails.OrderID = orderDetails.OrderId
 		orderItemDetails.ProductID = c.ProductID
 		orderItemDetails.Quantity = int(c.Quantity)
 		orderItemDetails.TotalPrice = c.TotalPrice
 
+		// after creating the order delete all cart items and also update the quantity of the product
 		cr.DB.Omit("id").Create(&orderItemDetails)
 		cr.DB.Exec("delete from carts where user_id = ? and product_id = ?", orderDetails.UserID, c.ProductID)
 		fmt.Println(c.Quantity)
@@ -58,20 +62,18 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 	}
 
 	var orderSuccessResponse domain.OrderSuccessResponse
-
 	cr.DB.Raw("select order_id,shipment_status from orders where order_id = ?", orderDetails.OrderId).Scan(&orderSuccessResponse)
-
 	return orderSuccessResponse, nil
 }
 
 func (cr *orderRepository) GetOrderAddress(userID int) ([]models.FullOrderDetails, error) {
-
+	// details of order created byt his particular user
 	var orderDetails []models.OrderDetails
 	cr.DB.Raw("select order_id,grand_total,shipment_status from orders where user_id = ?", userID).Scan(&orderDetails)
 	fmt.Println(orderDetails)
 
 	var fullOrderDetails []models.FullOrderDetails
-
+	// for each order select all the associated products and their details
 	for _, o := range orderDetails {
 
 		var orderProductDetails []models.OrderProductDetails
@@ -85,7 +87,7 @@ func (cr *orderRepository) GetOrderAddress(userID int) ([]models.FullOrderDetail
 }
 
 func (cr *orderRepository) UserOrderRelationship(orderID string, userID int) (int, error) {
-
+	
 	var testUserID int
 	err := cr.DB.Raw("select user_id from orders where order_id = ?", orderID).Scan(&testUserID).Error
 	if err != nil {

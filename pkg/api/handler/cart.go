@@ -21,7 +21,7 @@ func NewCartHandler(usecase services.CartUseCase) *CartHandler {
 	}
 
 }
-
+// handler to add item to the cart
 func (cr *CartHandler) AddToCart(c *gin.Context) {
 
 	id := c.Param("id")
@@ -50,7 +50,7 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 	})
 
 }
-
+// handler to remove items from the cart
 func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 
 	id := c.Param("id")
@@ -78,6 +78,7 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 	})
 }
 
+// handler to display cart items
 func (cr *CartHandler) DisplayCart(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
@@ -101,6 +102,7 @@ func (cr *CartHandler) DisplayCart(c *gin.Context) {
 	})
 }
 
+// handler to delete all the items inside the cart
 func (cr *CartHandler) EmptyCart(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")

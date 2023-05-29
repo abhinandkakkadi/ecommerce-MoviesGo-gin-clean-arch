@@ -23,7 +23,7 @@ func (cr *productUseCase) ShowAllProducts(page int) ([]models.ProductsBrief, err
 
 	productsBrief, err := cr.productRepo.ShowAllProducts(page)
 
-	// here address is taken so that a copy of each instance is not made while updating
+	// here memory address of each item in productBrief is taken so that a copy of each instance is not made while updating
 	for i := range productsBrief {
 		fmt.Println("the code reached here")
 		p := &productsBrief[i]
@@ -49,7 +49,7 @@ func (cr *productUseCase) ShowIndividualProducts(id string) (models.ProductRespo
 }
 
 func (cr *productUseCase) AddProduct(product models.ProductsReceiver) (models.ProductResponse, error) {
-	// this logic is to add the quantity of product if admin try to add duplicate product
+	// this logic is to add the quantity of product if admin try to add duplicate product (have to work on this in the future)
 	// alreadyPresent,err := cr.productRepo.CheckIfAlreadyPresent(c,product)
 
 	// if err != nil {

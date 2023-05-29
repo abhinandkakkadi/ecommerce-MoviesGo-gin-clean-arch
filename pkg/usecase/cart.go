@@ -20,8 +20,9 @@ func NewCartUseCase(repository interfaces.CartRepository) services.CartUseCase {
 
 }
 
-func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartResponse, error) {
 
+func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartResponse, error) {
+	//  to check whether the product exist
 	ok, err := cr.cartRepository.CheckProduct(product_id)
 	if err != nil {
 		return models.CartResponse{}, err
@@ -36,7 +37,7 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 	if err != nil {
 		return models.CartResponse{}, err
 	}
-
+  // function to get the grand total price
 	cartTotal, err := cr.cartRepository.GetTotalPrice(userID)
 
 	if err != nil {
@@ -52,8 +53,10 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 	return cartResponse, nil
 }
 
+// remove items cart (if a product of multiple quantity is present - item will be removed one by one)
 func (cr *cartUseCase) RemoveFromCart(product_id int, userID int) (models.CartResponse, error) {
 
+	// check the product to be removed exist
 	productExist, err := cr.cartRepository.ProductExist(product_id, userID)
 	if err != nil {
 		return models.CartResponse{}, err
@@ -83,6 +86,7 @@ func (cr *cartUseCase) RemoveFromCart(product_id int, userID int) (models.CartRe
 	return cartResponse, nil
 }
 
+
 func (cr *cartUseCase) DisplayCart(userID int) (models.CartResponse, error) {
 
 	displayCart, err := cr.cartRepository.DisplayCart(userID)
@@ -105,6 +109,7 @@ func (cr *cartUseCase) DisplayCart(userID int) (models.CartResponse, error) {
 
 	return cartResponse, nil
 }
+
 
 func (cr *cartUseCase) EmptyCart(userID int) (models.CartResponse, error) {
 
