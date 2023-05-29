@@ -106,11 +106,11 @@ func (cr *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdm
 
 }
 
-func (cr *adminUseCase) GetUsers(page int) ([]models.UserDetailsResponse, error) {
+func (cr *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
 
 	userDetails, err := cr.adminRepository.GetUsers(page)
 	if err != nil {
-		return []models.UserDetailsResponse{}, err
+		return []models.UserDetailsAtAdmin{}, err
 	}
 
 	return userDetails, nil
@@ -261,5 +261,5 @@ func (cr *adminUseCase) UnBlockUser(id string) error {
 	}
 
 	return nil
-	
+
 }

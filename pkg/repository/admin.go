@@ -52,16 +52,16 @@ func (cr *adminRepository) SignUpHandler(admin models.AdminSignUp) (models.Admin
 }
 
 // Get users details for authenticated admins
-func (cr *adminRepository) GetUsers(page int) ([]models.UserDetailsResponse, error) {
+func (cr *adminRepository) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
 
 	if page == 0 {
 		page = 1
 	}
 	offset := (page - 1) * 2
-	var userDetails []models.UserDetailsResponse
+	var userDetails []models.UserDetailsAtAdmin
 
-	if err := cr.DB.Raw("select id,name,email,phone from users limit ? offset ?", 2, offset).Scan(&userDetails).Error; err != nil {
-		return []models.UserDetailsResponse{}, err
+	if err := cr.DB.Raw("select id,name,email,phone,blocked from users limit ? offset ?", 2, offset).Scan(&userDetails).Error; err != nil {
+		return []models.UserDetailsAtAdmin{}, err
 	}
 
 	return userDetails, nil

@@ -25,12 +25,11 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 		product.POST("/add-product", productHandler.AddProduct)
 		product.DELETE("/delete-product/:id", productHandler.DeleteProduct)
 
-
 		userDetails := router.Group("/users")
 		userDetails.GET("", adminHandler.GetUsers)
 		userDetails.GET("/:page", adminHandler.GetUsers)
-		userDetails.GET("/block-users/:id",adminHandler.BlockUser)
-		userDetails.GET("/unblock-users/:id",adminHandler.UnBlockUser)
+		userDetails.GET("/block-users/:id", adminHandler.BlockUser)
+		userDetails.GET("/unblock-users/:id", adminHandler.UnBlockUser)
 
 		orders := router.Group("/orders")
 		orders.GET("", orderHandler.GetAllOrderDetailsForAdmin)

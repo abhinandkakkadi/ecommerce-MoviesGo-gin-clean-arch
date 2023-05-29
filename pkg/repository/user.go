@@ -210,14 +210,13 @@ func (cr *userDatabase) FindUserAddressByOrderID(orderID string) (models.Address
 	return shipmentAddress, nil
 }
 
-
-func (cr *userDatabase) UserBlockStatus(email string) (bool,error) {
+func (cr *userDatabase) UserBlockStatus(email string) (bool, error) {
 	fmt.Println(email)
 	var isBlocked bool
-	err := cr.DB.Raw("select blocked from users where email = ?",email).Scan(&isBlocked).Error
+	err := cr.DB.Raw("select blocked from users where email = ?", email).Scan(&isBlocked).Error
 	if err != nil {
-		return false,err
+		return false, err
 	}
 	fmt.Println(isBlocked)
-	return isBlocked,nil
+	return isBlocked, nil
 }

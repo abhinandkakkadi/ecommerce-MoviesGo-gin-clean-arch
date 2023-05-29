@@ -79,13 +79,13 @@ func (c *userUseCase) LoginHandler(user models.UserDetails) (models.TokenUsers, 
 		return models.TokenUsers{}, errors.New("the user does not exist")
 	}
 
-	isBlocked,err := c.userRepo.UserBlockStatus(user.Email)
+	isBlocked, err := c.userRepo.UserBlockStatus(user.Email)
 	if err != nil {
-		return models.TokenUsers{},err
+		return models.TokenUsers{}, err
 	}
 
 	if isBlocked {
-		return models.TokenUsers{},errors.New("user is not authorized to login")
+		return models.TokenUsers{}, errors.New("user is not authorized to login")
 	}
 
 	// Get the user details in order to check the password, in this case ( The same function can be reused in future )

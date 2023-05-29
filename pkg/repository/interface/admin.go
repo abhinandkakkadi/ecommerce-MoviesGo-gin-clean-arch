@@ -9,7 +9,7 @@ type AdminRepository interface {
 	LoginHandler(adminDetails domain.Admin) (domain.Admin, error)
 	SignUpHandler(admin models.AdminSignUp) (models.AdminDetailsResponse, error)
 	CheckAdminAvailability(admin models.AdminSignUp) bool
-	GetUsers(page int) ([]models.UserDetailsResponse, error)
+	GetUsers(page int) ([]models.UserDetailsAtAdmin, error)
 	GetGenres() ([]domain.Genre, error)
 	GetDirectors() ([]domain.Directors, error)
 	GetMovieFormat() ([]domain.Movie_Format, error)

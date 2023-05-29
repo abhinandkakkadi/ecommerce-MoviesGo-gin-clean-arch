@@ -8,19 +8,33 @@ type UserDetails struct {
 	ConfirmPassword string `json:"confirmpassword"`
 }
 
+// user details shown after logging in 
 type UserDetailsResponse struct {
 	Id    int    `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
 	Phone string `json:"phone"`
+	
 }
 
+type UserDetailsAtAdmin struct {
+	
+		Id    int    `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+		Phone string `json:"phone"`
+		BlockStatus bool `json:"block_status"`
+	
+}
+
+// show in users profile / also used to update user details
 type UsersProfileDetails struct {
 	Name  string `json:"name"`
 	Email string `json:"email" validate:"email"`
 	Phone string `json:"phone"`
 }
 
+// user details along with embedded token which can be used by the user to access protected routes
 type TokenUsers struct {
 	Users UserDetailsResponse
 	Token string

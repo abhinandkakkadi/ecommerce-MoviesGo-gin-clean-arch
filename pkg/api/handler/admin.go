@@ -222,7 +222,6 @@ func (cr *AdminHandler) BlockUser(c *gin.Context) {
 
 }
 
-
 func (cr *AdminHandler) UnBlockUser(c *gin.Context) {
 
 	id := c.Param("id")
