@@ -8,23 +8,20 @@ type UserDetails struct {
 	ConfirmPassword string `json:"confirmpassword"`
 }
 
-// user details shown after logging in 
+// user details shown after logging in
 type UserDetailsResponse struct {
 	Id    int    `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
 	Phone string `json:"phone"`
-	
 }
 
 type UserDetailsAtAdmin struct {
-	
-		Id    int    `json:"id"`
-		Name  string `json:"name"`
-		Email string `json:"email"`
-		Phone string `json:"phone"`
-		BlockStatus bool `json:"block_status"`
-	
+	Id          int    `json:"id"`
+	Name        string `json:"name"`
+	Email       string `json:"email"`
+	Phone       string `json:"phone"`
+	BlockStatus bool   `json:"block_status"`
 }
 
 // show in users profile / also used to update user details
