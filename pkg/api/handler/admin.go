@@ -221,3 +221,27 @@ func (cr *AdminHandler) BlockUser(c *gin.Context) {
 	})
 
 }
+
+
+func (cr *AdminHandler) UnBlockUser(c *gin.Context) {
+
+	id := c.Param("id")
+	err := cr.adminUseCase.UnBlockUser(id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "user could not be unblocked",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusBadRequest,
+		Message:    "Successfully unblocked the user",
+		Data:       nil,
+		Error:      nil,
+	})
+}

@@ -13,4 +13,5 @@ type AdminUseCase interface {
 	AddCategory(genre models.CategoryUpdate) (domain.CategoryManagement, error)
 	Delete(genre_id string) error
 	BlockUser(id string) error
+	UnBlockUser(id string) error
 }

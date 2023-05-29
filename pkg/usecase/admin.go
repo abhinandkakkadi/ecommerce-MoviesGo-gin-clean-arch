@@ -228,7 +228,7 @@ func (cr *adminUseCase) BlockUser(id string) error {
 	}
 
 	if user.Blocked {
-		user.Blocked = false
+		return errors.New("already blocked")
 	} else {
 		user.Blocked = true
 	}
@@ -240,4 +240,26 @@ func (cr *adminUseCase) BlockUser(id string) error {
 
 	return nil
 
+}
+
+func (cr *adminUseCase) UnBlockUser(id string) error {
+
+	user, err := cr.adminRepository.GetUserByID(id)
+	if err != nil {
+		return err
+	}
+
+	if user.Blocked {
+		user.Blocked = false
+	} else {
+		return errors.New("already unblocked")
+	}
+
+	err = cr.adminRepository.UpdateBlockUserByID(user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+	
 }
