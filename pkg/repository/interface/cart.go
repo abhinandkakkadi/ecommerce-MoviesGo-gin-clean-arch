@@ -10,4 +10,5 @@ type CartRepository interface {
 	GetTotalPrice(userID int) (models.CartTotal, error)
 	GetAllItemsFromCart(userID int) ([]models.Cart, error)
 	CheckProduct(product_id int) (bool, error)
+	ProductExist(product_id int,userID int) (bool,error)
 }

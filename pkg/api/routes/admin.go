@@ -21,6 +21,7 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 		genres.GET("/delete_genre/:id", adminHandler.DeleteGenre)
 
 		product := router.Group("/products")
+		product.GET("",productHandler.SeeAllProductToAdmin)
 		product.POST("/add-product", productHandler.AddProduct)
 		product.DELETE("/delete-product/:id", productHandler.DeleteProduct)
 

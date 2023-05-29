@@ -53,6 +53,16 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 }
 
 func (cr *cartUseCase) RemoveFromCart(product_id int, userID int) (models.CartResponse, error) {
+	
+
+	productExist,err := cr.cartRepository.ProductExist(product_id,userID)
+	if err != nil {
+		return models.CartResponse{},err
+	}
+	if !productExist {
+		return models.CartResponse{},errors.New("the product does not exist in catt")
+	}
+
 
 	updatedCart, err := cr.cartRepository.RemoveFromCart(product_id, userID)
 

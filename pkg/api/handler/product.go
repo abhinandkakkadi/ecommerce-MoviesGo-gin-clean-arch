@@ -46,6 +46,31 @@ func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 }
 
+func (cr*ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
+
+	pageStr := c.Param("page")
+	page, _ := strconv.Atoi(pageStr)
+
+	products, err := cr.productUseCase.ShowAllProducts(page)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Could not retrieve products to admin side",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Successfully Retrieved all products to admin side",
+		Data:       products,
+		Error:      nil,
+	})
+
+}
+
 func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 
 	id := c.Param("id")

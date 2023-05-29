@@ -43,11 +43,12 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 		return []models.Cart{}, err
 	}
 
-	if productQuantity == 0 {
-		return []models.Cart{}, nil
-	}
-	// quantity in carts is equal to quantity in STOCK  -- don't allow to add further products
-	if cartsQuantity == productQuantity {
+	// // if the product is out of stock
+	// if productQuantity == 0 {
+	// 	return []models.Cart{}, nil
+	// }
+	// quantity in carts is equal to quantity in STOCK  -- don't allow to add further products OR product out of stock
+	if cartsQuantity == productQuantity || productQuantity == 0 {
 
 		if err := tx.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error; err != nil {
 			tx.Rollback()
@@ -127,16 +128,17 @@ func (cr *cartRepository) GetTotalPrice(userID int) (models.CartTotal, error) {
 
 func (cr *cartRepository) RemoveFromCart(product_id int, userID int) ([]models.Cart, error) {
 
-	tx := cr.DB.Begin()
+
 
 	var count int
-	if err := tx.Raw("select count(*) from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&count).Error; err != nil {
-		tx.Rollback()
+	if err := cr.DB.Raw("select count(*) from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&count).Error; err != nil {
+		
 		return []models.Cart{}, err
 	}
 
+	
 	if count == 0 {
-		return []models.Cart{}, nil
+			return []models.Cart{}, nil
 	}
 
 	var cartDetails struct {
@@ -145,56 +147,57 @@ func (cr *cartRepository) RemoveFromCart(product_id int, userID int) ([]models.C
 		Price      float64
 	}
 
-	if err := tx.Raw("select quantity,total_price from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&cartDetails).Error; err != nil {
-		tx.Rollback()
+	if err := cr.DB.Raw("select quantity,total_price from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&cartDetails).Error; err != nil {
 		return []models.Cart{}, err
 	}
 
 	cartDetails.Quantity = cartDetails.Quantity - 1
+	
 	if cartDetails.Quantity == 0 {
-		if err := tx.Exec("delete from carts where user_id = ? and product_id = ?", userID, product_id).Error; err != nil {
-			tx.Rollback()
+		fmt.Println("it reached here when i intended")
+		if err := cr.DB.Exec("delete from carts where user_id = ? and product_id = ?", uint(userID), uint(product_id)).Error; err != nil {
+			
 			return []models.Cart{}, err
 		}
+		
 	}
 
-	fmt.Println("quantity and totalPrice = ", cartDetails)
-	if err := tx.Raw("select price from products where id = ?", product_id).Scan(&cartDetails.Price).Error; err != nil {
-		tx.Rollback()
+	if cartDetails.Quantity != 0 {
+		fmt.Println("quantity and totalPrice = ", cartDetails)
+		if err := cr.DB.Raw("select price from products where id = ?", product_id).Scan(&cartDetails.Price).Error; err != nil {
+
 		return []models.Cart{}, err
 	}
 
 	cartDetails.TotalPrice = cartDetails.TotalPrice - cartDetails.Price
 
-	if err := tx.Exec("update carts set quantity = ?,total_price = ? where user_id = ? and product_id = ?", cartDetails.Quantity, cartDetails.TotalPrice, userID, product_id).Error; err != nil {
-		tx.Rollback()
+	if err := cr.DB.Exec("update carts set quantity = ?,total_price = ? where user_id = ? and product_id = ?", cartDetails.Quantity, cartDetails.TotalPrice, userID, product_id).Error; err != nil {
 		return []models.Cart{}, err
 	}
+	}
+
+	
 
 	// if err := cr.DB.Exec("delete from carts where user_id = ? and product_id = ?", userID, product_id).Error; err != nil {
 	// 	return []models.Cart{}, err
 	// }
-
-	if err := tx.Raw("select count(*) from carts where user_id = ? ", userID).Scan(&count).Error; err != nil {
-		tx.Rollback()
+	
+	fmt.Println("in last case does the code reach here")
+	if err := cr.DB.Raw("select count(*) from carts where user_id = ?", userID).Scan(&count).Error; err != nil {
 		return []models.Cart{}, err
 	}
-
+	fmt.Println("this is count ",count,userID)
 	if count == 0 {
+		fmt.Println("in this case here it comes")
 		return []models.Cart{}, nil
 	}
-
+	fmt.Println("in last case does the code reach here")
+	
 	var cartResponse []models.Cart
-
-	if err := tx.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error; err != nil {
-		tx.Rollback()
+	if err := cr.DB.Raw("select carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join products on carts.product_id = products.id where carts.user_id = ?", userID).First(&cartResponse).Error; err != nil {
 		return []models.Cart{}, err
 	}
 
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback()
-		return []models.Cart{}, err
-	}
 
 	return cartResponse, nil
 
@@ -282,4 +285,15 @@ func (cr *cartRepository) CheckProduct(product_id int) (bool, error) {
 	fmt.Println("product count", count, product_id)
 	return count > 0, nil
 
+}
+
+func (cr *cartRepository) ProductExist(product_id int,userID int) (bool,error) {
+
+	var count int
+	err := cr.DB.Raw("select count(*) from carts where user_id = ? and product_id = ?",userID,product_id).Scan(&count).Error
+	if err != nil {
+		return false,err
+	}
+	fmt.Print(count)
+	return count > 0,nil
 }

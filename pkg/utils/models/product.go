@@ -32,6 +32,9 @@ type ProductsBrief struct {
 	Movie_Name     string `json:"movie_name"`
 	Genre          string `json:"genre"`
 	Movie_Language string `json:"movie_language"`
+	Price          float64 `json:"price"`
+	Quantity        int    `json:"quantity"`
+	Product_Status  string  `json:"product_status"`
 }
 
 type CategoryUpdate struct {

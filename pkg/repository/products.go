@@ -26,7 +26,7 @@ func (c *productDatabase) ShowAllProducts(page int) ([]models.ProductsBrief, err
 	offset := (page - 1) * 2
 	var productsBrief []models.ProductsBrief
 	err := c.DB.Limit(1).Raw(`
-		SELECT products.id, products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language
+		SELECT products.id, products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language,products.price,products.quantity
 		FROM products
 		JOIN genres ON products.genre_id = genres.id
 		JOIN movie_languages ON products.language_id = movie_languages.id limit ? offset ?
