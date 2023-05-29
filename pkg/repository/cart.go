@@ -26,6 +26,8 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 	var cartsQuantity int
 	var cartResponse []models.Cart
 
+	// tx := cr.DB.Begin()
+
 	if err := cr.DB.Raw("select count(*) from carts where user_id = ? and  product_id = ?", userID, product_id).Scan(&count).Error; err != nil {
 		return []models.Cart{}, err
 	}
@@ -119,26 +121,37 @@ func (cr *cartRepository) RemoveFromCart(product_id int, userID int) ([]models.C
 		return []models.Cart{}, nil
 	}
 
-	// var quantity int
-	// if err := cr.DB.Raw("select quantity from carts where user_id = ? and product_id = ?",userID,product_id).Scan(&quantity).Error; err != nil {
-	// 	return []models.Cart{},err
-	// }
+	var cartDetails struct {
+		Quantity   int
+		TotalPrice float64
+		Price      float64
+	}
 
-	// quantity = quantity - 1;
-
-	// if quantity == 0 {
-	// 	if err := cr.DB.Exec("delete from carts where user_id = ? and product_id = ?",userID,product_id).Error; err != nil {
-	// 		return []models.Cart{},err
-	// 	}
-	// }
-
-	// if err := cr.DB.Exec("update carts set quantity = ? where user_id = ? and product_id = ?",quantity,userID,product_id).Error; err != nil {
-	// 	return []models.Cart{},err
-	// }
-
-	if err := cr.DB.Exec("delete from carts where user_id = ? and product_id = ?", userID, product_id).Error; err != nil {
+	if err := cr.DB.Raw("select quantity,total_price from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&cartDetails).Error; err != nil {
 		return []models.Cart{}, err
 	}
+
+	cartDetails.Quantity = cartDetails.Quantity - 1
+	if cartDetails.Quantity == 0 {
+		if err := cr.DB.Exec("delete from carts where user_id = ? and product_id = ?", userID, product_id).Error; err != nil {
+			return []models.Cart{}, err
+		}
+	}
+
+	fmt.Println("quantity and totalPrice = ", cartDetails)
+	if err := cr.DB.Raw("select price from products where id = ?", product_id).Scan(&cartDetails.Price).Error; err != nil {
+		return []models.Cart{}, err
+	}
+
+	cartDetails.TotalPrice = cartDetails.TotalPrice - cartDetails.Price
+
+	if err := cr.DB.Exec("update carts set quantity = ?,total_price = ? where user_id = ? and product_id = ?", cartDetails.Quantity, cartDetails.TotalPrice, userID, product_id).Error; err != nil {
+		return []models.Cart{}, err
+	}
+
+	// if err := cr.DB.Exec("delete from carts where user_id = ? and product_id = ?", userID, product_id).Error; err != nil {
+	// 	return []models.Cart{}, err
+	// }
 
 	if err := cr.DB.Raw("select count(*) from carts where user_id = ? ", userID).Scan(&count).Error; err != nil {
 		return []models.Cart{}, err
@@ -164,7 +177,7 @@ func (cr *cartRepository) DisplayCart(userID int) ([]models.Cart, error) {
 	if err := cr.DB.Raw("select count(*) from carts where user_id = ? ", userID).First(&count).Error; err != nil {
 		return []models.Cart{}, err
 	}
-
+	fmt.Println(count)
 	if count == 0 {
 		return []models.Cart{}, nil
 	}
@@ -174,7 +187,7 @@ func (cr *cartRepository) DisplayCart(userID int) ([]models.Cart, error) {
 	if err := cr.DB.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error; err != nil {
 		return []models.Cart{}, err
 	}
-
+	fmt.Println(cartResponse)
 	return cartResponse, nil
 }
 
