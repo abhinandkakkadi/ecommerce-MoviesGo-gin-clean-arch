@@ -24,7 +24,7 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 	var cartResponse []models.Cart
 
 	tx := cr.DB.Begin()
-  var count int
+	var count int
 	if err := tx.Raw("select count(*) from carts where user_id = ? and  product_id = ?", userID, product_id).Scan(&count).Error; err != nil {
 		tx.Rollback()
 		return []models.Cart{}, err
