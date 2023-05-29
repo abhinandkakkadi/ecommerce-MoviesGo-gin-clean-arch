@@ -70,7 +70,7 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusInternalServerError, response.Response{
+	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
 		Error:      nil,
 		Data:       updatedCart,
