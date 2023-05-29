@@ -46,7 +46,7 @@ func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 }
 
-func (cr*ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
+func (cr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 	pageStr := c.Param("page")
 	page, _ := strconv.Atoi(pageStr)

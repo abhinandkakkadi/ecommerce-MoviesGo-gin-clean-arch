@@ -28,13 +28,13 @@ type ProductsReceiver struct {
 }
 
 type ProductsBrief struct {
-	ID             int    `json:"id"`
-	Movie_Name     string `json:"movie_name"`
-	Genre          string `json:"genre"`
-	Movie_Language string `json:"movie_language"`
+	ID             int     `json:"id"`
+	Movie_Name     string  `json:"movie_name"`
+	Genre          string  `json:"genre"`
+	Movie_Language string  `json:"movie_language"`
 	Price          float64 `json:"price"`
-	Quantity        int    `json:"quantity"`
-	Product_Status  string  `json:"product_status"`
+	Quantity       int     `json:"quantity"`
+	Product_Status string  `json:"product_status"`
 }
 
 type CategoryUpdate struct {
