@@ -97,6 +97,38 @@ func (cr *orderRepository) UserOrderRelationship(orderID string, userID int) (in
 
 }
 
+func (cr *orderRepository) GetProductDetailsFromOrders(orderID string) ([]models.OrderProducts,error) {
+	
+	var orderProductDetails []models.OrderProducts
+	if err := cr.DB.Raw("select product_id,quantity from order_items where order_id = ?",orderID).Scan(&orderProductDetails).Error; err != nil {
+		return []models.OrderProducts{},err
+	}
+	fmt.Println(orderProductDetails)
+	return orderProductDetails,nil
+}
+
+func (cr *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error {
+	fmt.Println("the code reached update qunatity")
+	fmt.Println(orderProducts)
+	for _,o := range orderProducts {
+		fmt.Println("quantity = ",o.Quantity,"product: ",o.ProductId)
+		var quantity int
+		if err := cr.DB.Raw("select quantity from products where id = ?",o.ProductId).Scan(&quantity).Error; err != nil {
+			return err
+		}
+		fmt.Println("products quantity = ",quantity)
+
+		o.Quantity += quantity
+		fmt.Println("updated quantity = ",o.Quantity)
+		if err := cr.DB.Exec("update products set quantity = ? where id = ?",o.Quantity,o.ProductId).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
+
+}
+
 func (cr *orderRepository) CancelOrder(orderID string) (string, error) {
 
 	var shipmentStatus string

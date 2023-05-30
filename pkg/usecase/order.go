@@ -67,6 +67,14 @@ func (cr *orderUseCase) CancelOrder(orderID string, userID int) (string, error) 
 		return "", errors.New("the order is not done by this user")
 	}
 
+	orderProducts,err := cr.orderRepository.GetProductDetailsFromOrders(orderID)
+
+	// update the quantity to products since th order is cancelled
+	err = cr.orderRepository.UpdateQuantityOfProduct(orderProducts)
+	if err != nil {
+		return "",err
+	}
+
 	return cr.orderRepository.CancelOrder(orderID)
 
 }

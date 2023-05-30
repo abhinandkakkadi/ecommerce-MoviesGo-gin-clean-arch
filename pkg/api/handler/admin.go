@@ -10,6 +10,7 @@ import (
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/response"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 type AdminHandler struct {
@@ -248,3 +249,56 @@ func (cr *AdminHandler) UnBlockUser(c *gin.Context) {
 		Error:      nil,
 	})
 }
+
+
+
+func (cr *UserHandler) AddNewUsers(c *gin.Context) {
+	fmt.Println("add users")
+	var userDetails models.UserDetails
+  if err := c.BindJSON(&userDetails); err != nil {
+		c.JSON(http.StatusBadRequest,response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message: "could not bind the user details",
+			Data: nil,
+			Error: err,
+		})
+		return
+	}
+
+	// checking whether the data sent by the user has all the correct constraints specified by Users struct
+	err := validator.New().Struct(userDetails)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			response.Response{
+				StatusCode: http.StatusBadRequest,
+				Message:    "constraints not satisfied",
+				Data:       nil,
+				Error:      err.Error(),
+			})
+		return
+	}
+
+	// business logic goes inside this function
+	userCreated, err := cr.userUseCase.UserSignUp(userDetails)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "User could not be created up",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.Response{
+		StatusCode: http.StatusCreated,
+		Message:    "User successfully created",
+		Data:       userCreated,
+		Error:      nil,
+	})
+
+	
+
+
+
+}	

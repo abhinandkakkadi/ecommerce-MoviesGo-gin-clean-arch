@@ -28,10 +28,10 @@ func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.Ca
 
 
 func (c *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
-
+	fmt.Println("add users")
 	// Check whether the user already exist. If yes, show the error message, since this is signUp
 	userExist := c.userRepo.CheckUserAvailability(user.Email)
-
+	fmt.Println("user exists",userExist)
 	if userExist {
 		return models.TokenUsers{}, errors.New("user already exist, sign in")
 	}
@@ -131,6 +131,7 @@ func (cr *userUseCase) AddAddress(address models.AddressInfo, userID int) ([]mod
 func (cr *userUseCase) UpdateAddress(address models.AddressInfo, addressID int) (models.AddressInfoResponse, error) {
 
 	return cr.userRepo.UpdateAddress(address, addressID)
+
 }
 
 // user checkout section
