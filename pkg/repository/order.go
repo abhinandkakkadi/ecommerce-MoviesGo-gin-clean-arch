@@ -21,25 +21,22 @@ func NewOrderRepository(DB *gorm.DB) interfaces.OrderRepository {
 	}
 }
 
-
-func (cr *orderRepository) AddressExist(orderBody models.OrderIncoming) (bool,error) {
-	fmt.Println("user id = ",orderBody.UserID,"address id = ",orderBody.AddressID)
+func (cr *orderRepository) AddressExist(orderBody models.OrderIncoming) (bool, error) {
+	fmt.Println("user id = ", orderBody.UserID, "address id = ", orderBody.AddressID)
 	var count int
-	if err := cr.DB.Raw("select count(*) from addresses where user_id = ? and id = ?",orderBody.UserID,orderBody.AddressID).Scan(&count).Error; err != nil {
-		return false,err
+	if err := cr.DB.Raw("select count(*) from addresses where user_id = ? and id = ?", orderBody.UserID, orderBody.AddressID).Scan(&count).Error; err != nil {
+		return false, err
 	}
 	fmt.Println(count)
-	return count > 0,nil
-	
-}
+	return count > 0, nil
 
+}
 
 func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, cartItems []models.Cart) (domain.OrderSuccessResponse, error) {
 
-
 	var orderDetails domain.Order
 	var orderItemDetails domain.OrderItem
-  
+
 	// add general order details - that is to be added to orders table
 	id := uuid.New().ID()
 	str := strconv.Itoa(int(id))
@@ -99,7 +96,7 @@ func (cr *orderRepository) GetOrderAddress(userID int) ([]models.FullOrderDetail
 }
 
 func (cr *orderRepository) UserOrderRelationship(orderID string, userID int) (int, error) {
-	
+
 	var testUserID int
 	err := cr.DB.Raw("select user_id from orders where order_id = ?", orderID).Scan(&testUserID).Error
 	if err != nil {
@@ -109,30 +106,30 @@ func (cr *orderRepository) UserOrderRelationship(orderID string, userID int) (in
 
 }
 
-func (cr *orderRepository) GetProductDetailsFromOrders(orderID string) ([]models.OrderProducts,error) {
-	
+func (cr *orderRepository) GetProductDetailsFromOrders(orderID string) ([]models.OrderProducts, error) {
+
 	var orderProductDetails []models.OrderProducts
-	if err := cr.DB.Raw("select product_id,quantity from order_items where order_id = ?",orderID).Scan(&orderProductDetails).Error; err != nil {
-		return []models.OrderProducts{},err
+	if err := cr.DB.Raw("select product_id,quantity from order_items where order_id = ?", orderID).Scan(&orderProductDetails).Error; err != nil {
+		return []models.OrderProducts{}, err
 	}
 	fmt.Println(orderProductDetails)
-	return orderProductDetails,nil
+	return orderProductDetails, nil
 }
 
 func (cr *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error {
 	fmt.Println("the code reached update qunatity")
 	fmt.Println(orderProducts)
-	for _,o := range orderProducts {
-		fmt.Println("quantity = ",o.Quantity,"product: ",o.ProductId)
+	for _, o := range orderProducts {
+		fmt.Println("quantity = ", o.Quantity, "product: ", o.ProductId)
 		var quantity int
-		if err := cr.DB.Raw("select quantity from products where id = ?",o.ProductId).Scan(&quantity).Error; err != nil {
+		if err := cr.DB.Raw("select quantity from products where id = ?", o.ProductId).Scan(&quantity).Error; err != nil {
 			return err
 		}
-		fmt.Println("products quantity = ",quantity)
+		fmt.Println("products quantity = ", quantity)
 
 		o.Quantity += quantity
-		fmt.Println("updated quantity = ",o.Quantity)
-		if err := cr.DB.Exec("update products set quantity = ? where id = ?",o.Quantity,o.ProductId).Error; err != nil {
+		fmt.Println("updated quantity = ", o.Quantity)
+		if err := cr.DB.Exec("update products set quantity = ? where id = ?", o.Quantity, o.ProductId).Error; err != nil {
 			return err
 		}
 	}

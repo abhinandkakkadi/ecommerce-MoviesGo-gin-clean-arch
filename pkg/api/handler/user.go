@@ -210,7 +210,7 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 
 }
 
-// checkout section for users after adding items to the cart and adding address 
+// checkout section for users after adding items to the cart and adding address
 func (cr *UserHandler) CheckOut(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")

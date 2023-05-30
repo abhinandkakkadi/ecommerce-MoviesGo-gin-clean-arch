@@ -21,6 +21,7 @@ func NewCartHandler(usecase services.CartUseCase) *CartHandler {
 	}
 
 }
+
 // handler to add item to the cart
 func (cr *CartHandler) AddToCart(c *gin.Context) {
 
@@ -50,6 +51,7 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 	})
 
 }
+
 // handler to remove items from the cart
 func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 

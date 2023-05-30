@@ -54,7 +54,7 @@ func (cr *adminRepository) SignUpHandler(admin models.AdminSignUp) (models.Admin
 
 // Get users details for authenticated admins
 func (cr *adminRepository) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
-	// pagination purpose - 
+	// pagination purpose -
 	if page == 0 {
 		page = 1
 	}

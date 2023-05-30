@@ -31,7 +31,7 @@ func (cr *adminUseCase) LoginHandler(adminDetails domain.Admin) (domain.TokenAdm
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
-	
+
 	// compare password from database and that provided from admins
 	err = bcrypt.CompareHashAndPassword([]byte(adminCompareDetails.Password), []byte(adminDetails.Password))
 	fmt.Println(err)
@@ -46,7 +46,6 @@ func (cr *adminUseCase) LoginHandler(adminDetails domain.Admin) (domain.TokenAdm
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
-
 
 	tokenString, err := helper.GenerateTokenAdmin(adminDetailsResponse)
 
@@ -76,7 +75,7 @@ func (cr *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdm
 		return domain.TokenAdmin{}, err
 	}
 
-	// check whether the admin already exist in the database - 
+	// check whether the admin already exist in the database -
 	userExist := cr.adminRepository.CheckAdminAvailability(admin)
 	if userExist {
 		return domain.TokenAdmin{}, errors.New("admin already exist, sign in")
@@ -113,7 +112,6 @@ func (cr *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdm
 
 }
 
-
 func (cr *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
 
 	userDetails, err := cr.adminRepository.GetUsers(page)
@@ -125,7 +123,7 @@ func (cr *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) 
 
 }
 
-// business logic to get all the category 
+// business logic to get all the category
 func (cr *adminUseCase) GetFullCategory() (domain.CategoryResponse, error) {
 
 	genres, err := cr.adminRepository.GetGenres()
@@ -157,7 +155,7 @@ func (cr *adminUseCase) GetFullCategory() (domain.CategoryResponse, error) {
 
 }
 
-// add new category 
+// add new category
 func (cr *adminUseCase) AddCategory(category models.CategoryUpdate) (domain.CategoryManagement, error) {
 
 	var (

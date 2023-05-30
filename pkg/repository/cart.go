@@ -99,12 +99,12 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 
 		}
 	}
-	// list the cart and return 
+	// list the cart and return
 	if err := tx.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error; err != nil {
 		tx.Rollback()
 		return []models.Cart{}, err
-	}		
-  // commit the transation
+	}
+	// commit the transation
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
 		return []models.Cart{}, err
@@ -141,7 +141,7 @@ func (cr *cartRepository) RemoveFromCart(product_id int, userID int) ([]models.C
 		return []models.Cart{}, err
 	}
 
-	// have to recheck this 
+	// have to recheck this
 	if count == 0 {
 		return []models.Cart{}, errors.New("the product does not exist in the cart")
 	}
@@ -151,7 +151,7 @@ func (cr *cartRepository) RemoveFromCart(product_id int, userID int) ([]models.C
 		TotalPrice float64
 		Price      float64
 	}
-  // select quantity and totalprice = quantity * indiviualproductpriice from carts 
+	// select quantity and totalprice = quantity * indiviualproductpriice from carts
 	if err := cr.DB.Raw("select quantity,total_price from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&cartDetails).Error; err != nil {
 		return []models.Cart{}, err
 	}
@@ -174,7 +174,7 @@ func (cr *cartRepository) RemoveFromCart(product_id int, userID int) ([]models.C
 
 			return []models.Cart{}, err
 		}
-		
+
 		cartDetails.TotalPrice = cartDetails.TotalPrice - cartDetails.Price
 
 		if err := cr.DB.Exec("update carts set quantity = ?,total_price = ? where user_id = ? and product_id = ?", cartDetails.Quantity, cartDetails.TotalPrice, userID, product_id).Error; err != nil {
@@ -192,10 +192,10 @@ func (cr *cartRepository) RemoveFromCart(product_id int, userID int) ([]models.C
 	}
 
 	if count == 0 {
-		
+
 		return []models.Cart{}, nil
 	}
-	
+
 	// if all went right sent back the updated cart details
 	var cartResponse []models.Cart
 	if err := cr.DB.Raw("select carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join products on carts.product_id = products.id where carts.user_id = ?", userID).First(&cartResponse).Error; err != nil {
@@ -205,7 +205,6 @@ func (cr *cartRepository) RemoveFromCart(product_id int, userID int) ([]models.C
 	return cartResponse, nil
 
 }
-
 
 func (cr *cartRepository) DisplayCart(userID int) ([]models.Cart, error) {
 

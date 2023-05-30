@@ -53,6 +53,6 @@ type CombinedOrderDetails struct {
 }
 
 type OrderProducts struct {
-	ProductId   string    `json:"product_id"`
-	Quantity    int       `json:"quantity"`
+	ProductId string `json:"product_id"`
+	Quantity  int    `json:"quantity"`
 }

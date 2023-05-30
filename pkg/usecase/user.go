@@ -26,12 +26,11 @@ func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.Ca
 	}
 }
 
-
 func (c *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
 	fmt.Println("add users")
 	// Check whether the user already exist. If yes, show the error message, since this is signUp
 	userExist := c.userRepo.CheckUserAvailability(user.Email)
-	fmt.Println("user exists",userExist)
+	fmt.Println("user exists", userExist)
 	if userExist {
 		return models.TokenUsers{}, errors.New("user already exist, sign in")
 	}
@@ -143,7 +142,7 @@ func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		return models.CheckoutDetails{}, err
 	}
 
-	// get available payment options 
+	// get available payment options
 	paymentDetails, err := cr.userRepo.GetAllPaymentOption()
 	if err != nil {
 		return models.CheckoutDetails{}, err
@@ -154,7 +153,7 @@ func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}
-	 
+
 	// get grand total of all the product
 	grandTotal, err := cr.cartRepo.GetTotalPrice(userID)
 	if err != nil {
@@ -175,7 +174,6 @@ func (cr *userUseCase) UserDetails(userID int) (models.UsersProfileDetails, erro
 
 }
 
-
 func (cr *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, error) {
 
 	userAddress, err := cr.userRepo.GetAllAddresses(userID)
@@ -189,11 +187,11 @@ func (cr *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, 
 }
 
 func (cr *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails, ctx context.Context) (models.UsersProfileDetails, error) {
-	
+
 	var userID int
 	var ok bool
 	// sent value through context - just for studying purpose - not required in this case
-	if userID, ok = ctx.Value("userID").(int); !ok {  
+	if userID, ok = ctx.Value("userID").(int); !ok {
 		return models.UsersProfileDetails{}, errors.New("error retreiving user details")
 	}
 

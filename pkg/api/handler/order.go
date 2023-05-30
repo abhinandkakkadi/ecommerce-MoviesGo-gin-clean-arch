@@ -20,7 +20,7 @@ func NewOrderHandler(useCase services.OrderUseCase) *OrderHandler {
 	}
 }
 
-//  handler to order items present inside the cart
+// handler to order items present inside the cart
 func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
 	id, _ := c.Get("user_id")
@@ -59,7 +59,7 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
 }
 
-// get order details of all orders to user profile section 
+// get order details of all orders to user profile section
 func (cr *OrderHandler) GetOrderDetails(c *gin.Context) {
 
 	id, _ := c.Get("user_id")
@@ -160,7 +160,7 @@ func (cr *OrderHandler) ApproveOrder(c *gin.Context) {
 
 }
 
-// cancel order by the admin 
+// cancel order by the admin
 func (cr *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 
 	orderID := c.Param("order_id")

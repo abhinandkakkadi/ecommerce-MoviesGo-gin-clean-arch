@@ -27,15 +27,15 @@ func NewOrderUseCase(orderRepo interfaces.OrderRepository, cartRepo interfaces.C
 
 func (cr *orderUseCase) OrderItemsFromCart(orderBody models.OrderIncoming) (domain.OrderSuccessResponse, error) {
 
-	addressExist,err := cr.orderRepository.AddressExist(orderBody)
+	addressExist, err := cr.orderRepository.AddressExist(orderBody)
 	if err != nil {
-		return domain.OrderSuccessResponse{},err
+		return domain.OrderSuccessResponse{}, err
 	}
 
 	if !addressExist {
-		return domain.OrderSuccessResponse{},errors.New("address does not exist")
+		return domain.OrderSuccessResponse{}, errors.New("address does not exist")
 	}
-	// get all items a slice of carts 
+	// get all items a slice of carts
 	cartItems, err := cr.cartRepository.GetAllItemsFromCart(int(orderBody.UserID))
 
 	if err != nil {
@@ -51,7 +51,7 @@ func (cr *orderUseCase) OrderItemsFromCart(orderBody models.OrderIncoming) (doma
 
 }
 
-// get order details 
+// get order details
 func (cr *orderUseCase) GetOrderDetails(userID int) ([]models.FullOrderDetails, error) {
 
 	fullOrderDetails, err := cr.orderRepository.GetOrderAddress(userID)
@@ -75,12 +75,12 @@ func (cr *orderUseCase) CancelOrder(orderID string, userID int) (string, error) 
 		return "", errors.New("the order is not done by this user")
 	}
 
-	orderProducts,err := cr.orderRepository.GetProductDetailsFromOrders(orderID)
+	orderProducts, err := cr.orderRepository.GetProductDetailsFromOrders(orderID)
 
 	// update the quantity to products since th order is cancelled
 	err = cr.orderRepository.UpdateQuantityOfProduct(orderProducts)
 	if err != nil {
-		return "",err
+		return "", err
 	}
 
 	return cr.orderRepository.CancelOrder(orderID)
@@ -102,7 +102,6 @@ func (cr *orderUseCase) GetAllOrderDetailsForAdmin() ([]models.CombinedOrderDeta
 
 	var allCombinedOrderDetails []models.CombinedOrderDetails
 
-
 	// we will take the order details from orders table,  and for each order we combine it with the corresponding user details and address of that particular user that made the order
 	for _, o := range orderDetails {
 
@@ -121,15 +120,13 @@ func (cr *orderUseCase) GetAllOrderDetailsForAdmin() ([]models.CombinedOrderDeta
 		if err != nil {
 			return []models.CombinedOrderDetails{}, err
 		}
-		// combine all of these details and append it to a slice 
+		// combine all of these details and append it to a slice
 		allCombinedOrderDetails = append(allCombinedOrderDetails, combinedOrderDetails)
 
 	}
 
 	return allCombinedOrderDetails, nil
 }
-
-
 
 func (cr *orderUseCase) ApproveOrder(orderID string) (string, error) {
 

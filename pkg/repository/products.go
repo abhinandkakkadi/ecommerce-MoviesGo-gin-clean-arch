@@ -144,7 +144,6 @@ func (cr *productDatabase) AddProduct(product models.ProductsReceiver) (models.P
 
 }
 
-
 func (cr *productDatabase) DeleteProduct(product_id string) error {
 
 	id, _ := strconv.Atoi(product_id)

@@ -132,7 +132,7 @@ func (cr *ProductHandler) AddProduct(c *gin.Context) {
 
 }
 
-// handler to delete an existing product by admin 
+// handler to delete an existing product by admin
 func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 
 	product_id := c.Param("id")

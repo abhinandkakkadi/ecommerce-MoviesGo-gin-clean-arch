@@ -27,7 +27,7 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 
 		userDetails := router.Group("/users")
 		userDetails.GET("", adminHandler.GetUsers)
-		userDetails.POST("/add-users",userHandler.AddNewUsers)
+		userDetails.POST("/add-users", userHandler.AddNewUsers)
 		userDetails.GET("/:page", adminHandler.GetUsers)
 		userDetails.GET("/block-users/:id", adminHandler.BlockUser)
 		userDetails.GET("/unblock-users/:id", adminHandler.UnBlockUser)

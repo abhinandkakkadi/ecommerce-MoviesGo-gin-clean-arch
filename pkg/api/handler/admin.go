@@ -33,7 +33,7 @@ func NewAdminHandler(usecase services.AdminUseCase) *AdminHandler {
 // @Success 200 {object} AdminResponse
 // @Failure 400 {object} ErrorResponse
 // @Router /admin/login [post]
-func (cr *AdminHandler) LoginHandler(c *gin.Context) {  // login handler for the admin
+func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the admin
 
 	// var adminDetails models.AdminLogin
 	var adminDetails domain.Admin
@@ -67,6 +67,7 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) {  // login handler for the
 	})
 
 }
+
 // signup handler for admin
 func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 
@@ -100,7 +101,7 @@ func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 
 }
 
-// handler to get user details 
+// handler to get user details
 func (cr *AdminHandler) GetUsers(c *gin.Context) {
 
 	pageStr := c.Param("page")
@@ -124,6 +125,7 @@ func (cr *AdminHandler) GetUsers(c *gin.Context) {
 	})
 
 }
+
 // handler to get teh categories (have to rename it as GetCategory)
 func (cr *AdminHandler) GetGenres(c *gin.Context) {
 
@@ -202,6 +204,7 @@ func (cr *AdminHandler) DeleteGenre(c *gin.Context) {
 	})
 
 }
+
 // handler to block the user
 func (cr *AdminHandler) BlockUser(c *gin.Context) {
 
@@ -250,17 +253,15 @@ func (cr *AdminHandler) UnBlockUser(c *gin.Context) {
 	})
 }
 
-
-
 func (cr *UserHandler) AddNewUsers(c *gin.Context) {
 	fmt.Println("add users")
 	var userDetails models.UserDetails
-  if err := c.BindJSON(&userDetails); err != nil {
-		c.JSON(http.StatusBadRequest,response.Response{
+	if err := c.BindJSON(&userDetails); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
-			Message: "could not bind the user details",
-			Data: nil,
-			Error: err,
+			Message:    "could not bind the user details",
+			Data:       nil,
+			Error:      err,
 		})
 		return
 	}
@@ -297,8 +298,4 @@ func (cr *UserHandler) AddNewUsers(c *gin.Context) {
 		Error:      nil,
 	})
 
-	
-
-
-
-}	
+}
