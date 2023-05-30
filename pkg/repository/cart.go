@@ -48,6 +48,18 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 	// if productQuantity == 0 {
 	// 	return []models.Cart{}, nil
 	// }
+
+	// if the cart is empty and the product we trying to add is out of stock
+	var itemsPresentInCart int
+	if err := cr.DB.Raw("select count(*) from carts where user_id = ?", userID).Scan(&itemsPresentInCart).Error; err != nil {
+		return []models.Cart{}, err
+	}
+
+	if itemsPresentInCart == 0 && productQuantity == 0 {
+
+		return []models.Cart{}, nil
+	}
+
 	// quantity in carts is equal to quantity in STOCK  -- don't allow to add further products OR product out of stock  -- or if prodctQuanity = 0 - which means the item is out of stock
 	if cartsQuantity == productQuantity || productQuantity == 0 {
 

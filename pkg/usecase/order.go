@@ -76,6 +76,9 @@ func (cr *orderUseCase) CancelOrder(orderID string, userID int) (string, error) 
 	}
 
 	orderProducts, err := cr.orderRepository.GetProductDetailsFromOrders(orderID)
+	if err != nil {
+		return "",err
+	}
 
 	// update the quantity to products since th order is cancelled
 	err = cr.orderRepository.UpdateQuantityOfProduct(orderProducts)
@@ -88,6 +91,17 @@ func (cr *orderUseCase) CancelOrder(orderID string, userID int) (string, error) 
 }
 
 func (cr *orderUseCase) CancelOrderFromAdminSide(orderID string) (string, error) {
+
+	orderProducts, err := cr.orderRepository.GetProductDetailsFromOrders(orderID)
+	if err != nil {
+		return "",err
+	}
+
+	// update the quantity to products since th order is cancelled
+	err = cr.orderRepository.UpdateQuantityOfProduct(orderProducts)
+	if err != nil {
+		return "", err
+	}
 
 	return cr.orderRepository.CancelOrder(orderID)
 
