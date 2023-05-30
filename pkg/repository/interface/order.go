@@ -7,6 +7,7 @@ import (
 
 type OrderRepository interface {
 	OrderItemsFromCart(orderBody models.OrderIncoming, cartItems []models.Cart) (domain.OrderSuccessResponse, error)
+	AddressExist(orderBody models.OrderIncoming) (bool,error)
 	GetOrderAddress(userID int) ([]models.FullOrderDetails, error)
 	CancelOrder(orderID string) (string, error)
 	GetProductDetailsFromOrders(orderID string) ([]models.OrderProducts,error) 

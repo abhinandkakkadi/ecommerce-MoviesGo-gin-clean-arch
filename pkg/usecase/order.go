@@ -27,6 +27,14 @@ func NewOrderUseCase(orderRepo interfaces.OrderRepository, cartRepo interfaces.C
 
 func (cr *orderUseCase) OrderItemsFromCart(orderBody models.OrderIncoming) (domain.OrderSuccessResponse, error) {
 
+	addressExist,err := cr.orderRepository.AddressExist(orderBody)
+	if err != nil {
+		return domain.OrderSuccessResponse{},err
+	}
+
+	if !addressExist {
+		return domain.OrderSuccessResponse{},errors.New("address does not exist")
+	}
 	// get all items a slice of carts 
 	cartItems, err := cr.cartRepository.GetAllItemsFromCart(int(orderBody.UserID))
 
