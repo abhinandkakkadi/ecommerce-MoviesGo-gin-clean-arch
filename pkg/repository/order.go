@@ -75,10 +75,15 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 	return orderSuccessResponse, nil
 }
 
-func (cr *orderRepository) GetOrderAddress(userID int) ([]models.FullOrderDetails, error) {
+func (cr *orderRepository) GetOrderDetails(userID int,page int) ([]models.FullOrderDetails, error) {
 	// details of order created byt his particular user
+	if page == 0 {
+		page = 1
+	}
+	offset := (page - 1) * 2
+	
 	var orderDetails []models.OrderDetails
-	cr.DB.Raw("select order_id,grand_total,shipment_status from orders where user_id = ?", userID).Scan(&orderDetails)
+	cr.DB.Raw("select order_id,grand_total,shipment_status from orders where user_id = ? limit ? offset ? ", userID,2,offset).Scan(&orderDetails)
 	fmt.Println(orderDetails)
 
 	var fullOrderDetails []models.FullOrderDetails
@@ -166,10 +171,14 @@ func (cr *orderRepository) CancelOrder(orderID string) (string, error) {
 	return "Order successfully cancelled", nil
 }
 
-func (cr *orderRepository) GetOrderDetailsBrief() ([]models.OrderDetails, error) {
+func (cr *orderRepository) GetOrderDetailsBrief(page int) ([]models.OrderDetails, error) {
 
+	if page == 0 {
+		page = 1
+	}
+	offset := (page - 1) * 2
 	var orderDetails []models.OrderDetails
-	err := cr.DB.Raw("select order_id,grand_total,shipment_status from orders").Scan(&orderDetails).Error
+	err := cr.DB.Raw("select order_id,grand_total,shipment_status from orders limit ? offset ?",2,offset).Scan(&orderDetails).Error
 	if err != nil {
 		return []models.OrderDetails{}, nil
 	}

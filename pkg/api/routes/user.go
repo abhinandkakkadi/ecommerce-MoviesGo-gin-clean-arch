@@ -41,7 +41,13 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			users.PUT("", userHandler.UpdateUserDetails)
 			users.GET("/address", userHandler.GetAllAddress)
 			users.POST("/address", userHandler.AddAddress)
-			users.GET("/orders", orderHandler.GetOrderDetails)
+			orders := users.Group("orders")
+			{
+				orders.GET("",orderHandler.GetOrderDetails)
+				orders.GET("/:page", orderHandler.GetOrderDetails)
+			}
+			
+			
 			users.PUT("/cancel-order/:id", orderHandler.CancelOrder)
 			users.PUT("/update-password", userHandler.UpdatePassword)
 

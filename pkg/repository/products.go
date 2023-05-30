@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strconv"
 
-	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"gorm.io/gorm"
@@ -80,24 +79,20 @@ func (c *productDatabase) ShowIndividualProducts(id string) (models.ProductRespo
 
 }
 
-func (cr *productDatabase) UpdateQuantity(product domain.Products) error {
+func (cr *productDatabase) UpdateQuantity(productID int, quantity int) error {
 
-	var intialQuantity int
-	err := cr.DB.Raw("select quantity from products where movie_name = ? and format_id = ?", product.MovieName, product.FormatID).Scan(&intialQuantity).Error
-
+	var currentQuantity int
+	err := cr.DB.Raw("select quantity from products where id = ?",productID).Scan(&currentQuantity).Error
 	if err != nil {
 		return err
 	}
-
-	finalQuantity := intialQuantity + product.Quantity
-	err = cr.DB.Raw("update from products set quantity = ? ", finalQuantity).Error
-
+	finalQuantity := currentQuantity + quantity
+	err = cr.DB.Exec("update products set quantity = ? where id = ?",finalQuantity,productID).Error
 	if err != nil {
 		return err
 	}
-
 	return nil
-
+	
 }
 
 func (cr *productDatabase) AddProduct(product models.ProductsReceiver) (models.ProductResponse, error) {

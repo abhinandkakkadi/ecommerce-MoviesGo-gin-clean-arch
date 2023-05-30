@@ -9,4 +9,6 @@ type ProductUseCase interface {
 	ShowIndividualProducts(id string) (models.ProductResponse, error)
 	AddProduct(product models.ProductsReceiver) (models.ProductResponse, error)
 	DeleteProduct(product_id string) error
+	UpdateProduct(productID int,quantity int) error
+	
 }

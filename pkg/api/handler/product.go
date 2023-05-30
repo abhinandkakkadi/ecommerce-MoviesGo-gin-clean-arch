@@ -155,3 +155,43 @@ func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 	})
 
 }
+
+
+func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
+
+	
+	type product struct {
+		Quantity   int   `json:"quantity"`
+		ProductID  int `json:"product-id"`
+	}
+	var p product
+	
+	if err := c.BindJSON(&p); err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	err := cr.productUseCase.UpdateProduct(p.ProductID,p.Quantity)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "could not update the product",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusBadRequest,
+		Message:    "Successfully updated the item",
+		Data:       nil,
+		Error:      nil,
+	})
+
+}

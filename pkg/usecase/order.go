@@ -52,9 +52,9 @@ func (cr *orderUseCase) OrderItemsFromCart(orderBody models.OrderIncoming) (doma
 }
 
 // get order details
-func (cr *orderUseCase) GetOrderDetails(userID int) ([]models.FullOrderDetails, error) {
+func (cr *orderUseCase) GetOrderDetails(userID int,page int) ([]models.FullOrderDetails, error) {
 
-	fullOrderDetails, err := cr.orderRepository.GetOrderAddress(userID)
+	fullOrderDetails, err := cr.orderRepository.GetOrderDetails(userID,page)
 	if err != nil {
 		return []models.FullOrderDetails{}, err
 	}
@@ -107,9 +107,9 @@ func (cr *orderUseCase) CancelOrderFromAdminSide(orderID string) (string, error)
 
 }
 
-func (cr *orderUseCase) GetAllOrderDetailsForAdmin() ([]models.CombinedOrderDetails, error) {
+func (cr *orderUseCase) GetAllOrderDetailsForAdmin(page int) ([]models.CombinedOrderDetails, error) {
 
-	orderDetails, err := cr.orderRepository.GetOrderDetailsBrief()
+	orderDetails, err := cr.orderRepository.GetOrderDetailsBrief(page)
 	if err != nil {
 		return []models.CombinedOrderDetails{}, err
 	}

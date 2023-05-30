@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	models "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
@@ -61,11 +62,13 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
 // get order details of all orders to user profile section
 func (cr *OrderHandler) GetOrderDetails(c *gin.Context) {
-
+	
+	pageStr := c.Param("page")
+	page, _ := strconv.Atoi(pageStr)
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
-	fullOrderDetails, err := cr.orderUseCase.GetOrderDetails(userID)
+	fullOrderDetails, err := cr.orderUseCase.GetOrderDetails(userID,page)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -116,7 +119,9 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 // handler to get order details at admin side
 func (cr *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 
-	allOrderDetails, err := cr.orderUseCase.GetAllOrderDetailsForAdmin()
+	pageStr := c.Param("page")
+	page, _ := strconv.Atoi(pageStr)
+	allOrderDetails, err := cr.orderUseCase.GetAllOrderDetailsForAdmin(page)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
