@@ -2,6 +2,8 @@ package domain
 
 import (
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type PaymentMethod struct {
@@ -38,3 +40,17 @@ type OrderSuccessResponse struct {
 	OrderID        string `json:"order_id"`
 	ShipmentStatus string `json:"order_status"`
 }
+
+type Charge struct {
+	gorm.Model
+	OrderID  string `json:"order_id"`
+	Email string `json:"email"`
+	GrandTotal      float64 `json:"grand_total"`
+}
+
+func (c *Charge) TableName() string {
+	return "charge"
+
+}
+
+

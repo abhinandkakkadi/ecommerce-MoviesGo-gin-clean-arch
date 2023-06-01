@@ -17,4 +17,7 @@ type OrderRepository interface {
 	GetShipmentStatus(orderID string) (string, error)
 	ApproveOrder(orderID string) error
 	CheckOrderID(orderID string) (bool, error)
+
+  SavePayment(charge domain.Charge) error
+	GetPaymentDetails(OrderID string) (domain.Charge,error)
 }

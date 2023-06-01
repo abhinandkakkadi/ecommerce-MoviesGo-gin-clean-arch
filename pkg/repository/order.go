@@ -218,3 +218,23 @@ func (cr *orderRepository) ApproveOrder(orderID string) error {
 	}
 	return nil
 }
+
+
+func (cr *orderRepository) SavePayment(charge domain.Charge) error {
+	if err := cr.DB.Create(&charge).Error; err != nil {
+		return err
+	}
+	return nil
+
+}
+
+
+func (cr *orderRepository) GetPaymentDetails(OrderID string) (domain.Charge,error) {
+
+	var paymentDetails domain.Charge
+	if err := cr.DB.Raw("select orders.order_id,orders.grand_total,users.email from orders inner join users on orders.user_id = users.id where order_id = ?",OrderID).Scan(&paymentDetails).Error; err != nil {
+		return domain.Charge{},err
+	}	
+	// fmt.Println("amount no problem",productDetails)
+	return paymentDetails,nil
+}
