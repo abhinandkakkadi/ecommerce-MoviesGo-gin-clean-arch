@@ -17,4 +17,7 @@ type UserUseCase interface {
 	GetAllAddress(userID int) ([]models.AddressInfoResponse, error)
 	UpdateUserDetails(body models.UsersProfileDetails, ctx context.Context) (models.UsersProfileDetails, error)
 	UpdatePassword(ctx context.Context, body models.UpdatePassword) error
+	AddToWishList(productID int,userID int) error
+	GetWishList(userID int) ([]models.WishListResponse,error)
+	RemoveFromWishList(productID int,userID int) error
 }

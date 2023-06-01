@@ -221,3 +221,50 @@ func (cr *userDatabase) UserBlockStatus(email string) (bool, error) {
 	fmt.Println(isBlocked)
 	return isBlocked, nil
 }
+
+
+func (cr *userDatabase) ProductExistInWishList(productID int,userID int) (bool,error) {
+
+	var count int
+	err := cr.DB.Raw("select count(*) from wish_lists where user_id = ? and product_id = ? ",userID,productID).Scan(&count).Error
+  if err != nil {
+    return false,errors.New("error checking user product already present")
+  }
+
+	return count > 0,nil
+
+}
+
+
+func (cr *userDatabase) AddToWishList(userID int,productID int) error {
+
+	err := cr.DB.Exec("insert into wish_lists (user_id,product_id) values (?, ?)",userID,productID).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (cr *userDatabase) GetWishList(userID int) ([]models.WishListResponse,error) {
+
+	var wishList []models.WishListResponse
+	err := cr.DB.Raw("select products.id as product_id, products.movie_name as product_name,products.price as product_price from products inner join wish_lists on products.id = wish_lists.product_id where wish_lists.user_id = ? ",userID).Scan(&wishList).Error
+  if err != nil {
+    return []models.WishListResponse{},err
+  }
+
+	return wishList,nil
+
+}
+
+func (cr *userDatabase) RemoveFromWishList(userID int,productID int) error {
+
+	err := cr.DB.Exec("delete from wish_lists where user_id = ? and product_id = ?",userID,productID).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}

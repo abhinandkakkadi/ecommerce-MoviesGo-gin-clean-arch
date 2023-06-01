@@ -53,6 +53,13 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 
 		}
 
+		whishlist := router.Group("wishlist")
+		{
+			whishlist.GET("",userHandler.GetWishList)
+			whishlist.GET("/add/:id",userHandler.AddToWishList)
+			whishlist.DELETE("/remove/:id",userHandler.RemoveFromWishList)
+		}
+
 		router.GET("/checkout", userHandler.CheckOut)
 
 		router.POST("/order", orderHandler.OrderItemsFromCart)

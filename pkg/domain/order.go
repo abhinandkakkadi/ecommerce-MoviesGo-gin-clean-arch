@@ -22,8 +22,12 @@ type Order struct {
 	PaymentMethodID uint          `json:"paymentmethod_id"`
 	PaymentMethod   PaymentMethod `json:"-" gorm:"foreignkey:PaymentMethodID"`
 	GrandTotal      float64       `json:"grand_total"`
+	FinalPrice  	float64     	  `json:"discount_price"`
 	ShipmentStatus  string        `json:"status"`
 	Approval        bool          `json:"approval"`
+	CouponID        uint          `json:"coupon_id"`
+	Coupons         Coupons       `json:"-" gorm:"foreignkey:CouponID"`
+
 }
 
 type OrderItem struct {

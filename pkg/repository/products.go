@@ -157,3 +157,15 @@ func (cr *productDatabase) DeleteProduct(product_id string) error {
 	return nil
 
 }
+
+
+func (cr *productDatabase) DoesProductExist(productID int) (bool,error) {
+
+	var count int
+	err := cr.DB.Raw("select count(*) from products where id = ?",productID).Scan(&count).Error
+	if err != nil {
+		return false,err
+	}
+
+	return count > 0,nil
+}

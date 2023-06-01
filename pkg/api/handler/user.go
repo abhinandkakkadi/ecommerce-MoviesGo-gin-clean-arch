@@ -367,3 +367,102 @@ func (cr *UserHandler) UpdatePassword(c *gin.Context) {
 		Error:      nil,
 	})
 }
+
+
+func (cr *UserHandler) AddToWishList(c *gin.Context) {
+
+	userID,_ := c.Get("user_id")
+	id := c.Param("id")
+	productID,err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "product id is in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	err = cr.userUseCase.AddToWishList(productID,userID.(int))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "failed to item to the wishlist",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "SuccessFully added product to the wishlist",
+		Data:       nil,
+		Error:      nil,
+	})
+
+
+
+}
+
+func (cr *UserHandler) GetWishList(c *gin.Context) {
+
+	userID,_ := c.Get("user_id")
+	wishList,err := cr.userUseCase.GetWishList(userID.(int))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "failed to retrieve wishlist details",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "SuccessFully retrieved wishlist",
+		Data:       wishList,
+		Error:      nil,
+	})
+
+
+
+}
+
+
+func (cr *UserHandler) RemoveFromWishList(c *gin.Context) {
+
+	userID,_ := c.Get("user_id")
+	id := c.Param("id")
+	productID,err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "product id is in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	err = cr.userUseCase.RemoveFromWishList(productID,userID.(int))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "failed to remove item from wishlist",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "SuccessFully deleted product from wishlist",
+		Data:       nil,
+		Error:      nil,
+	})
+
+}

@@ -23,4 +23,8 @@ type UserRepository interface {
 	UserPassword(userID int) (string, error)
 	FindUserByOrderID(orderID string) (models.UsersProfileDetails, error)
 	FindUserAddressByOrderID(orderID string) (models.AddressInfo, error)
+	AddToWishList(userID int,productID int) error
+	GetWishList(userID int) ([]models.WishListResponse,error)
+	ProductExistInWishList(productID int,userId int) (bool,error)
+	RemoveFromWishList(userID int,productID int) error
 }

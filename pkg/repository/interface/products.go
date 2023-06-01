@@ -11,4 +11,5 @@ type ProductRepository interface {
 	UpdateQuantity(productID int,quantity int) error
 	AddProduct(product models.ProductsReceiver) (models.ProductResponse, error)
 	DeleteProduct(product_id string) error
+	DoesProductExist(productID int) (bool,error)
 }
