@@ -23,16 +23,16 @@ func NewAdminHandler(usecase services.AdminUseCase) *AdminHandler {
 	}
 }
 
-// LoginHandler handles the login functionality for admin
-// @Summary Admin login
-// @Description Authenticates an admin
+// LoginHandler handles the login request for the admin.
+// @Summary Login Handler for Admins
+// @Description Authenticate an admin and provide JWT for protected routes
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param adminDetails body AdminRequest true "Admin credentials"
-// @Success 200 {object} AdminResponse
-// @Failure 400 {object} ErrorResponse
-// @Router /admin/login [post]
+// @Param adminDetails body domain.Admin true "New Admin Details"
+// @Success 200 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Router /admin/adminlogin [post]
 func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the admin
 
 	// var adminDetails models.AdminLogin
@@ -68,7 +68,18 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 
 }
 
-// signup handler for admin
+
+// SignUpHandler handles the signup request for admin users
+// @Summary Signup Handler for Admins
+// @ID signup-admin
+// @Description Register a new admin user
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param admin body models.AdminSignUp true "New Admin Details"
+// @Success 200 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Router /admin/adminsignup [post]
 func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 
 	var admin models.AdminSignUp
@@ -101,7 +112,17 @@ func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 
 }
 
-// handler to get user details
+// @Summary Get Users Handler for Admins
+// @ID get-users
+// @Description Retrieve a list of users
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param page path int true "Page number"
+// @Security ApiKeyAuth
+// @Success 200 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /admin/users/{page} [get]
 func (cr *AdminHandler) GetUsers(c *gin.Context) {
 
 	pageStr := c.Param("page")
@@ -126,7 +147,16 @@ func (cr *AdminHandler) GetUsers(c *gin.Context) {
 
 }
 
-// handler to get teh categories (have to rename it as GetCategory)
+// @Summary Get Genre details to the admin side
+// @ID get-genres
+// @Description Get details of all the above genres
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /admin/genres [get]
 func (cr *AdminHandler) GetGenres(c *gin.Context) {
 
 	genres, err := cr.adminUseCase.GetFullCategory()
@@ -148,7 +178,16 @@ func (cr *AdminHandler) GetGenres(c *gin.Context) {
 	})
 }
 
-// handler to add new category (genres,language,directors,movie formats)
+// @Summary Add a new Category for movies
+// @ID add-category
+// @Description Add new Category
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /admin/genres/add_genre [post]
 func (cr *AdminHandler) AddCategory(c *gin.Context) {
 
 	var category models.CategoryUpdate
@@ -205,7 +244,16 @@ func (cr *AdminHandler) DeleteGenre(c *gin.Context) {
 
 }
 
-// handler to block the user
+// @Summary Block a user using id
+// @ID block-user
+// @Description Block a normal user
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /admin/users/block-users/{id} [get]
 func (cr *AdminHandler) BlockUser(c *gin.Context) {
 
 	id := c.Param("id")
@@ -229,7 +277,16 @@ func (cr *AdminHandler) BlockUser(c *gin.Context) {
 
 }
 
-// handler to unblock the user
+// @Summary UnBlock a user using id
+// @ID unblock-user
+// @Description Unblock user using id
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /admin/users/unblock-users/{id} [get]
 func (cr *AdminHandler) UnBlockUser(c *gin.Context) {
 
 	id := c.Param("id")

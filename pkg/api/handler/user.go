@@ -172,7 +172,16 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 
 	id := c.Param("id")
-	addressId, _ := strconv.Atoi(id)
+	addressId, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "address id not in the right format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
 	userID, _ := c.Get("user_id")
 	user_id := userID.(int)
 	var address models.AddressInfo

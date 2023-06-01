@@ -1,0 +1,303 @@
+definitions:
+  domain.Admin:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  models.AdminSignUp:
+    properties:
+      confirmpassword:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      error: {}
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /admin/adminlogin:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate an admin and provide JWT for protected routes
+      parameters:
+      - description: New Admin Details
+        in: body
+        name: adminDetails
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Admin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Login Handler for Admins
+      tags:
+      - Admin
+  /admin/adminsignup:
+    post:
+      consumes:
+      - application/json
+      description: Register a new admin user
+      operationId: signup-admin
+      parameters:
+      - description: New Admin Details
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminSignUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Signup Handler for Admins
+      tags:
+      - Admin
+  /admin/genres:
+    get:
+      consumes:
+      - application/json
+      description: Get details of all the above genres
+      operationId: get-genres
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Genre details to the admin side
+      tags:
+      - Admin
+  /admin/genres/add_genre:
+    post:
+      consumes:
+      - application/json
+      description: Add new Category
+      operationId: add-category
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Add a new Category for movies
+      tags:
+      - Admin
+  /admin/users/{page}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of users
+      operationId: get-users
+      parameters:
+      - description: Page number
+        in: path
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Users Handler for Admins
+      tags:
+      - Admin
+  /admin/users/block-users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Block a normal user
+      operationId: block-user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Block a user using id
+      tags:
+      - Admin
+  /admin/users/unblock-users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Unblock user using id
+      operationId: unblock-user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: UnBlock a user using id
+      tags:
+      - Admin
+  /cart:
+    delete:
+      consumes:
+      - application/json
+      description: Delete all items from the cart
+      operationId: empty-cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - bearerAuth: []
+      summary: Delete all items from the cart
+      tags:
+      - Cart
+    get:
+      consumes:
+      - application/json
+      description: Display cart items
+      operationId: display-cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - bearerAuth: []
+      summary: Display cart items
+      tags:
+      - Cart
+  /cart/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove items from the cart
+      operationId: remove-from-cart
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - bearerAuth: []
+      summary: Remove items from the cart
+      tags:
+      - Cart
+    post:
+      consumes:
+      - application/json
+      description: Add a product to the user's cart
+      operationId: add-to-cart
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "402":
+          description: Payment Required
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - bearerAuth: []
+      summary: Add a product to the cart
+      tags:
+      - Cart
+swagger: "2.0"
