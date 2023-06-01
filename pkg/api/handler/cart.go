@@ -134,7 +134,7 @@ func (cr *CartHandler) DisplayCart(c *gin.Context) {
 	})
 }
 
-/// @Summary Delete all items from the cart
+// / @Summary Delete all items from the cart
 // @ID empty-cart
 // @Description Delete all items from the cart
 // @Tags Cart

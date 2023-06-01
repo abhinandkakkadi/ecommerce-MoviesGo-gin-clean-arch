@@ -14,10 +14,10 @@ type productUseCase struct {
 	cartRepo    interfaces.CartRepository
 }
 
-func NewProductUseCase(repo interfaces.ProductRepository,cartRepo interfaces.CartRepository) services.ProductUseCase {
+func NewProductUseCase(repo interfaces.ProductRepository, cartRepo interfaces.CartRepository) services.ProductUseCase {
 	return &productUseCase{
 		productRepo: repo,
-		cartRepo: cartRepo,
+		cartRepo:    cartRepo,
 	}
 }
 
@@ -88,8 +88,7 @@ func (cr *productUseCase) DeleteProduct(product_id string) error {
 
 }
 
-
-func (cr *productUseCase) UpdateProduct(productID int,quantity int) error {
+func (cr *productUseCase) UpdateProduct(productID int, quantity int) error {
 
 	ok, err := cr.cartRepo.CheckProduct(productID)
 	if err != nil {
@@ -100,6 +99,6 @@ func (cr *productUseCase) UpdateProduct(productID int,quantity int) error {
 		return errors.New("error does not exist")
 	}
 
-	return cr.productRepo.UpdateQuantity(productID,quantity)
-	
+	return cr.productRepo.UpdateQuantity(productID, quantity)
+
 }

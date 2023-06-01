@@ -47,45 +47,45 @@ func (cr *orderUseCase) OrderItemsFromCart(orderBody models.OrderIncoming) (doma
 	if err != nil {
 		return domain.OrderSuccessResponse{}, nil
 	}
-	fmt.Println("order id ",orderSuccessResponse.OrderID)
+	fmt.Println("order id ", orderSuccessResponse.OrderID)
 	// if payment is via card
 	var paymentDetails domain.Charge
 	if orderBody.PaymentID == 2 {
-		paymentDetails,err = cr.orderRepository.GetPaymentDetails(orderSuccessResponse.OrderID)
+		paymentDetails, err = cr.orderRepository.GetPaymentDetails(orderSuccessResponse.OrderID)
 		if err != nil {
-			return domain.OrderSuccessResponse{},err
+			return domain.OrderSuccessResponse{}, err
 		}
 	}
-	fmt.Println("order id ",orderSuccessResponse.OrderID)
+	fmt.Println("order id ", orderSuccessResponse.OrderID)
 	client := razorpay.NewClient("rzp_test_kUBAXm7sKjPa0a", "KCkWzEkoKIY8hdWa0Lp8xIbo")
 
 	data := map[string]interface{}{
- 	  "amount": int64(paymentDetails.GrandTotal),
-  	"currency": "INR",
-  	"receipt": "abhinand", 
+		"amount":   int64(paymentDetails.GrandTotal),
+		"currency": "INR",
+		"receipt":  "abhinand",
 	}
 
 	payment, err := client.Order.Create(data, nil)
 	if err != nil {
-		return domain.OrderSuccessResponse{},err
+		return domain.OrderSuccessResponse{}, err
 	}
-	fmt.Println("order id ",orderSuccessResponse.OrderID)
-	value :=  payment["id"]
-	fmt.Println("orderid by razor pay : ",value.(string))
-	fmt.Println("razorpay sent back details : ",payment)
+	fmt.Println("order id ", orderSuccessResponse.OrderID)
+	value := payment["id"]
+	fmt.Println("orderid by razor pay : ", value.(string))
+	fmt.Println("razorpay sent back details : ", payment)
 	err = cr.orderRepository.SavePayment(paymentDetails)
-  if err != nil {
-		return domain.OrderSuccessResponse{},err
+	if err != nil {
+		return domain.OrderSuccessResponse{}, err
 	}
-	fmt.Println("order id ",orderSuccessResponse.OrderID)
+	fmt.Println("order id ", orderSuccessResponse.OrderID)
 	return orderSuccessResponse, nil
 
 }
 
 // get order details
-func (cr *orderUseCase) GetOrderDetails(userID int,page int) ([]models.FullOrderDetails, error) {
+func (cr *orderUseCase) GetOrderDetails(userID int, page int) ([]models.FullOrderDetails, error) {
 
-	fullOrderDetails, err := cr.orderRepository.GetOrderDetails(userID,page)
+	fullOrderDetails, err := cr.orderRepository.GetOrderDetails(userID, page)
 	if err != nil {
 		return []models.FullOrderDetails{}, err
 	}
@@ -108,7 +108,7 @@ func (cr *orderUseCase) CancelOrder(orderID string, userID int) (string, error) 
 
 	orderProducts, err := cr.orderRepository.GetProductDetailsFromOrders(orderID)
 	if err != nil {
-		return "",err
+		return "", err
 	}
 
 	// update the quantity to products since th order is cancelled
@@ -125,7 +125,7 @@ func (cr *orderUseCase) CancelOrderFromAdminSide(orderID string) (string, error)
 
 	orderProducts, err := cr.orderRepository.GetProductDetailsFromOrders(orderID)
 	if err != nil {
-		return "",err
+		return "", err
 	}
 
 	// update the quantity to products since th order is cancelled

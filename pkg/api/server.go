@@ -17,7 +17,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 
 	// Use logger from Gin
 	router.Use(gin.Logger())
-	router.GET("/swagger/*any",ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	routes.UserRoutes(router.Group("/"), userHandler, otpHandler, productHandler, cartHandler, orderHandler)
 	routes.AdminRoutes(router.Group("/admin"), adminHandler, productHandler, orderHandler, userHandler)
 

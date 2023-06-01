@@ -156,16 +156,14 @@ func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 
 }
 
-
 func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 
-	
 	type product struct {
-		Quantity   int   `json:"quantity"`
-		ProductID  int `json:"product-id"`
+		Quantity  int `json:"quantity"`
+		ProductID int `json:"product-id"`
 	}
 	var p product
-	
+
 	if err := c.BindJSON(&p); err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusBadRequest,
@@ -176,7 +174,7 @@ func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	err := cr.productUseCase.UpdateProduct(p.ProductID,p.Quantity)
+	err := cr.productUseCase.UpdateProduct(p.ProductID, p.Quantity)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusBadRequest,

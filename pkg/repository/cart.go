@@ -141,8 +141,6 @@ func (cr *cartRepository) GetTotalPrice(userID int) (models.CartTotal, error) {
 		return models.CartTotal{}, err
 	}
 
-	
-
 	return cartTotal, nil
 }
 

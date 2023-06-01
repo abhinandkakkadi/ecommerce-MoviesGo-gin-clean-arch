@@ -82,17 +82,17 @@ func (c *productDatabase) ShowIndividualProducts(id string) (models.ProductRespo
 func (cr *productDatabase) UpdateQuantity(productID int, quantity int) error {
 
 	var currentQuantity int
-	err := cr.DB.Raw("select quantity from products where id = ?",productID).Scan(&currentQuantity).Error
+	err := cr.DB.Raw("select quantity from products where id = ?", productID).Scan(&currentQuantity).Error
 	if err != nil {
 		return err
 	}
 	finalQuantity := currentQuantity + quantity
-	err = cr.DB.Exec("update products set quantity = ? where id = ?",finalQuantity,productID).Error
+	err = cr.DB.Exec("update products set quantity = ? where id = ?", finalQuantity, productID).Error
 	if err != nil {
 		return err
 	}
 	return nil
-	
+
 }
 
 func (cr *productDatabase) AddProduct(product models.ProductsReceiver) (models.ProductResponse, error) {
@@ -158,14 +158,13 @@ func (cr *productDatabase) DeleteProduct(product_id string) error {
 
 }
 
-
-func (cr *productDatabase) DoesProductExist(productID int) (bool,error) {
+func (cr *productDatabase) DoesProductExist(productID int) (bool, error) {
 
 	var count int
-	err := cr.DB.Raw("select count(*) from products where id = ?",productID).Scan(&count).Error
+	err := cr.DB.Raw("select count(*) from products where id = ?", productID).Scan(&count).Error
 	if err != nil {
-		return false,err
+		return false, err
 	}
 
-	return count > 0,nil
+	return count > 0, nil
 }

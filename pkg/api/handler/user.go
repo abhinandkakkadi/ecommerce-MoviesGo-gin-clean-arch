@@ -368,12 +368,11 @@ func (cr *UserHandler) UpdatePassword(c *gin.Context) {
 	})
 }
 
-
 func (cr *UserHandler) AddToWishList(c *gin.Context) {
 
-	userID,_ := c.Get("user_id")
+	userID, _ := c.Get("user_id")
 	id := c.Param("id")
-	productID,err := strconv.Atoi(id)
+	productID, err := strconv.Atoi(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
@@ -384,7 +383,7 @@ func (cr *UserHandler) AddToWishList(c *gin.Context) {
 		return
 	}
 
-	err = cr.userUseCase.AddToWishList(productID,userID.(int))
+	err = cr.userUseCase.AddToWishList(productID, userID.(int))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -402,14 +401,12 @@ func (cr *UserHandler) AddToWishList(c *gin.Context) {
 		Error:      nil,
 	})
 
-
-
 }
 
 func (cr *UserHandler) GetWishList(c *gin.Context) {
 
-	userID,_ := c.Get("user_id")
-	wishList,err := cr.userUseCase.GetWishList(userID.(int))
+	userID, _ := c.Get("user_id")
+	wishList, err := cr.userUseCase.GetWishList(userID.(int))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -427,16 +424,13 @@ func (cr *UserHandler) GetWishList(c *gin.Context) {
 		Error:      nil,
 	})
 
-
-
 }
-
 
 func (cr *UserHandler) RemoveFromWishList(c *gin.Context) {
 
-	userID,_ := c.Get("user_id")
+	userID, _ := c.Get("user_id")
 	id := c.Param("id")
-	productID,err := strconv.Atoi(id)
+	productID, err := strconv.Atoi(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
@@ -447,7 +441,7 @@ func (cr *UserHandler) RemoveFromWishList(c *gin.Context) {
 		return
 	}
 
-	err = cr.userUseCase.RemoveFromWishList(productID,userID.(int))
+	err = cr.userUseCase.RemoveFromWishList(productID, userID.(int))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,

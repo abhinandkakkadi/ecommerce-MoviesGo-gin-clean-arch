@@ -15,15 +15,15 @@ import (
 )
 
 type userUseCase struct {
-	userRepo interfaces.UserRepository
-	cartRepo interfaces.CartRepository
+	userRepo    interfaces.UserRepository
+	cartRepo    interfaces.CartRepository
 	productRepo interfaces.ProductRepository
 }
 
-func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.CartRepository,productRepository interfaces.ProductRepository) services.UserUseCase {
+func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.CartRepository, productRepository interfaces.ProductRepository) services.UserUseCase {
 	return &userUseCase{
-		userRepo: repo,
-		cartRepo: cartRepositiry,
+		userRepo:    repo,
+		cartRepo:    cartRepositiry,
 		productRepo: productRepository,
 	}
 }
@@ -251,10 +251,9 @@ func (cr *userUseCase) UpdatePassword(ctx context.Context, body models.UpdatePas
 
 }
 
+func (cr *userUseCase) AddToWishList(productID int, userID int) error {
 
-func (cr *userUseCase) AddToWishList(productID int,userID int) error {
-
-	productExist,err := cr.productRepo.DoesProductExist(productID)
+	productExist, err := cr.productRepo.DoesProductExist(productID)
 	if err != nil {
 		return err
 	}
@@ -263,15 +262,15 @@ func (cr *userUseCase) AddToWishList(productID int,userID int) error {
 		return errors.New("product does not exist")
 	}
 
-	productExistInWishList,err := cr.userRepo.ProductExistInWishList(productID,userID)
+	productExistInWishList, err := cr.userRepo.ProductExistInWishList(productID, userID)
 	if err != nil {
 		return err
 	}
 	if productExistInWishList {
 		return errors.New("product already exist in database")
 	}
-	
-	err = cr.userRepo.AddToWishList(userID,productID)
+
+	err = cr.userRepo.AddToWishList(userID, productID)
 	if err != nil {
 		return err
 	}
@@ -279,27 +278,27 @@ func (cr *userUseCase) AddToWishList(productID int,userID int) error {
 	return nil
 }
 
-func (cr *userUseCase) GetWishList(userID int) ([]models.WishListResponse,error) {
+func (cr *userUseCase) GetWishList(userID int) ([]models.WishListResponse, error) {
 
-	wishList,err := cr.userRepo.GetWishList(userID)
+	wishList, err := cr.userRepo.GetWishList(userID)
 	if err != nil {
-		return []models.WishListResponse{},err
+		return []models.WishListResponse{}, err
 	}
 
-	return wishList,err
+	return wishList, err
 }
 
-func (cr *userUseCase) RemoveFromWishList(productID int,userID int) error {
+func (cr *userUseCase) RemoveFromWishList(productID int, userID int) error {
 
-	productExistInWishList,err := cr.userRepo.ProductExistInWishList(productID,userID)
+	productExistInWishList, err := cr.userRepo.ProductExistInWishList(productID, userID)
 	if err != nil {
 		return err
 	}
 	if !productExistInWishList {
 		return errors.New("product does not exist in wishlist")
 	}
-	
-	err = cr.userRepo.RemoveFromWishList(userID,productID)
+
+	err = cr.userRepo.RemoveFromWishList(userID, productID)
 	if err != nil {
 		return err
 	}

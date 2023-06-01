@@ -21,7 +21,6 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 			genres.POST("/add_genre", adminHandler.AddCategory)
 			genres.GET("/delete_genre/:id", adminHandler.DeleteGenre)
 		}
-		
 
 		product := router.Group("/products")
 		{
@@ -29,10 +28,9 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 			product.GET("/:page", productHandler.SeeAllProductToAdmin)
 			product.POST("/add-product", productHandler.AddProduct)
 			product.DELETE("/delete-product/:id", productHandler.DeleteProduct)
-			product.POST("/update-product",productHandler.UpdateProduct)
+			product.POST("/update-product", productHandler.UpdateProduct)
 
 		}
-		
 
 		userDetails := router.Group("/users")
 		{
@@ -42,7 +40,6 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 			userDetails.GET("/block-users/:id", adminHandler.BlockUser)
 			userDetails.GET("/unblock-users/:id", adminHandler.UnBlockUser)
 		}
-		
 
 		orders := router.Group("/orders")
 		{
@@ -52,8 +49,6 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 			orders.GET("/approve-order/:order_id", orderHandler.ApproveOrder)
 			orders.GET("/cancel-order/:order_id", orderHandler.CancelOrderFromAdminSide)
 		}
-
-		
 
 	}
 

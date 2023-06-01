@@ -68,7 +68,6 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 
 }
 
-
 // SignUpHandler handles the signup request for admin users
 // @Summary Signup Handler for Admins
 // @ID signup-admin

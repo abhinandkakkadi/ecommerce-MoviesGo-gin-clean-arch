@@ -62,13 +62,13 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
 // get order details of all orders to user profile section
 func (cr *OrderHandler) GetOrderDetails(c *gin.Context) {
-	
+
 	pageStr := c.Param("page")
 	page, _ := strconv.Atoi(pageStr)
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
-	fullOrderDetails, err := cr.orderUseCase.GetOrderDetails(userID,page)
+	fullOrderDetails, err := cr.orderUseCase.GetOrderDetails(userID, page)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -189,4 +189,3 @@ func (cr *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 		Message:    "Cancel Successfull",
 	})
 }
-

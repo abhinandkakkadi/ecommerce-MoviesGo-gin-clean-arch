@@ -43,11 +43,10 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			users.POST("/address", userHandler.AddAddress)
 			orders := users.Group("orders")
 			{
-				orders.GET("",orderHandler.GetOrderDetails)
+				orders.GET("", orderHandler.GetOrderDetails)
 				orders.GET("/:page", orderHandler.GetOrderDetails)
 			}
-			
-			
+
 			users.PUT("/cancel-order/:id", orderHandler.CancelOrder)
 			users.PUT("/update-password", userHandler.UpdatePassword)
 
@@ -55,9 +54,9 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 
 		whishlist := router.Group("wishlist")
 		{
-			whishlist.GET("",userHandler.GetWishList)
-			whishlist.GET("/add/:id",userHandler.AddToWishList)
-			whishlist.DELETE("/remove/:id",userHandler.RemoveFromWishList)
+			whishlist.GET("", userHandler.GetWishList)
+			whishlist.GET("/add/:id", userHandler.AddToWishList)
+			whishlist.DELETE("/remove/:id", userHandler.RemoveFromWishList)
 		}
 
 		router.GET("/checkout", userHandler.CheckOut)

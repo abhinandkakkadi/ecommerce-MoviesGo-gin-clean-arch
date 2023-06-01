@@ -75,15 +75,15 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 	return orderSuccessResponse, nil
 }
 
-func (cr *orderRepository) GetOrderDetails(userID int,page int) ([]models.FullOrderDetails, error) {
+func (cr *orderRepository) GetOrderDetails(userID int, page int) ([]models.FullOrderDetails, error) {
 	// details of order created byt his particular user
 	if page == 0 {
 		page = 1
 	}
 	offset := (page - 1) * 2
-	
+
 	var orderDetails []models.OrderDetails
-	cr.DB.Raw("select order_id,grand_total,shipment_status from orders where user_id = ? limit ? offset ? ", userID,2,offset).Scan(&orderDetails)
+	cr.DB.Raw("select order_id,grand_total,shipment_status from orders where user_id = ? limit ? offset ? ", userID, 2, offset).Scan(&orderDetails)
 	fmt.Println(orderDetails)
 
 	var fullOrderDetails []models.FullOrderDetails
@@ -178,7 +178,7 @@ func (cr *orderRepository) GetOrderDetailsBrief(page int) ([]models.OrderDetails
 	}
 	offset := (page - 1) * 2
 	var orderDetails []models.OrderDetails
-	err := cr.DB.Raw("select order_id,grand_total,shipment_status from orders limit ? offset ?",2,offset).Scan(&orderDetails).Error
+	err := cr.DB.Raw("select order_id,grand_total,shipment_status from orders limit ? offset ?", 2, offset).Scan(&orderDetails).Error
 	if err != nil {
 		return []models.OrderDetails{}, nil
 	}
@@ -219,7 +219,6 @@ func (cr *orderRepository) ApproveOrder(orderID string) error {
 	return nil
 }
 
-
 func (cr *orderRepository) SavePayment(charge domain.Charge) error {
 	if err := cr.DB.Create(&charge).Error; err != nil {
 		return err
@@ -228,13 +227,12 @@ func (cr *orderRepository) SavePayment(charge domain.Charge) error {
 
 }
 
-
-func (cr *orderRepository) GetPaymentDetails(OrderID string) (domain.Charge,error) {
+func (cr *orderRepository) GetPaymentDetails(OrderID string) (domain.Charge, error) {
 
 	var paymentDetails domain.Charge
-	if err := cr.DB.Raw("select orders.order_id,orders.grand_total,users.email from orders inner join users on orders.user_id = users.id where order_id = ?",OrderID).Scan(&paymentDetails).Error; err != nil {
-		return domain.Charge{},err
-	}	
+	if err := cr.DB.Raw("select orders.order_id,orders.grand_total,users.email from orders inner join users on orders.user_id = users.id where order_id = ?", OrderID).Scan(&paymentDetails).Error; err != nil {
+		return domain.Charge{}, err
+	}
 	// fmt.Println("amount no problem",productDetails)
-	return paymentDetails,nil
+	return paymentDetails, nil
 }
