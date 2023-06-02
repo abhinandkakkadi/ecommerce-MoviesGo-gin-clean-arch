@@ -7,4 +7,6 @@ type CouponRepository interface {
 	CouponRevalidateIfExpired(couponName string) (bool, error)
 	AddCoupon(coupon models.Coupon) error
 	GetCoupon() ([]models.Coupon, error)
+	ExistCoupon(couponID int) (bool, error)
+	CouponAlreadyExpired(couponID int) error
 }

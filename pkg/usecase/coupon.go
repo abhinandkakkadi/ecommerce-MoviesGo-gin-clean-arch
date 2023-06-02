@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
 
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
@@ -51,4 +52,26 @@ func (cr *couponUseCase) AddCoupon(coupon models.Coupon) (string, error) {
 func (cr *couponUseCase) GetCoupon() ([]models.Coupon, error) {
 
 	return cr.couponRepository.GetCoupon()
+}
+
+func (cr *couponUseCase) ExpireCoupon(couponID int) error {
+
+	// check whether coupon exist
+	couponExist, err := cr.couponRepository.ExistCoupon(couponID)
+	if err != nil {
+		return err
+	}
+
+	// if it exists expire it, if already expired send back relevant message
+	if couponExist {
+		err = cr.couponRepository.CouponAlreadyExpired(couponID)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	return errors.New("coupon does not exist")
+
 }

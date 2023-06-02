@@ -54,7 +54,7 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 		{
 			coupon.POST("/addcoupon", couponHandler.AddCoupon)
 			coupon.GET("", couponHandler.GetCoupon)
-			coupon.PATCH("/expire", couponHandler.ExpireCoupon)
+			coupon.PATCH("/expire/:id", couponHandler.ExpireCoupon)
 		}
 
 	}

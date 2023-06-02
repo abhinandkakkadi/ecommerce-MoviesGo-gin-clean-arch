@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
@@ -64,10 +65,40 @@ func (cr *couponRepository) AddCoupon(coupon models.Coupon) error {
 func (cr *couponRepository) GetCoupon() ([]models.Coupon, error) {
 
 	var coupons []models.Coupon
-	err := cr.DB.Raw("select id,coupon,discount_percentage,minimum_price from coupons").Scan(&coupons).Error
+	err := cr.DB.Raw("select id,coupon,discount_percentage,minimum_price,Validity from coupons").Scan(&coupons).Error
 	if err != nil {
 		return []models.Coupon{}, err
 	}
 
 	return coupons, nil
+}
+
+func (cr *couponRepository) ExistCoupon(couponID int) (bool, error) {
+
+	var count int
+	err := cr.DB.Raw("select count(*) from coupons where id = ?", couponID).Scan(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func (cr *couponRepository) CouponAlreadyExpired(couponID int) error {
+	fmt.Println("the code reached here")
+	var valid bool
+	err := cr.DB.Raw("select validity from coupons where id = ?", couponID).Scan(&valid).Error
+	if err != nil {
+		return err
+	}
+	fmt.Println("the validity = ", valid)
+	if valid {
+		err := cr.DB.Exec("update coupons set validity = false where id = ?", couponID).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return errors.New("already expired")
 }

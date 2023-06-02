@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
@@ -78,5 +79,24 @@ func (cr *CouponHandler) GetCoupon(c *gin.Context) {
 func (cr *CouponHandler) ExpireCoupon(c *gin.Context) {
 
 	id := c.Param("id")
+	couponID, _ := strconv.Atoi(id)
+
+	err := cr.couponUseCase.ExpireCoupon(couponID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "could not expire coupon",
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.Response{
+		StatusCode: http.StatusCreated,
+		Error:      nil,
+		Data:       nil,
+		Message:    "Coupon expired successfully",
+	})
 
 }
