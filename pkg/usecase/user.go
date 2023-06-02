@@ -150,6 +150,11 @@ func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		return models.CheckoutDetails{}, err
 	}
 
+	walletDetails,err := cr.userRepo.GetWalletDetails(userID)
+	if err != nil {
+		return models.CheckoutDetails{}, err
+	}
+
 	// get all items from users cart
 	cartItems, err := cr.cartRepo.GetAllItemsFromCart(userID)
 	if err != nil {
@@ -166,6 +171,7 @@ func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		AddressInfoResponse: allUserAddress,
 		Payment_Method:      paymentDetails,
 		Cart:                cartItems,
+		Wallet: walletDetails,
 		Grand_Total:         grandTotal.TotalPrice,
 		Total_Price:         grandTotal.FinalPrice,
 	}, nil
