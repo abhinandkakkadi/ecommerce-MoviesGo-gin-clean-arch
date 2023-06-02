@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"github.com/google/uuid"
@@ -52,7 +53,18 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 	for _, c := range cartItems {
 		orderDetails.GrandTotal += c.TotalPrice
 	}
-	orderDetails.FinalPrice = orderDetails.GrandTotal
+
+
+
+	discount_price, err := helper.GetCouponDiscountPrice(int(orderBody.UserID), orderDetails.GrandTotal, cr.DB)
+	if err != nil {
+		return domain.OrderSuccessResponse{}, err
+	}
+
+	if discount_price != 0.0 {
+		cr.DB.Exec("update used_coupons set used = true where user_id = ?", orderDetails.UserID)
+	}
+	orderDetails.FinalPrice = orderDetails.GrandTotal - discount_price
 	cr.DB.Create(&orderDetails)
 	// details being added to the orderItems table - which shows details about the individual products
 	for _, c := range cartItems {
