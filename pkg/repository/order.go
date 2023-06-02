@@ -47,8 +47,6 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 	orderDetails.UserID = int(orderBody.UserID)
 	orderDetails.Approval = false
 	orderDetails.ShipmentStatus = "processing"
-	
-
 
 	// get grand total iterating through each products in carts
 	for _, c := range cartItems {

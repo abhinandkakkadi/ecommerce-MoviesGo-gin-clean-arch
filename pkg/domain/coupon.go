@@ -1,11 +1,11 @@
 package domain
 
 type Coupons struct {
-	ID                 uint   `json:"id" gorm:"uniquekey; not null"`
-	Coupon             string `json:"coupon" gorm:"coupon"`
-	DiscountPercentage int    `json:"discount_percentage"`
-	Validity           bool   `json:"validity"`
-	MinimumPrice       float64  `json:"minimum_price"`
+	ID                 uint    `json:"id" gorm:"uniquekey; not null"`
+	Coupon             string  `json:"coupon" gorm:"coupon"`
+	DiscountPercentage int     `json:"discount_percentage"`
+	Validity           bool    `json:"validity"`
+	MinimumPrice       float64 `json:"minimum_price"`
 }
 
 type UsedCoupon struct {
@@ -21,7 +21,6 @@ type OrderCoupon struct {
 	ID       uint    `json:"id" gorm:"uniquekey not null"`
 	CouponID uint    `json:"coupon_id"`
 	Coupons  Coupons `json:"-" gorm:"foreignkey:CouponID"`
-	OrderID            string  `json:"order_id"`
-	Order   Order    `json:"-" gorm:"foreignkey:OrderID"`
+	OrderID  string  `json:"order_id"`
+	Order    Order   `json:"-" gorm:"foreignkey:OrderID"`
 }
-

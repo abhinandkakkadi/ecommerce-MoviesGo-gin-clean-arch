@@ -61,7 +61,7 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 
 		coupon := router.Group("/coupon")
 		{
-			coupon.POST("/add",cartHandler.AddCoupon)
+			coupon.POST("/add", cartHandler.AddCoupon)
 		}
 
 		router.GET("/checkout", userHandler.CheckOut)

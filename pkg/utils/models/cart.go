@@ -16,5 +16,5 @@ type CartResponse struct {
 type CartTotal struct {
 	UserName   string  `json:"user_name"`
 	TotalPrice float64 `json:"total_price"`
-	FinalPrice float64  `json:"final_price"`
+	FinalPrice float64 `json:"final_price"`
 }

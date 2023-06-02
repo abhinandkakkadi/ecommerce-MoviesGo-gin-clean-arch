@@ -167,12 +167,11 @@ func (cr *CartHandler) EmptyCart(c *gin.Context) {
 	})
 }
 
-
 func (cr *CartHandler) AddCoupon(c *gin.Context) {
-	
+
 	userID, _ := c.Get("user_id")
 	type Coupon struct {
-		CouponName string  `json:"coupon_name"`
+		CouponName string `json:"coupon_name"`
 	}
 	var couponDetails Coupon
 
@@ -186,7 +185,7 @@ func (cr *CartHandler) AddCoupon(c *gin.Context) {
 		return
 	}
 
-	err := cr.cartUseCase.AddCoupon(couponDetails.CouponName,userID.(int))
+	err := cr.cartUseCase.AddCoupon(couponDetails.CouponName, userID.(int))
 	if err != nil {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.Response{
@@ -205,7 +204,5 @@ func (cr *CartHandler) AddCoupon(c *gin.Context) {
 		Data:       nil,
 		Message:    "Coupon added successfully",
 	})
-
-	
 
 }

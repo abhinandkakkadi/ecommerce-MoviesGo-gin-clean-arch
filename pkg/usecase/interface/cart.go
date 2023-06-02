@@ -7,5 +7,5 @@ type CartUseCase interface {
 	RemoveFromCart(product_id int, userID int) (models.CartResponse, error)
 	DisplayCart(userID int) (models.CartResponse, error)
 	EmptyCart(userID int) (models.CartResponse, error)
-	AddCoupon(coupon string,userID int) error
+	AddCoupon(coupon string, userID int) error
 }
