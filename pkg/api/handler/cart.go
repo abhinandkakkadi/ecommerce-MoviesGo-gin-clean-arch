@@ -166,3 +166,46 @@ func (cr *CartHandler) EmptyCart(c *gin.Context) {
 		Message:    "Cart items displayed successfully",
 	})
 }
+
+
+func (cr *CartHandler) AddCoupon(c *gin.Context) {
+	
+	userID, _ := c.Get("user_id")
+	type Coupon struct {
+		CouponName string  `json:"coupon_name"`
+	}
+	var couponDetails Coupon
+
+	if err := c.BindJSON(&couponDetails); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "Could not bind the coupon",
+		})
+		return
+	}
+
+	err := cr.cartUseCase.AddCoupon(couponDetails.CouponName,userID.(int))
+	if err != nil {
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.Response{
+				StatusCode: http.StatusInternalServerError,
+				Error:      err.Error(),
+				Data:       nil,
+				Message:    "Coupon could not be added",
+			})
+			return
+		}
+	}
+
+	c.JSON(http.StatusInternalServerError, response.Response{
+		StatusCode: http.StatusOK,
+		Error:      nil,
+		Data:       nil,
+		Message:    "Coupon added successfully",
+	})
+
+	
+
+}

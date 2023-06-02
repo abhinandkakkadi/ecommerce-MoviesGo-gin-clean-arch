@@ -167,6 +167,7 @@ func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		Payment_Method:      paymentDetails,
 		Cart:                cartItems,
 		Grand_Total:         grandTotal.TotalPrice,
+		Total_Price:         grandTotal.FinalPrice,
 	}, nil
 }
 

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"gorm.io/gorm"
@@ -141,6 +142,14 @@ func (cr *cartRepository) GetTotalPrice(userID int) (models.CartTotal, error) {
 		return models.CartTotal{}, err
 	}
 
+	var discount_price float64
+	discount_price,err = helper.GetCouponDiscountPrice(userID,cartTotal.TotalPrice,cr.DB)
+	if err != nil {
+		return models.CartTotal{}, err
+	}
+	
+	cartTotal.FinalPrice = cartTotal.TotalPrice - discount_price
+	fmt.Println("this is discount price which is initially 0 ",discount_price)
 	return cartTotal, nil
 }
 
@@ -311,4 +320,83 @@ func (cr *cartRepository) ProductExist(product_id int, userID int) (bool, error)
 	}
 	fmt.Print(count)
 	return count > 0, nil
+}
+
+
+
+func (cr *cartRepository) CouponValidity(coupon string,userID int) (bool,error) {
+
+	var count int
+	err := cr.DB.Raw("select count(*) from coupons where coupon = ?",coupon).Scan(&count).Error
+	if err != nil {
+		return false,err
+	}
+
+	if count < 1 {
+		return false,errors.New("coupon does not exist")
+	}
+
+	var validity bool 
+	err = cr.DB.Raw("select validity from coupons where coupon = ?",coupon).Scan(&validity).Error
+	if err != nil {
+		return false,err
+	}
+
+	if !validity {
+		return false,errors.New("coupon not valid")
+	}
+
+
+	var MinDiscountPrice float64
+	
+	err = cr.DB.Raw("select minimum_price from coupons where coupon = ?",coupon).Scan(&MinDiscountPrice).Error
+	if err != nil {
+		return false, err
+	}
+
+	var totalPrice float64
+	err = cr.DB.Raw("select COALESCE(SUM(total_price), 0) from carts where user_id = ?", userID).Scan(&totalPrice).Error
+	if err != nil {
+		return false, err
+	}
+
+	if totalPrice < MinDiscountPrice {
+		return false,errors.New("coupon cannot be added as the total amount is less than minimum amount for coupon")
+	}
+
+
+	var couponID uint
+	err = cr.DB.Raw("select id from coupons where coupon = ?",coupon).Scan(&couponID).Error
+	if err != nil {
+		return false,err
+	}
+
+
+	err = cr.DB.Raw("select count(*) from used_coupons where coupon_id = ? and user_id = ?",couponID,userID).Scan(&count).Error
+	if err != nil {
+		return false,err
+	}
+
+	if count > 0 {
+		return false,errors.New("user have already used this coupon")
+	}
+
+	err = cr.DB.Raw("select count(*) from used_coupons where user_id = ? and used = false",userID).Scan(&count).Error
+	if err != nil {
+		return false,err
+	}
+
+	if count > 0 {
+		err = cr.DB.Exec("delete from used_coupons where user_id = ? and used = false",userID).Error
+		if err != nil {
+			return false,err
+	}
+	}
+
+	err = cr.DB.Exec("insert into used_coupons (coupon_id,user_id,used) values (?, ?, false)",couponID,userID).Error
+	if err != nil {
+		return false,err
+	}
+
+	return true,nil
 }

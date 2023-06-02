@@ -11,4 +11,5 @@ type CartRepository interface {
 	GetAllItemsFromCart(userID int) ([]models.Cart, error)
 	CheckProduct(product_id int) (bool, error)
 	ProductExist(product_id int, userID int) (bool, error)
+	CouponValidity(coupon string,userID int) (bool,error)
 }

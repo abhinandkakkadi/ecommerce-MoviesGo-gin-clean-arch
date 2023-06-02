@@ -130,3 +130,17 @@ func (cr *cartUseCase) EmptyCart(userID int) (models.CartResponse, error) {
 
 	return cartResponse, nil
 }
+
+
+func (cr *cartUseCase) AddCoupon(coupon string,userID int) error {
+
+	couponStatus,err := cr.cartRepository.CouponValidity(coupon,userID)
+	if err != nil {
+		return err
+	}
+
+	if couponStatus {
+		return nil
+	}
+  return errors.New("could not add the coupon")
+}

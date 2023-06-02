@@ -47,11 +47,14 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 	orderDetails.UserID = int(orderBody.UserID)
 	orderDetails.Approval = false
 	orderDetails.ShipmentStatus = "processing"
+	
+
 
 	// get grand total iterating through each products in carts
 	for _, c := range cartItems {
 		orderDetails.GrandTotal += c.TotalPrice
 	}
+	orderDetails.FinalPrice = orderDetails.GrandTotal
 	cr.DB.Create(&orderDetails)
 	// details being added to the orderItems table - which shows details about the individual products
 	for _, c := range cartItems {

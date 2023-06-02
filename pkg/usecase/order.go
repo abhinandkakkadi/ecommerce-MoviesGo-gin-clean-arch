@@ -9,7 +9,6 @@ import (
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
-	"github.com/razorpay/razorpay-go"
 )
 
 type orderUseCase struct {
@@ -49,34 +48,34 @@ func (cr *orderUseCase) OrderItemsFromCart(orderBody models.OrderIncoming) (doma
 	}
 	fmt.Println("order id ", orderSuccessResponse.OrderID)
 	// if payment is via card
-	var paymentDetails domain.Charge
-	if orderBody.PaymentID == 2 {
-		paymentDetails, err = cr.orderRepository.GetPaymentDetails(orderSuccessResponse.OrderID)
-		if err != nil {
-			return domain.OrderSuccessResponse{}, err
-		}
-	}
-	fmt.Println("order id ", orderSuccessResponse.OrderID)
-	client := razorpay.NewClient("rzp_test_kUBAXm7sKjPa0a", "KCkWzEkoKIY8hdWa0Lp8xIbo")
+	// var paymentDetails domain.Charge
+	// if orderBody.PaymentID == 2 {
+	// 	paymentDetails, err = cr.orderRepository.GetPaymentDetails(orderSuccessResponse.OrderID)
+	// 	if err != nil {
+	// 		return domain.OrderSuccessResponse{}, err
+	// 	}
+	// }
+	// fmt.Println("order id ", orderSuccessResponse.OrderID)
+	// client := razorpay.NewClient("rzp_test_kUBAXm7sKjPa0a", "KCkWzEkoKIY8hdWa0Lp8xIbo")
 
-	data := map[string]interface{}{
-		"amount":   int64(paymentDetails.GrandTotal),
-		"currency": "INR",
-		"receipt":  "abhinand",
-	}
+	// data := map[string]interface{}{
+	// 	"amount":   int64(paymentDetails.GrandTotal),
+	// 	"currency": "INR",
+	// 	"receipt":  "abhinand",
+	// }
 
-	payment, err := client.Order.Create(data, nil)
-	if err != nil {
-		return domain.OrderSuccessResponse{}, err
-	}
-	fmt.Println("order id ", orderSuccessResponse.OrderID)
-	value := payment["id"]
-	fmt.Println("orderid by razor pay : ", value.(string))
-	fmt.Println("razorpay sent back details : ", payment)
-	err = cr.orderRepository.SavePayment(paymentDetails)
-	if err != nil {
-		return domain.OrderSuccessResponse{}, err
-	}
+	// payment, err := client.Order.Create(data, nil)
+	// if err != nil {
+	// 	return domain.OrderSuccessResponse{}, err
+	// }
+	// fmt.Println("order id ", orderSuccessResponse.OrderID)
+	// value := payment["id"]
+	// fmt.Println("orderid by razor pay : ", value.(string))
+	// fmt.Println("razorpay sent back details : ", payment)
+	// err = cr.orderRepository.SavePayment(paymentDetails)
+	// if err != nil {
+	// 	return domain.OrderSuccessResponse{}, err
+	// }
 	fmt.Println("order id ", orderSuccessResponse.OrderID)
 	return orderSuccessResponse, nil
 

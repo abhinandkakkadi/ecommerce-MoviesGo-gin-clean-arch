@@ -25,8 +25,6 @@ type Order struct {
 	FinalPrice      float64       `json:"discount_price"`
 	ShipmentStatus  string        `json:"status"`
 	Approval        bool          `json:"approval"`
-	CouponID        uint          `json:"coupon_id"`
-	Coupons         Coupons       `json:"-" gorm:"foreignkey:CouponID"`
 }
 
 type OrderItem struct {
