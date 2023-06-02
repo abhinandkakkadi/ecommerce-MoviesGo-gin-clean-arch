@@ -54,8 +54,6 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 		orderDetails.GrandTotal += c.TotalPrice
 	}
 
-
-
 	discount_price, err := helper.GetCouponDiscountPrice(int(orderBody.UserID), orderDetails.GrandTotal, cr.DB)
 	if err != nil {
 		return domain.OrderSuccessResponse{}, err
