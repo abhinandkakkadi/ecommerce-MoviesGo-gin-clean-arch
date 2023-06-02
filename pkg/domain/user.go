@@ -25,8 +25,8 @@ type Address struct {
 }
 
 type Wallet struct {
-	ID   uint   `json:"id" gorm:"unique;not null"`
-	UserID  uint  `json:"user_id"`
-	Users   Users   `json:"-" gorm:"foreignkey:UserID"`
-	WalletAmount float64  `json:"wallet_amount"`
+	ID           uint    `json:"id" gorm:"unique;not null"`
+	UserID       uint    `json:"user_id"`
+	Users        Users   `json:"-" gorm:"foreignkey:UserID"`
+	WalletAmount float64 `json:"wallet_amount"`
 }

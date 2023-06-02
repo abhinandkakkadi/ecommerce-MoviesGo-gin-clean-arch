@@ -150,7 +150,7 @@ func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		return models.CheckoutDetails{}, err
 	}
 
-	walletDetails,err := cr.userRepo.GetWalletDetails(userID)
+	walletDetails, err := cr.userRepo.GetWalletDetails(userID)
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}
@@ -171,7 +171,7 @@ func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		AddressInfoResponse: allUserAddress,
 		Payment_Method:      paymentDetails,
 		Cart:                cartItems,
-		Wallet: walletDetails,
+		Wallet:              walletDetails,
 		Grand_Total:         grandTotal.TotalPrice,
 		Total_Price:         grandTotal.FinalPrice,
 	}, nil

@@ -48,6 +48,7 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 	orderDetails.UserID = int(orderBody.UserID)
 	orderDetails.Approval = false
 	orderDetails.ShipmentStatus = "processing"
+	orderDetails.PaymentStatus = "not paid"
 
 	// get grand total iterating through each products in carts
 	for _, c := range cartItems {
@@ -63,7 +64,25 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 		cr.DB.Exec("update used_coupons set used = true where user_id = ?", orderDetails.UserID)
 	}
 	orderDetails.FinalPrice = orderDetails.GrandTotal - discount_price
+
+	// if the payment method is wallet
+	if orderBody.PaymentID == 3 {
+
+		var walletAvailable float64
+		cr.DB.Raw("select wallet_amount from wallets where user_id = ?", orderBody.UserID).Scan(&walletAvailable)
+
+		// if wallet amount is less than finalamount - make paymentstatus - not paid and shipment status pending
+		if walletAvailable < orderDetails.FinalPrice {
+			orderDetails.PaymentStatus = "not paid"
+			orderDetails.ShipmentStatus = "pending"
+		} else {
+			cr.DB.Exec("update wallets set wallet_amount = ? where user_id = ? ", walletAvailable-orderDetails.FinalPrice, orderBody.UserID)
+			orderDetails.PaymentStatus = "paid"
+		}
+	}
+
 	cr.DB.Create(&orderDetails)
+
 	// details being added to the orderItems table - which shows details about the individual products
 	for _, c := range cartItems {
 		// for each order save details of products and associated details and use order_id as foreign key ( for each order multiple product will be there)
@@ -94,7 +113,7 @@ func (cr *orderRepository) GetOrderDetails(userID int, page int) ([]models.FullO
 	offset := (page - 1) * 2
 
 	var orderDetails []models.OrderDetails
-	cr.DB.Raw("select order_id,final_price,shipment_status from orders where user_id = ? limit ? offset ? ", userID, 2, offset).Scan(&orderDetails)
+	cr.DB.Raw("select order_id,final_price,shipment_status,payment_status from orders where user_id = ? limit ? offset ? ", userID, 2, offset).Scan(&orderDetails)
 	fmt.Println(orderDetails)
 
 	var fullOrderDetails []models.FullOrderDetails
@@ -189,7 +208,7 @@ func (cr *orderRepository) GetOrderDetailsBrief(page int) ([]models.OrderDetails
 	}
 	offset := (page - 1) * 2
 	var orderDetails []models.OrderDetails
-	err := cr.DB.Raw("select order_id,final_price,shipment_status from orders limit ? offset ?", 2, offset).Scan(&orderDetails).Error
+	err := cr.DB.Raw("select order_id,final_price,shipment_status,payment_status from orders limit ? offset ?", 2, offset).Scan(&orderDetails).Error
 	if err != nil {
 		return []models.OrderDetails{}, nil
 	}

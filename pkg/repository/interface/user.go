@@ -13,7 +13,7 @@ type UserRepository interface {
 	AddAddress(address models.AddressInfo, userID int) ([]models.AddressInfoResponse, error)
 	UpdateAddress(address models.AddressInfo, addressID int) (models.AddressInfoResponse, error)
 	GetAllAddresses(userID int) ([]models.AddressInfoResponse, error)
-	GetWalletDetails(userID int) (models.Wallet,error)
+	GetWalletDetails(userID int) (models.Wallet, error)
 	GetAllPaymentOption() ([]models.PaymentDetails, error)
 	UserDetails(userID int) (models.UsersProfileDetails, error)
 	// UpdateUserDetails(userDetails models.UsersProfileDetails) (models.UsersProfileDetails,error)

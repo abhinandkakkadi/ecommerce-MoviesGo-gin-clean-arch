@@ -114,8 +114,6 @@ func (cr *userDatabase) GetAllAddresses(userID int) ([]models.AddressInfoRespons
 
 }
 
-
-
 func (cr *userDatabase) GetAllPaymentOption() ([]models.PaymentDetails, error) {
 
 	var paymentMethods []models.PaymentDetails
@@ -128,16 +126,16 @@ func (cr *userDatabase) GetAllPaymentOption() ([]models.PaymentDetails, error) {
 
 }
 
-func (cr *userDatabase) GetWalletDetails(userID int) (models.Wallet,error) {
+func (cr *userDatabase) GetWalletDetails(userID int) (models.Wallet, error) {
 
 	var walletDetails models.Wallet
-	err := cr.DB.Raw("select wallet_amount from wallets where user_id = ?",userID).Scan(&walletDetails).Error
+	err := cr.DB.Raw("select wallet_amount from wallets where user_id = ?", userID).Scan(&walletDetails).Error
 	if err != nil {
 		return models.Wallet{}, err
 	}
 
 	return walletDetails, nil
-	
+
 }
 
 func (cr *userDatabase) UserDetails(userID int) (models.UsersProfileDetails, error) {
