@@ -20,7 +20,7 @@ type OrderSuccessResponse struct {
 
 type OrderDetails struct {
 	OrderId        string
-	GrandTotal     float64
+	FinalPrice     float64
 	ShipmentStatus string
 }
 
@@ -40,7 +40,7 @@ type FullOrderDetails struct {
 
 type CombinedOrderDetails struct {
 	OrderId        string  `json:"order_id"`
-	GrandTotal     float64 `json:"grand_total"`
+	FinalPrice     float64 `json:"final_price"`
 	ShipmentStatus string  `json:"shipment_status"`
 	Name           string  `json:"name"`
 	Email          string  `json:"email"`

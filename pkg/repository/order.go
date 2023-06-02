@@ -94,7 +94,7 @@ func (cr *orderRepository) GetOrderDetails(userID int, page int) ([]models.FullO
 	offset := (page - 1) * 2
 
 	var orderDetails []models.OrderDetails
-	cr.DB.Raw("select order_id,grand_total,shipment_status from orders where user_id = ? limit ? offset ? ", userID, 2, offset).Scan(&orderDetails)
+	cr.DB.Raw("select order_id,final_price,shipment_status from orders where user_id = ? limit ? offset ? ", userID, 2, offset).Scan(&orderDetails)
 	fmt.Println(orderDetails)
 
 	var fullOrderDetails []models.FullOrderDetails
@@ -189,7 +189,7 @@ func (cr *orderRepository) GetOrderDetailsBrief(page int) ([]models.OrderDetails
 	}
 	offset := (page - 1) * 2
 	var orderDetails []models.OrderDetails
-	err := cr.DB.Raw("select order_id,grand_total,shipment_status from orders limit ? offset ?", 2, offset).Scan(&orderDetails).Error
+	err := cr.DB.Raw("select order_id,final_price,shipment_status from orders limit ? offset ?", 2, offset).Scan(&orderDetails).Error
 	if err != nil {
 		return []models.OrderDetails{}, nil
 	}
