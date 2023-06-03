@@ -229,12 +229,11 @@ func (cr *ProductHandler) FilterCategory(c *gin.Context) {
 
 }
 
-
 // search for a product with given prefix
 func (cr *ProductHandler) SearchProduct(c *gin.Context) {
 
 	type SearchItems struct {
-		Name  string  `json:"name"`
+		Name string `json:"name"`
 	}
 	var prefix SearchItems
 	if err := c.ShouldBindJSON(&prefix); err != nil {
@@ -247,7 +246,7 @@ func (cr *ProductHandler) SearchProduct(c *gin.Context) {
 		return
 	}
 
-	productDetails,err := cr.productUseCase.SearchItemBasedOnPrefix(prefix.Name)
+	productDetails, err := cr.productUseCase.SearchItemBasedOnPrefix(prefix.Name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -264,5 +263,5 @@ func (cr *ProductHandler) SearchProduct(c *gin.Context) {
 		Data:       productDetails,
 		Error:      nil,
 	})
-	
+
 }

@@ -212,7 +212,6 @@ func (cr *productDatabase) GetProductFromCategory(data map[string]int) ([]models
 	return productFromCategory, nil
 }
 
-
 func (cr *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error) {
 
 	lengthOfPrefix := len(prefix)
@@ -230,11 +229,11 @@ func (cr *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.Prod
 	}
 
 	var filteredProductBrief []models.ProductsBrief
-	for _,p := range productsBrief {
-		
+	for _, p := range productsBrief {
+
 		length := len(p.Movie_Name)
 		if length >= lengthOfPrefix {
-			
+
 			moviePrefix := p.Movie_Name[:lengthOfPrefix]
 			if moviePrefix == prefix {
 				fmt.Println("got the condition right")
@@ -244,6 +243,6 @@ func (cr *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.Prod
 		}
 	}
 
-	return filteredProductBrief,nil
-	
+	return filteredProductBrief, nil
+
 }

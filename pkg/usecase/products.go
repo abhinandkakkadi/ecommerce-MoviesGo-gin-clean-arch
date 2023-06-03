@@ -118,7 +118,7 @@ func (cr *productUseCase) FilterCategory(data map[string]int) ([]models.Products
 	return productByCategory, nil
 }
 
-func (cr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief,error) {
+func (cr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error) {
 
 	return cr.productRepo.SearchItemBasedOnPrefix(prefix)
 }

@@ -11,5 +11,5 @@ type ProductUseCase interface {
 	DeleteProduct(product_id string) error
 	UpdateProduct(productID int, quantity int) error
 	FilterCategory(data map[string]int) ([]models.ProductsBrief, error)
-	SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief,error)
+	SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error)
 }
