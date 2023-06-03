@@ -188,6 +188,10 @@ func (cr *orderRepository) CancelOrder(orderID string) (string, error) {
 		return "Item already delivered, cannot cancel", nil
 	}
 
+	if shipmentStatus == "pending" {
+		return "The order was not placed, so no point in cancelling", nil
+	}
+
 	if shipmentStatus == "cancelled" {
 		return "Order already cancelled", nil
 	}
@@ -196,6 +200,31 @@ func (cr *orderRepository) CancelOrder(orderID string) (string, error) {
 	err = cr.DB.Exec("update orders set shipment_status = ?  where order_id = ?", shipmentStatus, orderID).Error
 	if err != nil {
 		return "", err
+	}
+
+	var paymentMethod int
+	err = cr.DB.Raw("select payment_method_id from orders where order_id = ?", orderID).Scan(&paymentMethod).Error
+	if err != nil {
+		return "", err
+	}
+
+	if paymentMethod == 3 {
+		fmt.Println("the code reached here since this order is done by wallet")
+		type AmountDetails struct {
+			FinalPrice float64
+			UserID     int
+		}
+		var amountDetails AmountDetails
+		err = cr.DB.Raw("select final_price,user_id from orders where order_id = ?", orderID).Scan(&amountDetails).Error
+		if err != nil {
+			return "", err
+		}
+		fmt.Println("amount details = ", amountDetails)
+		err = cr.DB.Exec("update wallets set wallet_amount = wallet_amount + ? where user_id = ?", amountDetails.FinalPrice, amountDetails.UserID).Error
+		if err != nil {
+			return "", err
+		}
+
 	}
 
 	return "Order successfully cancelled", nil

@@ -193,3 +193,13 @@ func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 	})
 
 }
+
+// handler to filter category
+
+func (cr *ProductHandler) FilterCategory(c *gin.Context) {
+
+	var data map[string]int
+
+err:
+	+c.ShouldBindJSON(&data)
+}
