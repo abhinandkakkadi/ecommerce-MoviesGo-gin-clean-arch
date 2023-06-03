@@ -19,6 +19,7 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 	product.GET("/:id", productHandler.ShowIndividualProducts)
 
 	router.POST("/filter", productHandler.FilterCategory)
+	router.POST("/search", productHandler.SearchProduct)
 
 	router.Use(middleware.AuthMiddleware())
 	{

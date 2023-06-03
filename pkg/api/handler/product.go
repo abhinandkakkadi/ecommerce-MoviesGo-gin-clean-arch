@@ -228,3 +228,41 @@ func (cr *ProductHandler) FilterCategory(c *gin.Context) {
 	})
 
 }
+
+
+// search for a product with given prefix
+func (cr *ProductHandler) SearchProduct(c *gin.Context) {
+
+	type SearchItems struct {
+		Name  string  `json:"name"`
+	}
+	var prefix SearchItems
+	if err := c.ShouldBindJSON(&prefix); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	productDetails,err := cr.productUseCase.SearchItemBasedOnPrefix(prefix.Name)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "could not retrieve products by prefix seae",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Successfully filtered the category",
+		Data:       productDetails,
+		Error:      nil,
+	})
+	
+}

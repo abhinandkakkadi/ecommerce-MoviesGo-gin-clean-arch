@@ -211,3 +211,39 @@ func (cr *productDatabase) GetProductFromCategory(data map[string]int) ([]models
 
 	return productFromCategory, nil
 }
+
+
+func (cr *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error) {
+
+	lengthOfPrefix := len(prefix)
+
+	var productsBrief []models.ProductsBrief
+	err := cr.DB.Raw(`
+		SELECT products.id, products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language,products.price,products.quantity
+		FROM products
+		JOIN genres ON products.genre_id = genres.id
+		JOIN movie_languages ON products.language_id = movie_languages.id
+	`).Scan(&productsBrief).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	var filteredProductBrief []models.ProductsBrief
+	for _,p := range productsBrief {
+		
+		length := len(p.Movie_Name)
+		if length >= lengthOfPrefix {
+			
+			moviePrefix := p.Movie_Name[:lengthOfPrefix]
+			if moviePrefix == prefix {
+				fmt.Println("got the condition right")
+				filteredProductBrief = append(filteredProductBrief, p)
+
+			}
+		}
+	}
+
+	return filteredProductBrief,nil
+	
+}

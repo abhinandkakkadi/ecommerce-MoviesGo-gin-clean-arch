@@ -14,4 +14,5 @@ type ProductRepository interface {
 	DoesProductExist(productID int) (bool, error)
 	CheckValidityOfCategory(data map[string]int) error
 	GetProductFromCategory(data map[string]int) ([]models.ProductsBrief, error)
+	SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error)
 }

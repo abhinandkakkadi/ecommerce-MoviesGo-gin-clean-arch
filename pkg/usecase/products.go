@@ -117,3 +117,8 @@ func (cr *productUseCase) FilterCategory(data map[string]int) ([]models.Products
 	fmt.Println("products By Category: ", productByCategory)
 	return productByCategory, nil
 }
+
+func (cr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief,error) {
+
+	return cr.productRepo.SearchItemBasedOnPrefix(prefix)
+}
