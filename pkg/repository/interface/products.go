@@ -12,4 +12,6 @@ type ProductRepository interface {
 	AddProduct(product models.ProductsReceiver) (models.ProductResponse, error)
 	DeleteProduct(product_id string) error
 	DoesProductExist(productID int) (bool, error)
+	CheckValidityOfCategory(data map[string]int) error
+	GetProductFromCategory(data map[string]int) ([]models.ProductsBrief, error)
 }

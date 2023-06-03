@@ -10,4 +10,5 @@ type ProductUseCase interface {
 	AddProduct(product models.ProductsReceiver) (models.ProductResponse, error)
 	DeleteProduct(product_id string) error
 	UpdateProduct(productID int, quantity int) error
+	FilterCategory(data map[string]int) ([]models.ProductsBrief, error)
 }

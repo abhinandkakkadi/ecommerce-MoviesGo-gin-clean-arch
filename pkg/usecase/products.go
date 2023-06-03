@@ -102,3 +102,18 @@ func (cr *productUseCase) UpdateProduct(productID int, quantity int) error {
 	return cr.productRepo.UpdateQuantity(productID, quantity)
 
 }
+
+func (cr *productUseCase) FilterCategory(data map[string]int) ([]models.ProductsBrief, error) {
+
+	err := cr.productRepo.CheckValidityOfCategory(data)
+	if err != nil {
+		return []models.ProductsBrief{}, err
+	}
+
+	productByCategory, err := cr.productRepo.GetProductFromCategory(data)
+	if err != nil {
+		return []models.ProductsBrief{}, err
+	}
+	fmt.Println("products By Category: ", productByCategory)
+	return productByCategory, nil
+}

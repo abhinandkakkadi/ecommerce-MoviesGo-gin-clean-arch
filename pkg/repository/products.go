@@ -168,3 +168,46 @@ func (cr *productDatabase) DoesProductExist(productID int) (bool, error) {
 
 	return count > 0, nil
 }
+
+func (cr *productDatabase) CheckValidityOfCategory(data map[string]int) error {
+
+	for _, id := range data {
+		var count int
+		err := cr.DB.Raw("select count(*) from genres where id = ?", id).Scan(&count).Error
+		if err != nil {
+			return err
+		}
+		if count < 1 {
+			return errors.New("one or some of the category does not exist")
+		}
+	}
+	return nil
+}
+
+func (cr *productDatabase) GetProductFromCategory(data map[string]int) ([]models.ProductsBrief, error) {
+
+	var productFromCategory []models.ProductsBrief
+	for _, id := range data {
+		var product models.ProductsBrief
+		err := cr.DB.Raw(`
+		SELECT products.id, products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language,products.price,products.quantity
+		FROM products
+		JOIN genres ON products.genre_id = genres.id
+		JOIN movie_languages ON products.language_id = movie_languages.id where genres.id = ?
+	`, id).Scan(&product).Error
+
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println("individual product details : ", product)
+
+		// if a product exist for that genre. Then only append it
+		if product.ID != 0 {
+			productFromCategory = append(productFromCategory, product)
+		}
+
+	}
+	fmt.Println("complete product details")
+
+	return productFromCategory, nil
+}

@@ -199,7 +199,32 @@ func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 func (cr *ProductHandler) FilterCategory(c *gin.Context) {
 
 	var data map[string]int
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "fields provided are in wrong format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
 
-err:
-	+c.ShouldBindJSON(&data)
+	productCategory, err := cr.productUseCase.FilterCategory(data)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "could not retrieve products by category",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Successfully filtered the category",
+		Data:       productCategory,
+		Error:      nil,
+	})
+
 }

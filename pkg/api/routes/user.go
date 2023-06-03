@@ -18,7 +18,7 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 	product.GET("/page/:page", productHandler.ShowAllProducts)
 	product.GET("/:id", productHandler.ShowIndividualProducts)
 
-	router.GET("/filter", productHandler.FilterCategory)
+	router.POST("/filter", productHandler.FilterCategory)
 
 	router.Use(middleware.AuthMiddleware())
 	{
