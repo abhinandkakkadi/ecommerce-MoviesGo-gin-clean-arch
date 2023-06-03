@@ -214,8 +214,8 @@ func (cr *productDatabase) GetProductFromCategory(data map[string]int) ([]models
 
 func (cr *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error) {
 
+	// find length of prefix
 	lengthOfPrefix := len(prefix)
-
 	var productsBrief []models.ProductsBrief
 	err := cr.DB.Raw(`
 		SELECT products.id, products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language,products.price,products.quantity
@@ -227,18 +227,18 @@ func (cr *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.Prod
 	if err != nil {
 		return nil, err
 	}
-
+	// Create a slice to add the products which have the given prefix
 	var filteredProductBrief []models.ProductsBrief
 	for _, p := range productsBrief {
-
+		// If length of the movie name is greater than prefix - continue the logic
 		length := len(p.Movie_Name)
 		if length >= lengthOfPrefix {
-
+			// slice the movie name to length of prefix 
 			moviePrefix := p.Movie_Name[:lengthOfPrefix]
+			// if they are equal - append that movie to the returning slice
 			if moviePrefix == prefix {
 				fmt.Println("got the condition right")
 				filteredProductBrief = append(filteredProductBrief, p)
-
 			}
 		}
 	}
