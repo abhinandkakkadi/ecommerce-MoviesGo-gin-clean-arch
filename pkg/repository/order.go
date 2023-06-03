@@ -9,6 +9,7 @@ import (
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"github.com/google/uuid"
+	"github.com/razorpay/razorpay-go"
 	"gorm.io/gorm"
 )
 
@@ -64,7 +65,26 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 		cr.DB.Exec("update used_coupons set used = true where user_id = ?", orderDetails.UserID)
 	}
 	orderDetails.FinalPrice = orderDetails.GrandTotal - discount_price
-
+	fmt.Println("payment ID = ", orderBody.PaymentID)
+	if orderBody.PaymentID == 2 {
+		fmt.Println("the code obviously reached payment 1")
+		client := razorpay.NewClient("rzp_test_ThxGGWcOWrG4g1", "XP8s8TkXCJxdMouLTWjQpMUj")
+		data := map[string]interface{}{
+			"amount":   int(orderDetails.FinalPrice) * 100,
+			"currency": "INR",
+			"receipt":  "random_receipt",
+		}
+		fmt.Println("the code obviously reached payment 2")
+		body, err := client.Order.Create(data, nil)
+		if err != nil {
+			return domain.OrderSuccessResponse{}, err
+		}
+		fmt.Println("the code obviously reached payment 3")
+		value := body["id"]
+		orderID := value.(string)
+		fmt.Println(orderID)
+		orderDetails.PaymentStatus = "paid"
+	}
 	// if the payment method is wallet
 	if orderBody.PaymentID == 3 {
 
@@ -79,6 +99,7 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 			cr.DB.Exec("update wallets set wallet_amount = ? where user_id = ? ", walletAvailable-orderDetails.FinalPrice, orderBody.UserID)
 			orderDetails.PaymentStatus = "paid"
 		}
+
 	}
 
 	cr.DB.Create(&orderDetails)
@@ -208,7 +229,7 @@ func (cr *orderRepository) CancelOrder(orderID string) (string, error) {
 		return "", err
 	}
 
-	if paymentMethod == 3 {
+	if paymentMethod == 3 || paymentMethod == 2 {
 		fmt.Println("the code reached here since this order is done by wallet")
 		type AmountDetails struct {
 			FinalPrice float64

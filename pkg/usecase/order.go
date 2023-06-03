@@ -39,43 +39,15 @@ func (cr *orderUseCase) OrderItemsFromCart(orderBody models.OrderIncoming) (doma
 	cartItems, err := cr.cartRepository.GetAllItemsFromCart(int(orderBody.UserID))
 
 	if err != nil {
-		return domain.OrderSuccessResponse{}, nil
+		return domain.OrderSuccessResponse{}, err
 	}
 
 	orderSuccessResponse, err := cr.orderRepository.OrderItemsFromCart(orderBody, cartItems)
 	if err != nil {
-		return domain.OrderSuccessResponse{}, nil
+		return domain.OrderSuccessResponse{}, err
 	}
 	fmt.Println("order id ", orderSuccessResponse.OrderID)
-	// if payment is via card
-	// var paymentDetails domain.Charge
-	// if orderBody.PaymentID == 2 {
-	// 	paymentDetails, err = cr.orderRepository.GetPaymentDetails(orderSuccessResponse.OrderID)
-	// 	if err != nil {
-	// 		return domain.OrderSuccessResponse{}, err
-	// 	}
-	// }
-	// fmt.Println("order id ", orderSuccessResponse.OrderID)
-	// client := razorpay.NewClient("rzp_test_kUBAXm7sKjPa0a", "KCkWzEkoKIY8hdWa0Lp8xIbo")
 
-	// data := map[string]interface{}{
-	// 	"amount":   int64(paymentDetails.GrandTotal),
-	// 	"currency": "INR",
-	// 	"receipt":  "abhinand",
-	// }
-
-	// payment, err := client.Order.Create(data, nil)
-	// if err != nil {
-	// 	return domain.OrderSuccessResponse{}, err
-	// }
-	// fmt.Println("order id ", orderSuccessResponse.OrderID)
-	// value := payment["id"]
-	// fmt.Println("orderid by razor pay : ", value.(string))
-	// fmt.Println("razorpay sent back details : ", payment)
-	// err = cr.orderRepository.SavePayment(paymentDetails)
-	// if err != nil {
-	// 	return domain.OrderSuccessResponse{}, err
-	// }
 	fmt.Println("order id ", orderSuccessResponse.OrderID)
 	return orderSuccessResponse, nil
 

@@ -233,7 +233,7 @@ func (cr *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.Prod
 		// If length of the movie name is greater than prefix - continue the logic
 		length := len(p.Movie_Name)
 		if length >= lengthOfPrefix {
-			// slice the movie name to length of prefix 
+			// slice the movie name to length of prefix
 			moviePrefix := p.Movie_Name[:lengthOfPrefix]
 			// if they are equal - append that movie to the returning slice
 			if moviePrefix == prefix {
