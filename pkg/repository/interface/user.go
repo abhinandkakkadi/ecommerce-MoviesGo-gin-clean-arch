@@ -6,12 +6,12 @@ import (
 
 type UserRepository interface {
 	UserSignUp(user models.UserDetails) (models.UserDetailsResponse, error)
-	FindUserByEmail(user models.UserDetails) (models.UserSignInResponse, error)
+	FindUserByEmail(user models.UserLogin) (models.UserSignInResponse, error)
 	CheckUserAvailability(email string) bool
 	UserBlockStatus(email string) (bool, error)
 	LoginHandler(user models.UserDetails) (models.UserDetailsResponse, error)
 	AddAddress(address models.AddressInfo, userID int) ([]models.AddressInfoResponse, error)
-	UpdateAddress(address models.AddressInfo, addressID int) (models.AddressInfoResponse, error)
+	UpdateAddress(address models.AddressInfo, addressID int, userID int) (models.AddressInfoResponse, error)
 	GetAllAddresses(userID int) ([]models.AddressInfoResponse, error)
 	GetWalletDetails(userID int) (models.Wallet, error)
 	GetAllPaymentOption() ([]models.PaymentDetails, error)

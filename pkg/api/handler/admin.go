@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/response"
@@ -28,14 +27,14 @@ func NewAdminHandler(usecase services.AdminUseCase) *AdminHandler {
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param  admin body domain.Admin true "Admin login details"
+// @Param  admin body models.AdminLogin true "Admin login details"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/adminlogin [post]
 func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the admin
 
 	// var adminDetails models.AdminLogin
-	var adminDetails domain.Admin
+	var adminDetails models.AdminLogin
 	fmt.Println("it is here")
 	if err := c.BindJSON(&adminDetails); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -178,6 +177,7 @@ func (cr *AdminHandler) GetGenres(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security Bearer
+// @Param  category body models.CategoryUpdate true "Update Category"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/genres/add_genre [POST]

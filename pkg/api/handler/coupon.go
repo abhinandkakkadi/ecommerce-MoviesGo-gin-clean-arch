@@ -27,12 +27,13 @@ func NewCouponHandler(useCase services.CouponUseCase) *CouponHandler {
 // @Accept json
 // @Produce json
 // @Security Bearer
+// @Param coupon body models.AddCoupon true "Add new Coupon"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/coupon/addcoupon [post]
 func (cr *CouponHandler) AddCoupon(c *gin.Context) {
 
-	var coupon models.Coupon
+	var coupon models.AddCoupon
 	if err := c.BindJSON(&coupon); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,

@@ -86,13 +86,13 @@ func (cr *UserHandler) UserSignUp(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user body models.UserDetails true "User Details Input"
+// @Param user body models.UserLogin true "User Details Input"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /login [post]
 func (cr *UserHandler) LoginHandler(c *gin.Context) {
 
-	var user models.UserDetails
+	var user models.UserLogin
 
 	if err := c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -229,9 +229,8 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 	}
 
 	fmt.Println(address)
-	address.UserID = uint(user_id)
 	fmt.Println(address)
-	updatedAddress, err := cr.userUseCase.UpdateAddress(address, addressId)
+	updatedAddress, err := cr.userUseCase.UpdateAddress(address, addressId, user_id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{

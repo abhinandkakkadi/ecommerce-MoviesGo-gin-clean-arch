@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/response"
 	"github.com/gin-gonic/gin"
 )
@@ -168,16 +169,14 @@ func (cr *CartHandler) EmptyCart(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security Bearer
+// @Param couponDetails body models.CouponAddUser true "Add coupon to order"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /coupon/add [post]
 func (cr *CartHandler) AddCoupon(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
-	type Coupon struct {
-		CouponName string `json:"coupon_name"`
-	}
-	var couponDetails Coupon
+	var couponDetails models.CouponAddUser
 
 	if err := c.BindJSON(&couponDetails); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{

@@ -52,7 +52,7 @@ func (cr *couponRepository) CouponRevalidateIfExpired(couponName string) (bool, 
 
 }
 
-func (cr *couponRepository) AddCoupon(coupon models.Coupon) error {
+func (cr *couponRepository) AddCoupon(coupon models.AddCoupon) error {
 	fmt.Println("from add coupon repository: ", coupon)
 	err := cr.DB.Exec("insert into coupons (coupon,discount_percentage,minimum_price,validity) values (?, ?, ?, ?)", coupon.Coupon, coupon.DiscountPercentage, coupon.MinimumPrice, true).Error
 	if err != nil {

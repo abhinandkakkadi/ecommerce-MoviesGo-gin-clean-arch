@@ -8,6 +8,11 @@ type UserDetails struct {
 	ConfirmPassword string `json:"confirmpassword"`
 }
 
+type UserLogin struct {
+	Email    string `json:"email" validate:"email"`
+	Password string `json:"password"`
+}
+
 // user details shown after logging in
 type UserDetailsResponse struct {
 	Id    int    `json:"id"`
@@ -47,7 +52,6 @@ type UserSignInResponse struct {
 }
 
 type AddressInfo struct {
-	UserID    uint   `json:"user_id"`
 	Name      string `json:"name" validate:"required"`
 	HouseName string `json:"house_name" validate:"required"`
 	State     string `json:"state" validate:"required"`

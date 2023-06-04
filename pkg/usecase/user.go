@@ -73,7 +73,7 @@ func (c *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	}, nil
 }
 
-func (c *userUseCase) LoginHandler(user models.UserDetails) (models.TokenUsers, error) {
+func (c *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, error) {
 
 	// checking if a username exist with this email address
 	ok := c.userRepo.CheckUserAvailability(user.Email)
@@ -129,9 +129,9 @@ func (cr *userUseCase) AddAddress(address models.AddressInfo, userID int) ([]mod
 	return addressResponse, nil
 }
 
-func (cr *userUseCase) UpdateAddress(address models.AddressInfo, addressID int) (models.AddressInfoResponse, error) {
+func (cr *userUseCase) UpdateAddress(address models.AddressInfo, addressID int, userID int) (models.AddressInfoResponse, error) {
 
-	return cr.userRepo.UpdateAddress(address, addressID)
+	return cr.userRepo.UpdateAddress(address, addressID, userID)
 
 }
 

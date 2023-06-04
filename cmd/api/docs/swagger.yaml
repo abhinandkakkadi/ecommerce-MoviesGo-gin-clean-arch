@@ -1,14 +1,14 @@
 definitions:
-  domain.Admin:
+  models.AddCoupon:
     properties:
-      email:
+      coupon:
         type: string
-      id:
+      discount_percentage:
         type: integer
-      name:
-        type: string
-      password:
-        type: string
+      minimum_price:
+        type: number
+      validity:
+        type: boolean
     type: object
   models.AddressInfo:
     properties:
@@ -24,13 +24,22 @@ definitions:
         type: string
       street:
         type: string
-      user_id:
-        type: integer
     required:
     - house_name
     - name
     - pin
     - state
+    type: object
+  models.AdminLogin:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 20
+        minLength: 8
+        type: string
+    required:
+    - email
     type: object
   models.AdminSignUp:
     properties:
@@ -41,6 +50,22 @@ definitions:
       name:
         type: string
       password:
+        type: string
+    type: object
+  models.CategoryUpdate:
+    properties:
+      director:
+        type: string
+      format:
+        type: string
+      genre:
+        type: string
+      language:
+        type: string
+    type: object
+  models.CouponAddUser:
+    properties:
+      coupon_name:
         type: string
     type: object
   models.OTPData:
@@ -91,6 +116,13 @@ definitions:
       password:
         type: string
       phone:
+        type: string
+    type: object
+  models.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
         type: string
     type: object
   models.VerifyData:
@@ -201,7 +233,7 @@ paths:
         name: admin
         required: true
         schema:
-          $ref: '#/definitions/domain.Admin'
+          $ref: '#/definitions/models.AdminLogin'
       produces:
       - application/json
       responses:
@@ -268,6 +300,13 @@ paths:
       consumes:
       - application/json
       description: Add A new Coupon which can be used by the users
+      parameters:
+      - description: Add new Coupon
+        in: body
+        name: coupon
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddCoupon'
       produces:
       - application/json
       responses:
@@ -337,6 +376,13 @@ paths:
       consumes:
       - application/json
       description: Add Category for existing films
+      parameters:
+      - description: Update Category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/models.CategoryUpdate'
       produces:
       - application/json
       responses:
@@ -737,6 +783,13 @@ paths:
       consumes:
       - application/json
       description: Add Coupon to get discount
+      parameters:
+      - description: Add coupon to order
+        in: body
+        name: couponDetails
+        required: true
+        schema:
+          $ref: '#/definitions/models.CouponAddUser'
       produces:
       - application/json
       responses:
@@ -792,7 +845,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.UserDetails'
+          $ref: '#/definitions/models.UserLogin'
       produces:
       - application/json
       responses:

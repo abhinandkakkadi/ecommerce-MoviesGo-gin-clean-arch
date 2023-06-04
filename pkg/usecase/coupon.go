@@ -19,7 +19,7 @@ func NewCouponUseCase(couponRepo interfaces.CouponRepository) services.CouponUse
 	}
 }
 
-func (cr *couponUseCase) AddCoupon(coupon models.Coupon) (string, error) {
+func (cr *couponUseCase) AddCoupon(coupon models.AddCoupon) (string, error) {
 
 	// if coupon already exist and if it is expired revalidate it. else give back an error message saying the coupon already exist
 	couponExist, err := cr.couponRepository.CouponExist(coupon.Coupon)

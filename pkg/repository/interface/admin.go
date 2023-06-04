@@ -6,7 +6,7 @@ import (
 )
 
 type AdminRepository interface {
-	LoginHandler(adminDetails domain.Admin) (domain.Admin, error)
+	LoginHandler(adminDetails models.AdminLogin) (domain.Admin, error)
 	SignUpHandler(admin models.AdminSignUp) (models.AdminDetailsResponse, error)
 	CheckAdminAvailability(admin models.AdminSignUp) bool
 	GetUsers(page int) ([]models.UserDetailsAtAdmin, error)

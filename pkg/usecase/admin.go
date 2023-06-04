@@ -24,7 +24,7 @@ func NewAdminUseCase(repo interfaces.AdminRepository) services.AdminUseCase {
 	}
 }
 
-func (cr *adminUseCase) LoginHandler(adminDetails domain.Admin) (domain.TokenAdmin, error) {
+func (cr *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.TokenAdmin, error) {
 
 	// getting details of the admin based on the email provided
 	adminCompareDetails, err := cr.adminRepository.LoginHandler(adminDetails)

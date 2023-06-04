@@ -7,3 +7,14 @@ type Coupon struct {
 	MinimumPrice       float64 `json:"minimum_price"`
 	Validity           bool    `json:"validity"`
 }
+
+type AddCoupon struct {
+	Coupon             string  `json:"coupon"`
+	DiscountPercentage int     `json:"discount_percentage"`
+	MinimumPrice       float64 `json:"minimum_price"`
+	Validity           bool    `json:"validity"`
+}
+
+type CouponAddUser struct {
+	CouponName string `json:"coupon_name"`
+}

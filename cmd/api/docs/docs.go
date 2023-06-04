@@ -150,7 +150,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.Admin"
+                            "$ref": "#/definitions/models.AdminLogin"
                         }
                     }
                 ],
@@ -262,6 +262,17 @@ const docTemplate = `{
                     "Coupon"
                 ],
                 "summary": "Add  a new coupon by Admin",
+                "parameters": [
+                    {
+                        "description": "Add new Coupon",
+                        "name": "coupon",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AddCoupon"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -373,6 +384,17 @@ const docTemplate = `{
                     "Admin"
                 ],
                 "summary": "Add Category",
+                "parameters": [
+                    {
+                        "description": "Update Category",
+                        "name": "category",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CategoryUpdate"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1005,6 +1027,17 @@ const docTemplate = `{
                     "Cart"
                 ],
                 "summary": "Add coupon to out order",
+                "parameters": [
+                    {
+                        "description": "Add coupon to order",
+                        "name": "couponDetails",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CouponAddUser"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1084,7 +1117,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UserDetails"
+                            "$ref": "#/definitions/models.UserLogin"
                         }
                     }
                 ],
@@ -1647,20 +1680,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.Admin": {
+        "models.AddCoupon": {
             "type": "object",
             "properties": {
-                "email": {
+                "coupon": {
                     "type": "string"
                 },
-                "id": {
+                "discount_percentage": {
                     "type": "integer"
                 },
-                "name": {
-                    "type": "string"
+                "minimum_price": {
+                    "type": "number"
                 },
-                "password": {
-                    "type": "string"
+                "validity": {
+                    "type": "boolean"
                 }
             }
         },
@@ -1690,9 +1723,22 @@ const docTemplate = `{
                 },
                 "street": {
                     "type": "string"
+                }
+            }
+        },
+        "models.AdminLogin": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
                 },
-                "user_id": {
-                    "type": "integer"
+                "password": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 8
                 }
             }
         },
@@ -1709,6 +1755,31 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CategoryUpdate": {
+            "type": "object",
+            "properties": {
+                "director": {
+                    "type": "string"
+                },
+                "format": {
+                    "type": "string"
+                },
+                "genre": {
+                    "type": "string"
+                },
+                "language": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CouponAddUser": {
+            "type": "object",
+            "properties": {
+                "coupon_name": {
                     "type": "string"
                 }
             }
@@ -1787,6 +1858,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserLogin": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
