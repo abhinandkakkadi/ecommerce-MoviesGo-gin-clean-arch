@@ -58,7 +58,6 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 		return
 	}
 
-	
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
 		Message:    "Admin authenticated successfully",
@@ -142,7 +141,6 @@ func (cr *AdminHandler) GetUsers(c *gin.Context) {
 	})
 
 }
-
 
 // @Summary Get genre to admin side
 // @Description Display genre details on the admin side
@@ -249,7 +247,7 @@ func (cr *AdminHandler) DeleteGenre(c *gin.Context) {
 }
 
 // @Summary Block an existing user
-// @Description Block user 
+// @Description Block user
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -282,7 +280,7 @@ func (cr *AdminHandler) BlockUser(c *gin.Context) {
 }
 
 // @Summary UnBlock an existing user
-// @Description UnBlock user 
+// @Description UnBlock user
 // @Tags Admin
 // @Accept json
 // @Produce json

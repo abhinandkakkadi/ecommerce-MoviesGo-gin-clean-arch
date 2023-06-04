@@ -24,8 +24,6 @@ func main() {
 	docs.SwaggerInfo.Host = "localhost:3000"
 	docs.SwaggerInfo.BasePath = ""
 	docs.SwaggerInfo.Schemes = []string{"http"}
-	
-
 
 	config, configErr := config.LoadConfig()
 	if configErr != nil {

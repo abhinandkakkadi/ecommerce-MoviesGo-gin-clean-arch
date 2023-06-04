@@ -143,16 +143,16 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 
 }
 
-// @Summary Cancel order
-// @Description Cancel order by the user using order ID
+// @Summary Get All order details for admin
+// @Description Get all order details to the admin side
 // @Tags Order
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Param id path string true "Order ID"
+// @Param page path string true "Page number"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /users/cancel-order/{id} [put]
+// @Router /admin/orders/{id} [get]
 func (cr *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 
 	pageStr := c.Param("page")

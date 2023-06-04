@@ -63,7 +63,7 @@ func (cr *CouponHandler) AddCoupon(c *gin.Context) {
 
 }
 
-// @Summary Get coupon details 
+// @Summary Get coupon details
 // @Description Get Available coupon details for admin
 // @Tags Coupon
 // @Accept json
@@ -94,8 +94,7 @@ func (cr *CouponHandler) GetCoupon(c *gin.Context) {
 
 }
 
-
-// @Summary Get coupon details 
+// @Summary Get coupon details
 // @Description Get Available coupon details for admin
 // @Tags Coupon
 // @Accept json

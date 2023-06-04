@@ -50,3 +50,12 @@ type CategoryUpdateCheck struct {
 	FormatCount   int
 	LanguageCount int
 }
+
+type UpdateProduct struct {
+	Quantity  int `json:"quantity"`
+	ProductID int `json:"product-id"`
+}
+
+type SearchItems struct {
+	Name string `json:"name"`
+}

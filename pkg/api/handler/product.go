@@ -89,15 +89,15 @@ func (cr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 }
 
-// @Summary Get Products To Admin
-// @Description Retrieve products with pagination to Admin side
-// @Tags Admin
+// @Summary Get Full Product Details
+// @Description Retrieve Complete products details at user side
+// @Tags Users
 // @Accept json
 // @Produce json
-// @Param page path string true "Page number"
+// @Param id path string true "product id"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/products [get]
+// @Router /products/{id} [get]
 func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 
 	id := c.Param("id")
@@ -122,7 +122,6 @@ func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 
 }
 
-// handler to add a new product by authenticated admin
 func (cr *ProductHandler) AddProduct(c *gin.Context) {
 
 	var product models.ProductsReceiver
@@ -156,7 +155,15 @@ func (cr *ProductHandler) AddProduct(c *gin.Context) {
 
 }
 
-// handler to delete an existing product by admin
+// @Summary Add Products
+// @Description Add a new product from the admin side
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param id path string true "product id"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/products/delete-product/{id} [delete]
 func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 
 	product_id := c.Param("id")
@@ -180,13 +187,19 @@ func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 
 }
 
+// @Summary Update Products
+// @Description Update quantity of already existing product
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param p body models.UpdateProduct true "Product details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/products/update-product/ [post]
 func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 
-	type product struct {
-		Quantity  int `json:"quantity"`
-		ProductID int `json:"product-id"`
-	}
-	var p product
+	
+	var p models.UpdateProduct
 
 	if err := c.BindJSON(&p); err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
@@ -218,8 +231,16 @@ func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 
 }
 
-// handler to filter category
 
+// @Summary Show Products of specified category
+// @Description Show Products of specified category
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param data body map[string]int true "Category IDs and quantities"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /filer [post]
 func (cr *ProductHandler) FilterCategory(c *gin.Context) {
 
 	var data map[string]int
@@ -253,13 +274,19 @@ func (cr *ProductHandler) FilterCategory(c *gin.Context) {
 
 }
 
-// search for a product with given prefix
+// @Summary Show Products of specified category
+// @Description Show Products of specified category
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param prefix body models.SearchItems true "Name prefix to search"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /search [post]
 func (cr *ProductHandler) SearchProduct(c *gin.Context) {
 
-	type SearchItems struct {
-		Name string `json:"name"`
-	}
-	var prefix SearchItems
+	
+	var prefix models.SearchItems
 	if err := c.ShouldBindJSON(&prefix); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
