@@ -198,7 +198,6 @@ func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 // @Router /admin/products/update-product/ [post]
 func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 
-	
 	var p models.UpdateProduct
 
 	if err := c.BindJSON(&p); err != nil {
@@ -230,7 +229,6 @@ func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 	})
 
 }
-
 
 // @Summary Show Products of specified category
 // @Description Show Products of specified category
@@ -285,7 +283,6 @@ func (cr *ProductHandler) FilterCategory(c *gin.Context) {
 // @Router /search [post]
 func (cr *ProductHandler) SearchProduct(c *gin.Context) {
 
-	
 	var prefix models.SearchItems
 	if err := c.ShouldBindJSON(&prefix); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{

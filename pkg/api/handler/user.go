@@ -192,7 +192,7 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 
 }
 
-// @Summary Update User Address 
+// @Summary Update User Address
 // @Description Update User address by sending in address id
 // @Tags Users
 // @Accept json
@@ -252,7 +252,7 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 
 }
 
-// @Summary Checkout Order 
+// @Summary Checkout Order
 // @Description Checkout at the user side
 // @Tags Users
 // @Accept json
@@ -283,7 +283,7 @@ func (cr *UserHandler) CheckOut(c *gin.Context) {
 	})
 }
 
-// @Summary User Details 
+// @Summary User Details
 // @Description User Details from User Profile
 // @Tags Users
 // @Accept json
@@ -346,7 +346,6 @@ func (cr *UserHandler) GetAllAddress(c *gin.Context) {
 
 }
 
-
 func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
 
 	user_id, _ := c.Get("user_id")
@@ -384,7 +383,7 @@ func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
 	})
 }
 
-// @Summary Update User Password 
+// @Summary Update User Password
 // @Description Update User Password
 // @Tags Users
 // @Accept json
@@ -431,7 +430,7 @@ func (cr *UserHandler) UpdatePassword(c *gin.Context) {
 	})
 }
 
-// @Summary Add to Wishlist 
+// @Summary Add to Wishlist
 // @Description Add To wish List
 // @Tags Users
 // @Accept json
@@ -475,9 +474,7 @@ func (cr *UserHandler) AddToWishList(c *gin.Context) {
 
 }
 
-
-
-// @Summary Display Wishlist 
+// @Summary Display Wishlist
 // @Description Display wish List
 // @Tags Users
 // @Accept json
@@ -508,7 +505,7 @@ func (cr *UserHandler) GetWishList(c *gin.Context) {
 
 }
 
-// @Summary Add to Wishlist 
+// @Summary Add to Wishlist
 // @Description Add To wish List
 // @Tags Users
 // @Accept json
