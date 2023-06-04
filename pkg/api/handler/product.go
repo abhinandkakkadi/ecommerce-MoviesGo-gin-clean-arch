@@ -21,7 +21,15 @@ func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
 	}
 }
 
-// show all products details in a brief manner
+// @Summary Get Products
+// @Description Retrieve products with pagination
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param page path string true "Page number"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /products/page/{page} [get]
 func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 	pageStr := c.Param("page")
@@ -47,7 +55,6 @@ func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 }
 
-// show products details at the admin side (brief)
 func (cr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 	pageStr := c.Param("page")

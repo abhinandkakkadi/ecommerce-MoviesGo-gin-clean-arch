@@ -1,26 +1,4 @@
 definitions:
-  domain.Admin:
-    properties:
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      password:
-        type: string
-    type: object
-  models.AdminSignUp:
-    properties:
-      confirmpassword:
-        type: string
-      email:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-    type: object
   response.Response:
     properties:
       data: {}
@@ -33,115 +11,17 @@ definitions:
 info:
   contact: {}
 paths:
-  /admin/adminlogin:
-    post:
-      consumes:
-      - application/json
-      description: Authenticate an admin and provide JWT for protected routes
-      parameters:
-      - description: New Admin Details
-        in: body
-        name: adminDetails
-        required: true
-        schema:
-          $ref: '#/definitions/domain.Admin'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Login Handler for Admins
-      tags:
-      - Admin
-  /admin/adminsignup:
-    post:
-      consumes:
-      - application/json
-      description: Register a new admin user
-      operationId: signup-admin
-      parameters:
-      - description: New Admin Details
-        in: body
-        name: admin
-        required: true
-        schema:
-          $ref: '#/definitions/models.AdminSignUp'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Signup Handler for Admins
-      tags:
-      - Admin
-  /admin/genres:
-    get:
-      consumes:
-      - application/json
-      description: Get details of all the above genres
-      operationId: get-genres
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - ApiKeyAuth: []
-      summary: Get Genre details to the admin side
-      tags:
-      - Admin
-  /admin/genres/add_genre:
-    post:
-      consumes:
-      - application/json
-      description: Add new Category
-      operationId: add-category
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - ApiKeyAuth: []
-      summary: Add a new Category for movies
-      tags:
-      - Admin
   /admin/users/{page}:
     get:
       consumes:
       - application/json
-      description: Retrieve a list of users
-      operationId: get-users
+      description: Retrieve users with pagination
       parameters:
       - description: Page number
         in: path
         name: page
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -153,82 +33,14 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
-      security:
-      - ApiKeyAuth: []
-      summary: Get Users Handler for Admins
-      tags:
-      - Admin
-  /admin/users/block-users/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Block a normal user
-      operationId: block-user
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - ApiKeyAuth: []
-      summary: Block a user using id
-      tags:
-      - Admin
-  /admin/users/unblock-users/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Unblock user using id
-      operationId: unblock-user
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - ApiKeyAuth: []
-      summary: UnBlock a user using id
+      summary: Get Users
       tags:
       - Admin
   /cart:
-    delete:
-      consumes:
-      - application/json
-      description: Delete all items from the cart
-      operationId: empty-cart
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - bearerAuth: []
-      summary: Delete all items from the cart
-      tags:
-      - Cart
     get:
       consumes:
       - application/json
-      description: Display cart items
-      operationId: display-cart
+      description: Display ll items of the cart
       produces:
       - application/json
       responses:
@@ -241,45 +53,17 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       security:
-      - bearerAuth: []
-      summary: Display cart items
+      - Bearer: []
+      summary: Display Cart
       tags:
-      - Cart
-  /cart/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Remove items from the cart
-      operationId: remove-from-cart
-      parameters:
-      - description: Product ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - bearerAuth: []
-      summary: Remove items from the cart
-      tags:
-      - Cart
+      - Users
+  /cart/addtocart/{id}:
     post:
       consumes:
       - application/json
-      description: Add a product to the user's cart
-      operationId: add-to-cart
+      description: Add items to the cart
       parameters:
-      - description: Product ID
+      - description: product-id
         in: path
         name: id
         required: true
@@ -291,13 +75,38 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.Response'
-        "402":
-          description: Payment Required
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
       security:
-      - bearerAuth: []
-      summary: Add a product to the cart
+      - Bearer: []
+      summary: Add to Cart
       tags:
-      - Cart
+      - Users
+  /products/page/{page}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve products with pagination
+      parameters:
+      - description: Page number
+        in: path
+        name: page
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Products
+      tags:
+      - Admin
 swagger: "2.0"

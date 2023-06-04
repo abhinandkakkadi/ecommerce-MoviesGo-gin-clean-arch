@@ -4,15 +4,14 @@ import (
 	"log"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/cmd/api/docs"
+	_ "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/cmd/api/docs"
 	config "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/config"
 	di "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/di"
 	_ "github.com/swaggo/files"
 	_ "github.com/swaggo/gin-swagger"
 )
 
-// @securityDefinitions.apikey ApiKeyAuth
-// @in header
-// @name Authorization
+
 func main() {
 
 	// swagger 2.0 Meta Information
@@ -22,6 +21,7 @@ func main() {
 	docs.SwaggerInfo.Host = "localhost:3000"
 	docs.SwaggerInfo.BasePath = ""
 	docs.SwaggerInfo.Schemes = []string{"http"}
+	
 
 	config, configErr := config.LoadConfig()
 	if configErr != nil {

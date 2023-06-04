@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 
 	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
@@ -11,8 +12,9 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Retrieve the JWT token from the Authorization header
 		authHeader := c.GetHeader("Authorization")
+		fmt.Println("token from swagger",authHeader)
 		tokenString := helper.GetTokenFromHeader(authHeader)
-
+		fmt.Println("token string :",tokenString)
 		// Validate the token and extract the user ID
 		userID, userEmail, err := helper.ExtractUserIDFromToken(tokenString)
 		if err != nil {

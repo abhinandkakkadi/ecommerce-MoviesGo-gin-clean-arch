@@ -8,10 +8,13 @@ import (
 
 func GetTokenFromHeader(header string) string {
 	// Example header format: "Bearer <token>"
+	
 	if len(header) > 7 && header[:7] == "Bearer " {
 		return header[7:]
 	}
-	return ""
+
+	return header
+	// return ""
 }
 
 func ExtractUserIDFromToken(tokenString string) (int, string, error) {

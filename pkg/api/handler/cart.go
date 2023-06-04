@@ -22,18 +22,16 @@ func NewCartHandler(usecase services.CartUseCase) *CartHandler {
 
 }
 
-// AddToCart
-// @Summary Add a product to the cart
-// @ID add-to-cart
-// @Description Add a product to the user's cart
-// @Tags Cart
+// @Summary Add to Cart
+// @Description Add items to the cart
+// @Tags Users
 // @Accept json
 // @Produce json
-// @Param id path string true "Product ID"
-// @Security bearerAuth
-// @Success 200 {object} response.Response
-// @Failure 402 {object} response.Response
-// @Router /cart/{id} [post]
+// @Param id path string true "product-id"
+// @Security Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /cart/addtocart/{id} [post]
 func (cr *CartHandler) AddToCart(c *gin.Context) {
 
 	id := c.Param("id")
@@ -63,17 +61,7 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 
 }
 
-// @Summary Remove items from the cart
-// @ID remove-from-cart
-// @Description Remove items from the cart
-// @Tags Cart
-// @Accept json
-// @Produce json
-// @Param id path int true "Product ID"
-// @Security bearerAuth
-// @Success 200 {object} response.Response
-// @Failure 500 {object} response.Response
-// @Router /cart/{id} [delete]
+
 func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 
 	id := c.Param("id")
@@ -101,15 +89,14 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 	})
 }
 
-// @Summary Display cart items
-// @ID display-cart
-// @Description Display cart items
-// @Tags Cart
+// @Summary Display Cart
+// @Description Display ll items of the cart
+// @Tags Users
 // @Accept json
 // @Produce json
-// @Security bearerAuth
-// @Success 200 {object} response.Response
-// @Failure 500 {object} response.Response
+// @Security Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
 // @Router /cart [get]
 func (cr *CartHandler) DisplayCart(c *gin.Context) {
 
@@ -134,16 +121,7 @@ func (cr *CartHandler) DisplayCart(c *gin.Context) {
 	})
 }
 
-// / @Summary Delete all items from the cart
-// @ID empty-cart
-// @Description Delete all items from the cart
-// @Tags Cart
-// @Accept json
-// @Produce json
-// @Security bearerAuth
-// @Success 200 {object} response.Response
-// @Failure 500 {object} response.Response
-// @Router /cart [delete]
+
 func (cr *CartHandler) EmptyCart(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")

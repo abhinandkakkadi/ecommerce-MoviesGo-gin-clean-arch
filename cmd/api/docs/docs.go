@@ -15,236 +15,17 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
     "paths": {
-        "/admin/adminlogin": {
-            "post": {
-                "description": "Authenticate an admin and provide JWT for protected routes",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Login Handler for Admins",
-                "parameters": [
-                    {
-                        "description": "New Admin Details",
-                        "name": "adminDetails",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.Admin"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/adminsignup": {
-            "post": {
-                "description": "Register a new admin user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Signup Handler for Admins",
-                "operationId": "signup-admin",
-                "parameters": [
-                    {
-                        "description": "New Admin Details",
-                        "name": "admin",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.AdminSignUp"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/genres": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get details of all the above genres",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Get Genre details to the admin side",
-                "operationId": "get-genres",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/genres/add_genre": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Add new Category",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Add a new Category for movies",
-                "operationId": "add-category",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/users/block-users/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Block a normal user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Block a user using id",
-                "operationId": "block-user",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/users/unblock-users/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Unblock user using id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "UnBlock a user using id",
-                "operationId": "unblock-user",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/admin/users/{page}": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Retrieve a list of users",
+                "description": "Retrieve users with pagination",
                 "consumes": [
                     "application/json"
                 ],
@@ -254,11 +35,10 @@ const docTemplate = `{
                 "tags": [
                     "Admin"
                 ],
-                "summary": "Get Users Handler for Admins",
-                "operationId": "get-users",
+                "summary": "Get Users",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Page number",
                         "name": "page",
                         "in": "path",
@@ -285,10 +65,10 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "bearerAuth": []
+                        "Bearer": []
                     }
                 ],
-                "description": "Display cart items",
+                "description": "Display ll items of the cart",
                 "consumes": [
                     "application/json"
                 ],
@@ -296,43 +76,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "Users"
                 ],
-                "summary": "Display cart items",
-                "operationId": "display-cart",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "description": "Delete all items from the cart",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Cart"
-                ],
-                "summary": "Delete all items from the cart",
-                "operationId": "empty-cart",
+                "summary": "Display Cart",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -349,14 +95,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/cart/{id}": {
+        "/cart/addtocart/{id}": {
             "post": {
                 "security": [
                     {
-                        "bearerAuth": []
+                        "Bearer": []
                     }
                 ],
-                "description": "Add a product to the user's cart",
+                "description": "Add items to the cart",
                 "consumes": [
                     "application/json"
                 ],
@@ -364,14 +110,13 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "Users"
                 ],
-                "summary": "Add a product to the cart",
-                "operationId": "add-to-cart",
+                "summary": "Add to Cart",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Product ID",
+                        "description": "product-id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -384,21 +129,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/response.Response"
                         }
                     },
-                    "402": {
-                        "description": "Payment Required",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "description": "Remove items from the cart",
+            }
+        },
+        "/products/page/{page}": {
+            "get": {
+                "description": "Retrieve products with pagination",
                 "consumes": [
                     "application/json"
                 ],
@@ -406,15 +148,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "Admin"
                 ],
-                "summary": "Remove items from the cart",
-                "operationId": "remove-from-cart",
+                "summary": "Get Products",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Product ID",
-                        "name": "id",
+                        "type": "string",
+                        "description": "Page number",
+                        "name": "page",
                         "in": "path",
                         "required": true
                     }
@@ -437,40 +178,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.Admin": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.AdminSignUp": {
-            "type": "object",
-            "properties": {
-                "confirmpassword": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
         "response.Response": {
             "type": "object",
             "properties": {
