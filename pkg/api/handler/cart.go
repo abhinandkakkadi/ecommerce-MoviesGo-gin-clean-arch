@@ -61,7 +61,16 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 
 }
 
-
+// @Summary Remove Items from cart
+// @Description Remove specified product of quantity 1 from cart
+// @Tags Cart
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "Product id"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /cart/removefromcart/{id} [delete]
 func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 
 	id := c.Param("id")
@@ -90,8 +99,8 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 }
 
 // @Summary Display Cart
-// @Description Display ll items of the cart
-// @Tags Users
+// @Description Display all items of the cart
+// @Tags Cart
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -121,7 +130,15 @@ func (cr *CartHandler) DisplayCart(c *gin.Context) {
 	})
 }
 
-
+// @Summary Empty Items from cart
+// @Description Remove all product from cart
+// @Tags Cart
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /cart [delete]
 func (cr *CartHandler) EmptyCart(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
@@ -145,6 +162,15 @@ func (cr *CartHandler) EmptyCart(c *gin.Context) {
 	})
 }
 
+// @Summary Add coupon to out order
+// @Description Add Coupon to get discount
+// @Tags Cart
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /coupon/add [post]
 func (cr *CartHandler) AddCoupon(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")

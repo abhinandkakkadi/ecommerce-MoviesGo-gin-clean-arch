@@ -21,9 +21,9 @@ func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
 	}
 }
 
-// @Summary Get Products
+// @Summary Get Products to users
 // @Description Retrieve products with pagination
-// @Tags Admin
+// @Tags Users
 // @Accept json
 // @Produce json
 // @Param page path string true "Page number"
@@ -55,6 +55,15 @@ func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 }
 
+// @Summary Get Products To Admin
+// @Description Retrieve products with pagination to Admin side
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param page path string true "Page number"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/products [get]
 func (cr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 	pageStr := c.Param("page")
@@ -80,7 +89,15 @@ func (cr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 }
 
-// show detailed details about  the product including product decription
+// @Summary Get Products To Admin
+// @Description Retrieve products with pagination to Admin side
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param page path string true "Page number"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/products [get]
 func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 
 	id := c.Param("id")

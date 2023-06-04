@@ -14,12 +14,12 @@ func AuthorizationMiddleware(c *gin.Context) {
 	s := c.Request.Header.Get("Authorization")
 	fmt.Println(s)
 	var token string
-	if  s[:7] == "Bearer " {
+	if s[:7] == "Bearer " {
 		token = strings.TrimPrefix(s, "Bearer ")
 	} else {
 		token = s
 	}
-	
+
 	if err := validateToken(token); err != nil {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return

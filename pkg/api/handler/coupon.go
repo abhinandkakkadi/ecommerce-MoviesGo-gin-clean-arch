@@ -21,6 +21,15 @@ func NewCouponHandler(useCase services.CouponUseCase) *CouponHandler {
 	}
 }
 
+// @Summary Add  a new coupon by Admin
+// @Description Add A new Coupon which can be used by the users
+// @Tags Coupon
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/coupon/addcoupon [post]
 func (cr *CouponHandler) AddCoupon(c *gin.Context) {
 
 	var coupon models.Coupon
@@ -54,6 +63,15 @@ func (cr *CouponHandler) AddCoupon(c *gin.Context) {
 
 }
 
+// @Summary Get coupon details 
+// @Description Get Available coupon details for admin
+// @Tags Coupon
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/coupon [get]
 func (cr *CouponHandler) GetCoupon(c *gin.Context) {
 
 	coupons, err := cr.couponUseCase.GetCoupon()
@@ -76,6 +94,17 @@ func (cr *CouponHandler) GetCoupon(c *gin.Context) {
 
 }
 
+
+// @Summary Get coupon details 
+// @Description Get Available coupon details for admin
+// @Tags Coupon
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "Coupon id"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/coupon/expire/{id} [get]
 func (cr *CouponHandler) ExpireCoupon(c *gin.Context) {
 
 	id := c.Param("id")

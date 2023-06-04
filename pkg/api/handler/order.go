@@ -21,7 +21,16 @@ func NewOrderHandler(useCase services.OrderUseCase) *OrderHandler {
 	}
 }
 
-// handler to order items present inside the cart
+// @Summary Order Items from cart
+// @Description Order all products inside the cart
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param orderBody body models.OrderIncoming true "Order details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /order [post]
 func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
 	id, _ := c.Get("user_id")
@@ -60,7 +69,16 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
 }
 
-// get order details of all orders to user profile section
+// @Summary Get Order Details to user side
+// @Description Order all order details done by user
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "page number"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /users/orders/{id} [get]
 func (cr *OrderHandler) GetOrderDetails(c *gin.Context) {
 
 	pageStr := c.Param("page")
@@ -88,7 +106,16 @@ func (cr *OrderHandler) GetOrderDetails(c *gin.Context) {
 
 }
 
-// handler to cancel order which is not delivered
+// @Summary Cancel order
+// @Description Cancel order by the user using order ID
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "Order ID"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /users/cancel-order/{id} [put]
 func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 
 	orderID := c.Param("id")
@@ -116,7 +143,16 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 
 }
 
-// handler to get order details at admin side
+// @Summary Cancel order
+// @Description Cancel order by the user using order ID
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "Order ID"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /users/cancel-order/{id} [put]
 func (cr *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 
 	pageStr := c.Param("page")
@@ -141,7 +177,16 @@ func (cr *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 
 }
 
-// handler to approve order made by the user by admin
+// @Summary Approve Order
+// @Description Approve Order from admin side
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "Order ID"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/orders/approve-order/{id} [get]
 func (cr *OrderHandler) ApproveOrder(c *gin.Context) {
 
 	orderId := c.Param("order_id")
@@ -165,7 +210,16 @@ func (cr *OrderHandler) ApproveOrder(c *gin.Context) {
 
 }
 
-// cancel order by the admin
+// @Summary Cancel Order Admin
+// @Description Cancel Order from admin side
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "Order ID"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/orders/cancel-order/{id} [get]
 func (cr *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 
 	orderID := c.Param("order_id")

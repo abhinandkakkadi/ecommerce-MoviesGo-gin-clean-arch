@@ -23,14 +23,15 @@ func NewAdminHandler(usecase services.AdminUseCase) *AdminHandler {
 	}
 }
 
-//  CreateTags  godoc
-// @Summary     Login Admin
-// @Description Login already signed up admins
-// @Param       admin body domin.Admin true "Admin login details"
-// @Produce     application/json
-// @Success     200 {object} response.Response{}
-// @Router      /admin/adminlogin [post]
-
+// @Summary Admin Login
+// @Description Login handler for admin
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param  admin body domain.Admin true "Admin login details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/adminlogin [post]
 func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the admin
 
 	// var adminDetails models.AdminLogin
@@ -57,6 +58,7 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 		return
 	}
 
+	
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
 		Message:    "Admin authenticated successfully",
@@ -66,7 +68,15 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 
 }
 
-
+// @Summary Admin Signup
+// @Description Signup handler for admin
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param  admin body models.AdminSignUp true "Admin login details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/adminsignup [post]
 func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 
 	var admin models.AdminSignUp
@@ -104,6 +114,7 @@ func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Param page path string true "Page number"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
@@ -133,6 +144,15 @@ func (cr *AdminHandler) GetUsers(c *gin.Context) {
 }
 
 
+// @Summary Get genre to admin side
+// @Description Display genre details on the admin side
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/genres [get]
 func (cr *AdminHandler) GetGenres(c *gin.Context) {
 
 	genres, err := cr.adminUseCase.GetFullCategory()
@@ -154,7 +174,15 @@ func (cr *AdminHandler) GetGenres(c *gin.Context) {
 	})
 }
 
-
+// @Summary Add Category
+// @Description Add Category for existing films
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/genres/add_genre [POST]
 func (cr *AdminHandler) AddCategory(c *gin.Context) {
 
 	var category models.CategoryUpdate
@@ -188,7 +216,16 @@ func (cr *AdminHandler) AddCategory(c *gin.Context) {
 
 }
 
-// handler to delete genre ( have to modify this to delete the whole category)
+// @Summary Delete Category
+// @Description Delete Category for existing films and films long with it
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "genre-id"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/genres/delete_genre/{id} [POST]
 func (cr *AdminHandler) DeleteGenre(c *gin.Context) {
 
 	genre_id := c.Param("id")
@@ -211,7 +248,16 @@ func (cr *AdminHandler) DeleteGenre(c *gin.Context) {
 
 }
 
-
+// @Summary Block an existing user
+// @Description Block user 
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "user-id"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/users/block-users/{id} [POST]
 func (cr *AdminHandler) BlockUser(c *gin.Context) {
 
 	id := c.Param("id")
@@ -235,7 +281,16 @@ func (cr *AdminHandler) BlockUser(c *gin.Context) {
 
 }
 
-
+// @Summary UnBlock an existing user
+// @Description UnBlock user 
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "user-id"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/users/unblock-users/{id} [POST]
 func (cr *AdminHandler) UnBlockUser(c *gin.Context) {
 
 	id := c.Param("id")
@@ -259,6 +314,7 @@ func (cr *AdminHandler) UnBlockUser(c *gin.Context) {
 	})
 }
 
+// check this before doing ny operations on this.
 func (cr *UserHandler) AddNewUsers(c *gin.Context) {
 	fmt.Println("add users")
 	var userDetails models.UserDetails

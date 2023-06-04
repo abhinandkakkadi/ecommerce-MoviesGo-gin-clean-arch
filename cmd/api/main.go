@@ -11,7 +11,10 @@ import (
 	_ "github.com/swaggo/gin-swagger"
 )
 
-
+// @securityDefinitions.Bearer type apiKey
+// @securityDefinitions.Bearer name Authorization
+// @securityDefinitions.Bearer in header
+// @securityDefinitions.BasicAuth type basic
 func main() {
 
 	// swagger 2.0 Meta Information
@@ -22,6 +25,7 @@ func main() {
 	docs.SwaggerInfo.BasePath = ""
 	docs.SwaggerInfo.Schemes = []string{"http"}
 	
+
 
 	config, configErr := config.LoadConfig()
 	if configErr != nil {
