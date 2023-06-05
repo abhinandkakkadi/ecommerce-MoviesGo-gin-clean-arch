@@ -24,5 +24,7 @@ type OrderRepository interface {
 	CheckOrder(orderID string, userID int) error
 	GetOrderDetail(orderID string) (models.OrderDetails, error)
 
-	AddRazorPayDetails(orderID string,razorPayOrderID string)
+	AddRazorPayDetails(orderID string, razorPayOrderID string) error
+	CheckPaymentStatus(orderID string) error
+	UpdatePaymentDetails(razorID string, paymentID string) error
 }

@@ -11,20 +11,20 @@ import (
 )
 
 type paymentUseCase struct {
-	paymentReposioty interfaces.PaymentRepository
-	orderRepository  interfaces.OrderRepository
-	userRepository   interfaces.UserRepository
+	paymentRepository interfaces.PaymentRepository
+	orderRepository   interfaces.OrderRepository
+	userRepository    interfaces.UserRepository
 }
 
 func NewPaymentUseCase(paymentRepo interfaces.PaymentRepository, orderRepo interfaces.OrderRepository, userRepo interfaces.UserRepository) services.PaymentUseCase {
 	return &paymentUseCase{
-		paymentReposioty: paymentRepo,
-		orderRepository:  orderRepo,
-		userRepository:   userRepo,
+		paymentRepository: paymentRepo,
+		orderRepository:   orderRepo,
+		userRepository:    userRepo,
 	}
 }
 
-func (p *paymentUseCase) MakePaymentRazorPay(orderID string, userID int) (models.CombinedOrderDetails,string,error) {
+func (p *paymentUseCase) MakePaymentRazorPay(orderID string, userID int) (models.CombinedOrderDetails, string, error) {
 
 	// check whether there is an order given by this order and also check if the current user have made this order
 	err := p.orderRepository.CheckOrder(orderID, userID)
@@ -54,17 +54,37 @@ func (p *paymentUseCase) MakePaymentRazorPay(orderID string, userID int) (models
 
 	client := razorpay.NewClient("rzp_test_6m0J6O6Dngl96V", "F9zSviAWO3DIXnNAtKgrufzT")
 
-  data := map[string]interface{}{
-    "amount":   int(combinedOrderDetails.FinalPrice)*100,
-    "currency": "INR",
-    "receipt":  "some_receipt_id",
-  }
-  body, err := client.Order.Create(data, nil)
-  fmt.Println(body)
-  razorPayOrderID := body["id"].(string)
+	data := map[string]interface{}{
+		"amount":   int(combinedOrderDetails.FinalPrice) * 100,
+		"currency": "INR",
+		"receipt":  "some_receipt_id",
+	}
+	body, err := client.Order.Create(data, nil)
+	fmt.Println(body)
+	razorPayOrderID := body["id"].(string)
 
-	p.orderRepository.AddRazorPayDetails(orderID,razorPayOrderID)
+	err = p.orderRepository.AddRazorPayDetails(orderID, razorPayOrderID)
+	if err != nil {
+		return models.CombinedOrderDetails{}, "", err
+	}
 
-	return combinedOrderDetails,razorPayOrderID,nil
+	return combinedOrderDetails, razorPayOrderID, nil
+
+}
+
+func (p *paymentUseCase) SavePaymentDetails(paymentID string, razorID string) error {
+
+	// to check whether the order is already paid
+	err := p.orderRepository.CheckPaymentStatus(razorID)
+	if err != nil {
+		return err
+	}
+
+	err = p.orderRepository.UpdatePaymentDetails(razorID, paymentID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 
 }

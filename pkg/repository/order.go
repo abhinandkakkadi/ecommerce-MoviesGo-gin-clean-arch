@@ -67,7 +67,8 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 	orderDetails.FinalPrice = orderDetails.GrandTotal - discount_price
 	fmt.Println("payment ID = ", orderBody.PaymentID)
 	if orderBody.PaymentID == 2 {
-		// do the code today
+		orderDetails.PaymentStatus = "not paid"
+		orderDetails.ShipmentStatus = "pending"
 	}
 	// if the payment method is wallet
 	if orderBody.PaymentID == 3 {
@@ -336,8 +337,50 @@ func (cr *orderRepository) GetOrderDetail(orderID string) (models.OrderDetails, 
 
 }
 
+func (cr *orderRepository) AddRazorPayDetails(orderID string, razorPayOrderID string) error {
 
-func (cr *orderRepository) AddRazorPayDetails(orderID string,razorPayOrderID string) {
+	err := cr.DB.Exec("insert into razer_pays (order_id,razor_id) values (?,?)", orderID, razorPayOrderID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
-	// err := cr.DB.Raw("insert into ")
+func (cr *orderRepository) CheckPaymentStatus(razorID string) error {
+
+	fmt.Println(razorID)
+	var OrderID string
+	err := cr.DB.Raw("select order_id from razer_pays where razor_id = ?", razorID).Scan(&OrderID).Error
+	if err != nil {
+		return err
+	}
+
+	fmt.Print("order id corresponding to razor id := ", OrderID)
+	var paymentStatus string
+	err = cr.DB.Raw("select payment_status from orders where order_id = ?", OrderID).Scan(&paymentStatus).Error
+	if err != nil {
+		return err
+	}
+
+	if paymentStatus == "not paid" {
+		fmt.Println("have to reach here")
+		err = cr.DB.Exec("update orders set payment_status = paid, shipment_status = processing from orders where order_id = ?", OrderID).Scan(&paymentStatus).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	fmt.Println("should not reach here")
+	return errors.New("already paid")
+
+}
+
+func (cr *orderRepository) UpdatePaymentDetails(razorID string, paymentID string) error {
+
+	err := cr.DB.Exec("update razer_pays set payment_id = ? where razor_id = ?", paymentID, razorID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+
 }
