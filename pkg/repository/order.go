@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -298,4 +299,45 @@ func (cr *orderRepository) GetPaymentDetails(OrderID string) (domain.Charge, err
 	}
 	// fmt.Println("amount no problem",productDetails)
 	return paymentDetails, nil
+}
+
+func (cr *orderRepository) CheckOrder(orderID string, userID int) error {
+
+	var count int
+	err := cr.DB.Raw("select count(*) from orders where order_id = ?", orderID).Scan(&count).Error
+	if err != nil {
+		return err
+	}
+	if count < 0 {
+		return errors.New("no such order exist")
+	}
+	var checkUser int
+	err = cr.DB.Raw("select user_id from orders where order_id = ?", orderID).Scan(&checkUser).Error
+	if err != nil {
+		return err
+	}
+
+	if userID != checkUser {
+		return errors.New("the order is not done by this user")
+	}
+
+	return nil
+}
+
+func (cr *orderRepository) GetOrderDetail(orderID string) (models.OrderDetails, error) {
+
+	var orderDetails models.OrderDetails
+	err := cr.DB.Raw("select order_id,final_price,shipment_status,payment_status from orders where order_id = ?", orderID).Scan(&orderDetails).Error
+	if err != nil {
+		return models.OrderDetails{}, err
+	}
+
+	return orderDetails, nil
+
+}
+
+
+func (cr *orderRepository) AddRazorPayDetails(orderID string,razorPayOrderID string) {
+
+	// err := cr.DB.Raw("insert into ")
 }

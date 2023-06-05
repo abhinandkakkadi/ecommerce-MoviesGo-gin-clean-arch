@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, productHandler *handler.ProductHandler, cartHandler *handler.CartHandler, orderHandler *handler.OrderHandler) {
+func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, productHandler *handler.ProductHandler, cartHandler *handler.CartHandler, orderHandler *handler.OrderHandler, paymentHandler *handler.PaymentHandler) {
 
 	// USER SIDE
 	router.POST("/signup", userHandler.UserSignUp)
@@ -71,7 +71,8 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 
 		router.POST("/order", orderHandler.OrderItemsFromCart)
 
-		router.GET("/payment", handler.MakePayment)
+		router.GET("/payment/:id", paymentHandler.MakePaymentRazorPay)
+		router.GET("/payment-success", paymentHandler.VerifyPayment)
 
 	}
 

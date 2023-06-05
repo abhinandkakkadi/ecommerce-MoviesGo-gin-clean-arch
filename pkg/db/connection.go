@@ -30,6 +30,7 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	db.AutoMigrate(&domain.OrderCoupon{})
 	db.AutoMigrate(&domain.WishList{})
 	db.AutoMigrate(&domain.Wallet{})
+	db.AutoMigrate(&domain.RazerPay{})
 
 	return db, dbErr
 

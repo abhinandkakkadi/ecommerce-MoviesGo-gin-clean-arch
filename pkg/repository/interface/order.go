@@ -20,4 +20,9 @@ type OrderRepository interface {
 
 	SavePayment(charge domain.Charge) error
 	GetPaymentDetails(OrderID string) (domain.Charge, error)
+
+	CheckOrder(orderID string, userID int) error
+	GetOrderDetail(orderID string) (models.OrderDetails, error)
+
+	AddRazorPayDetails(orderID string,razorPayOrderID string)
 }
