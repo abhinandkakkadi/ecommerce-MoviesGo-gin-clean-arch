@@ -15,6 +15,8 @@ type ServerHTTP struct {
 func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.ProductHandler, otpHandler *handler.OtpHandler, adminHandler *handler.AdminHandler, cartHandler *handler.CartHandler, orderHandler *handler.OrderHandler, couponHandler *handler.CouponHandler) *ServerHTTP {
 	router := gin.New()
 
+	router.LoadHTMLGlob("templates/*.html")
+
 	// Use logger from Gin
 	router.Use(gin.Logger())
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

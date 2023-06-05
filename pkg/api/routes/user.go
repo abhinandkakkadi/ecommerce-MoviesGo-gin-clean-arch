@@ -71,6 +71,8 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 
 		router.POST("/order", orderHandler.OrderItemsFromCart)
 
+		router.GET("/payment", handler.MakePayment)
+
 	}
 
 }

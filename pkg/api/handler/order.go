@@ -60,6 +60,16 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		return
 	}
 
+	// if orderBody.PaymentID == 2 {
+	// 	c.HTML(http.StatusOK,"index.html")
+	// }
+	if orderBody.PaymentID == 2 {
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			"content": "This is an index page...",
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
 		Error:      nil,

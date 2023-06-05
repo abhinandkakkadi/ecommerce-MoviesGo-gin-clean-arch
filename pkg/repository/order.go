@@ -9,7 +9,6 @@ import (
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"github.com/google/uuid"
-	"github.com/razorpay/razorpay-go"
 	"gorm.io/gorm"
 )
 
@@ -67,23 +66,7 @@ func (cr *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, ca
 	orderDetails.FinalPrice = orderDetails.GrandTotal - discount_price
 	fmt.Println("payment ID = ", orderBody.PaymentID)
 	if orderBody.PaymentID == 2 {
-		fmt.Println("the code obviously reached payment 1")
-		client := razorpay.NewClient("rzp_test_ThxGGWcOWrG4g1", "XP8s8TkXCJxdMouLTWjQpMUj")
-		data := map[string]interface{}{
-			"amount":   int(orderDetails.FinalPrice) * 100,
-			"currency": "INR",
-			"receipt":  "random_receipt",
-		}
-		fmt.Println("the code obviously reached payment 2")
-		body, err := client.Order.Create(data, nil)
-		if err != nil {
-			return domain.OrderSuccessResponse{}, err
-		}
-		fmt.Println("the code obviously reached payment 3")
-		value := body["id"]
-		orderID := value.(string)
-		fmt.Println(orderID)
-		orderDetails.PaymentStatus = "paid"
+		// do the code today
 	}
 	// if the payment method is wallet
 	if orderBody.PaymentID == 3 {

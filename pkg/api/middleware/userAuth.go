@@ -16,6 +16,14 @@ func AuthMiddleware() gin.HandlerFunc {
 		tokenString := helper.GetTokenFromHeader(authHeader)
 		fmt.Println("token string :", tokenString)
 		// Validate the token and extract the user ID
+		if tokenString == "" {
+			var err error
+			tokenString, err = c.Cookie("Authorization")
+			if err != nil {
+				c.AbortWithStatus(http.StatusUnauthorized)
+				return
+			}
+		}
 		userID, userEmail, err := helper.ExtractUserIDFromToken(tokenString)
 		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
