@@ -75,13 +75,11 @@ definitions:
     required:
     - phone
     type: object
-  models.OrderIncoming:
+  models.OrderFromCart:
     properties:
       address_id:
         type: integer
       payment_id:
-        type: integer
-      user_id:
         type: integer
     type: object
   models.SearchItems:
@@ -800,7 +798,7 @@ paths:
       summary: Add coupon to out order
       tags:
       - Cart
-  /filer:
+  /filter:
     post:
       consumes:
       - application/json
@@ -865,7 +863,7 @@ paths:
         name: orderBody
         required: true
         schema:
-          $ref: '#/definitions/models.OrderIncoming'
+          $ref: '#/definitions/models.OrderFromCart'
       produces:
       - application/json
       responses:

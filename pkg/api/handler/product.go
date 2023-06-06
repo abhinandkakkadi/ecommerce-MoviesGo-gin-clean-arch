@@ -35,7 +35,9 @@ func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 	pageStr := c.Param("page")
 	page, _ := strconv.Atoi(pageStr)
 
-	products, err := cr.productUseCase.ShowAllProducts(page)
+	count := c.Query("count")
+
+	products, err := cr.productUseCase.ShowAllProducts(page,count)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -241,7 +243,7 @@ func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 // @Param data body map[string]int true "Category IDs and quantities"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /filer [post]
+// @Router /filter [post]
 func (cr *ProductHandler) FilterCategory(c *gin.Context) {
 
 	var data map[string]int

@@ -1045,7 +1045,7 @@
                 }
             }
         },
-        "/filer": {
+        "/filter": {
             "post": {
                 "description": "Show Products of specified category",
                 "consumes": [
@@ -1153,7 +1153,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.OrderIncoming"
+                            "$ref": "#/definitions/models.OrderFromCart"
                         }
                     }
                 ],
@@ -1845,16 +1845,13 @@
                 }
             }
         },
-        "models.OrderIncoming": {
+        "models.OrderFromCart": {
             "type": "object",
             "properties": {
                 "address_id": {
                     "type": "integer"
                 },
                 "payment_id": {
-                    "type": "integer"
-                },
-                "user_id": {
                     "type": "integer"
                 }
             }

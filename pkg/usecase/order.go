@@ -9,6 +9,7 @@ import (
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
+	"github.com/jinzhu/copier"
 )
 
 type orderUseCase struct {
@@ -25,7 +26,15 @@ func NewOrderUseCase(orderRepo interfaces.OrderRepository, cartRepo interfaces.C
 	}
 }
 
-func (cr *orderUseCase) OrderItemsFromCart(orderBody models.OrderIncoming) (domain.OrderSuccessResponse, error) {
+func (cr *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart,userID int) (domain.OrderSuccessResponse, error) {
+
+	var orderBody models.OrderIncoming
+	err := copier.Copy(&orderBody, &orderFromCart)
+	if err != nil {
+		return domain.OrderSuccessResponse{}, err
+	}
+
+	orderBody.UserID = uint(userID)
 
 	addressExist, err := cr.orderRepository.AddressExist(orderBody)
 	if err != nil {

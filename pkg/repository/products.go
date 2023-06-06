@@ -18,7 +18,7 @@ func NewProductRepository(DB *gorm.DB) interfaces.ProductRepository {
 	return &productDatabase{DB}
 }
 
-func (c *productDatabase) ShowAllProducts(page int) ([]models.ProductsBrief, error) {
+func (c *productDatabase) ShowAllProducts(page int,count int) ([]models.ProductsBrief, error) {
 	if page == 0 {
 		page = 1
 	}
@@ -200,7 +200,17 @@ func (cr *productDatabase) GetProductFromCategory(data map[string]int) ([]models
 			return nil, err
 		}
 		fmt.Println("individual product details : ", product)
+		var quantity int
+		err = cr.DB.Raw("select quantity from products where id = ?", product.ID).Scan(&quantity).Error
+		if err != nil {
+			return nil,err
+		}
 
+		if quantity == 0 {
+			product.Product_Status = "out of stock"
+		} else {
+			product.Product_Status = "in stock"
+		}
 		// if a product exist for that genre. Then only append it
 		if product.ID != 0 {
 			productFromCategory = append(productFromCategory, product)

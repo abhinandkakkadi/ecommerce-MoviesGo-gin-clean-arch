@@ -1064,7 +1064,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/filer": {
+        "/filter": {
             "post": {
                 "description": "Show Products of specified category",
                 "consumes": [
@@ -1172,7 +1172,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.OrderIncoming"
+                            "$ref": "#/definitions/models.OrderFromCart"
                         }
                     }
                 ],
@@ -1864,16 +1864,13 @@ const docTemplate = `{
                 }
             }
         },
-        "models.OrderIncoming": {
+        "models.OrderFromCart": {
             "type": "object",
             "properties": {
                 "address_id": {
                     "type": "integer"
                 },
                 "payment_id": {
-                    "type": "integer"
-                },
-                "user_id": {
                     "type": "integer"
                 }
             }

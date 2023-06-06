@@ -27,7 +27,7 @@ func NewOrderHandler(useCase services.OrderUseCase) *OrderHandler {
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Param orderBody body models.OrderIncoming true "Order details"
+// @Param orderBody body models.OrderFromCart true "Order details"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /order [post]
@@ -36,8 +36,8 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
-	var orderBody models.OrderIncoming
-	if err := c.BindJSON(&orderBody); err != nil {
+	var orderFromCart models.OrderFromCart
+	if err := c.BindJSON(&orderFromCart); err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusBadRequest,
 			Error:      err.Error(),
@@ -47,9 +47,9 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		return
 	}
 
-	orderBody.UserID = uint(userID)
+	
 
-	orderSuccessResponse, err := cr.orderUseCase.OrderItemsFromCart(orderBody)
+	orderSuccessResponse, err := cr.orderUseCase.OrderItemsFromCart(orderFromCart,userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
