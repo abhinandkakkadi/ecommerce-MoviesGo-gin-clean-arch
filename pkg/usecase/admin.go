@@ -114,7 +114,7 @@ func (cr *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdm
 
 func (cr *adminUseCase) GetUsers(page int, count int) ([]models.UserDetailsAtAdmin, error) {
 
-	userDetails, err := cr.adminRepository.GetUsers(page,count)
+	userDetails, err := cr.adminRepository.GetUsers(page, count)
 	if err != nil {
 		return []models.UserDetailsAtAdmin{}, err
 	}

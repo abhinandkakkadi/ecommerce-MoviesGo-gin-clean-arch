@@ -35,7 +35,7 @@ func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 	pageStr := c.Param("page")
 	page, _ := strconv.Atoi(pageStr)
 
-	count,_ := strconv.Atoi(c.Query("count"))
+	count, _ := strconv.Atoi(c.Query("count"))
 
 	products, err := cr.productUseCase.ShowAllProducts(page, count)
 	if err != nil {
@@ -72,9 +72,9 @@ func (cr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 	pageStr := c.Param("page")
 	page, _ := strconv.Atoi(pageStr)
 
-	count,_ := strconv.Atoi(c.Query("count"))
+	count, _ := strconv.Atoi(c.Query("count"))
 
-	products, err := cr.productUseCase.ShowAllProducts(page,count)
+	products, err := cr.productUseCase.ShowAllProducts(page, count)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
