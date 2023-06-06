@@ -22,14 +22,14 @@ func (c *productDatabase) ShowAllProducts(page int, count int) ([]models.Product
 	if page == 0 {
 		page = 1
 	}
-	offset := (page - 1) * 2
+	offset := (page - 1) * count
 	var productsBrief []models.ProductsBrief
-	err := c.DB.Limit(1).Raw(`
+	err := c.DB.Raw(`
 		SELECT products.id, products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language,products.price,products.quantity
 		FROM products
 		JOIN genres ON products.genre_id = genres.id
 		JOIN movie_languages ON products.language_id = movie_languages.id limit ? offset ?
-	`, 2, offset).Scan(&productsBrief).Error
+	`, count, offset).Scan(&productsBrief).Error
 
 	if err != nil {
 		return nil, err
