@@ -90,7 +90,16 @@ func (o *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 func (o *OrderHandler) GetOrderDetails(c *gin.Context) {
 
 	pageStr := c.Param("page")
-	page, _ := strconv.Atoi(pageStr)
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "page number not in correct format",
+		})
+		return
+	}
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
@@ -164,7 +173,17 @@ func (o *OrderHandler) CancelOrder(c *gin.Context) {
 func (o *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 
 	pageStr := c.Param("page")
-	page, _ := strconv.Atoi(pageStr)
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "page number not in correct format",
+		})
+		return
+	}
+
 	allOrderDetails, err := o.orderUseCase.GetAllOrderDetailsForAdmin(page)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{

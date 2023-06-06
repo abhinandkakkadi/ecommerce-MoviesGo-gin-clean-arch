@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -164,7 +165,18 @@ func (ad *adminRepository) AddLanguage(language string) (domain.Movie_Language, 
 
 func (ad *adminRepository) Delete(genre_id string) error {
 
-	id, _ := strconv.Atoi(genre_id)
+	id, err := strconv.Atoi(genre_id)
+	if err != nil {
+		return err
+	}
+	var count int
+	if err := ad.DB.Raw("select count(*) from genres where id = ?").Scan(&count).Error; err != nil {
+		return err
+	}
+	if count < 1 {
+		return errors.New("genre for given id does not exist")
+	}
+
 	query := fmt.Sprintf("delete from genres where id = '%d'", id)
 	if err := ad.DB.Exec(query).Error; err != nil {
 		return err
@@ -176,7 +188,18 @@ func (ad *adminRepository) Delete(genre_id string) error {
 
 func (ad *adminRepository) GetUserByID(id string) (domain.Users, error) {
 
-	user_id, _ := strconv.Atoi(id)
+	user_id, err := strconv.Atoi(id)
+	if err != nil {
+		return domain.Users{},err
+	}
+
+	var count int
+	if err := ad.DB.Raw("select count(*) from users where id = ?").Scan(&count).Error; err != nil {
+		return domain.Users{},err
+	}
+	if count < 1 {
+		return domain.Users{},errors.New("user for the given id does not exist")
+	}
 
 	query := fmt.Sprintf("select * from users where id = '%d'", user_id)
 	var userDetails domain.Users

@@ -120,8 +120,28 @@ func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 func (ad *AdminHandler) GetUsers(c *gin.Context) {
 
 	pageStr := c.Param("page")
-	page, _ := strconv.Atoi(pageStr)
-	count, _ := strconv.Atoi(c.Query("count"))
+	page, err := strconv.Atoi(pageStr)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "page number not in right format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+	count, err := strconv.Atoi(c.Query("count"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "user count in a page not in right format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
 	users, err := ad.adminUseCase.GetUsers(page, count)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{

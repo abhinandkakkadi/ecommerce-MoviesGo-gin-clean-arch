@@ -36,7 +36,16 @@ func NewCartHandler(usecase services.CartUseCase) *CartHandler {
 func (cr *CartHandler) AddToCart(c *gin.Context) {
 
 	id := c.Param("id")
-	product_id, _ := strconv.Atoi(id)
+	product_id, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "product id not in correct format",
+		})
+		return
+	}
 
 	userID, _ := c.Get("user_id")
 	fmt.Println(product_id, userID)
@@ -75,7 +84,16 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 
 	id := c.Param("id")
-	product_id, _ := strconv.Atoi(id)
+	product_id, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "product id not in correct format",
+		})
+		return
+	}
 
 	userID, _ := c.Get("user_id")
 

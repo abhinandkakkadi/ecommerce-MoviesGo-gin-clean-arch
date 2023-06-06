@@ -108,9 +108,18 @@ func (co *CouponHandler) GetCoupon(c *gin.Context) {
 func (co *CouponHandler) ExpireCoupon(c *gin.Context) {
 
 	id := c.Param("id")
-	couponID, _ := strconv.Atoi(id)
+	couponID, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Error:      err.Error(),
+			Data:       nil,
+			Message:    "coupon id not in correct format",
+		})
+		return
+	}
 
-	err := co.couponUseCase.ExpireCoupon(couponID)
+	err = co.couponUseCase.ExpireCoupon(couponID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
