@@ -117,12 +117,12 @@ func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/users/{page} [get]
-func (cr *AdminHandler) GetUsers(c *gin.Context) {
+func (ad *AdminHandler) GetUsers(c *gin.Context) {
 
 	pageStr := c.Param("page")
 	page, _ := strconv.Atoi(pageStr)
 	count, _ := strconv.Atoi(c.Query("count"))
-	users, err := cr.adminUseCase.GetUsers(page, count)
+	users, err := ad.adminUseCase.GetUsers(page, count)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -151,9 +151,9 @@ func (cr *AdminHandler) GetUsers(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/genres [get]
-func (cr *AdminHandler) GetGenres(c *gin.Context) {
+func (ad *AdminHandler) GetGenres(c *gin.Context) {
 
-	genres, err := cr.adminUseCase.GetFullCategory()
+	genres, err := ad.adminUseCase.GetFullCategory()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -182,7 +182,7 @@ func (cr *AdminHandler) GetGenres(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/genres/add_genre [POST]
-func (cr *AdminHandler) AddCategory(c *gin.Context) {
+func (ad *AdminHandler) AddCategory(c *gin.Context) {
 
 	var category models.CategoryUpdate
 	if err := c.BindJSON(&category); err != nil {
@@ -195,7 +195,7 @@ func (cr *AdminHandler) AddCategory(c *gin.Context) {
 		return
 	}
 
-	addedCategory, err := cr.adminUseCase.AddCategory(category)
+	addedCategory, err := ad.adminUseCase.AddCategory(category)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -225,10 +225,10 @@ func (cr *AdminHandler) AddCategory(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/genres/delete_genre/{id} [POST]
-func (cr *AdminHandler) DeleteGenre(c *gin.Context) {
+func (ad *AdminHandler) DeleteGenre(c *gin.Context) {
 
 	genre_id := c.Param("id")
-	err := cr.adminUseCase.Delete(genre_id)
+	err := ad.adminUseCase.Delete(genre_id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusBadRequest,
@@ -257,10 +257,10 @@ func (cr *AdminHandler) DeleteGenre(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/users/block-users/{id} [POST]
-func (cr *AdminHandler) BlockUser(c *gin.Context) {
+func (ad *AdminHandler) BlockUser(c *gin.Context) {
 
 	id := c.Param("id")
-	err := cr.adminUseCase.BlockUser(id)
+	err := ad.adminUseCase.BlockUser(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -290,10 +290,10 @@ func (cr *AdminHandler) BlockUser(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/users/unblock-users/{id} [POST]
-func (cr *AdminHandler) UnBlockUser(c *gin.Context) {
+func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 
 	id := c.Param("id")
-	err := cr.adminUseCase.UnBlockUser(id)
+	err := ad.adminUseCase.UnBlockUser(id)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
@@ -314,7 +314,7 @@ func (cr *AdminHandler) UnBlockUser(c *gin.Context) {
 }
 
 // check this before doing ny operations on this.
-func (cr *UserHandler) AddNewUsers(c *gin.Context) {
+func (ad *UserHandler) AddNewUsers(c *gin.Context) {
 	fmt.Println("add users")
 	var userDetails models.UserDetails
 	if err := c.BindJSON(&userDetails); err != nil {
@@ -341,7 +341,7 @@ func (cr *UserHandler) AddNewUsers(c *gin.Context) {
 	}
 
 	// business logic goes inside this function
-	userCreated, err := cr.userUseCase.UserSignUp(userDetails)
+	userCreated, err := ad.userUseCase.UserSignUp(userDetails)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,

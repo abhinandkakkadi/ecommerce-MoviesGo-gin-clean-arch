@@ -26,7 +26,7 @@ func NewOrderUseCase(orderRepo interfaces.OrderRepository, cartRepo interfaces.C
 	}
 }
 
-func (cr *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, userID int) (domain.OrderSuccessResponse, error) {
+func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, userID int) (domain.OrderSuccessResponse, error) {
 
 	var orderBody models.OrderIncoming
 	err := copier.Copy(&orderBody, &orderFromCart)
@@ -36,7 +36,7 @@ func (cr *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 
 	orderBody.UserID = uint(userID)
 
-	addressExist, err := cr.orderRepository.AddressExist(orderBody)
+	addressExist, err := o.orderRepository.AddressExist(orderBody)
 	if err != nil {
 		return domain.OrderSuccessResponse{}, err
 	}
@@ -45,13 +45,13 @@ func (cr *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 		return domain.OrderSuccessResponse{}, errors.New("address does not exist")
 	}
 	// get all items a slice of carts
-	cartItems, err := cr.cartRepository.GetAllItemsFromCart(int(orderBody.UserID))
+	cartItems, err := o.cartRepository.GetAllItemsFromCart(int(orderBody.UserID))
 
 	if err != nil {
 		return domain.OrderSuccessResponse{}, err
 	}
 
-	orderSuccessResponse, err := cr.orderRepository.OrderItemsFromCart(orderBody, cartItems)
+	orderSuccessResponse, err := o.orderRepository.OrderItemsFromCart(orderBody, cartItems)
 	if err != nil {
 		return domain.OrderSuccessResponse{}, err
 	}
@@ -63,9 +63,9 @@ func (cr *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 }
 
 // get order details
-func (cr *orderUseCase) GetOrderDetails(userID int, page int) ([]models.FullOrderDetails, error) {
+func (o *orderUseCase) GetOrderDetails(userID int, page int) ([]models.FullOrderDetails, error) {
 
-	fullOrderDetails, err := cr.orderRepository.GetOrderDetails(userID, page)
+	fullOrderDetails, err := o.orderRepository.GetOrderDetails(userID, page)
 	if err != nil {
 		return []models.FullOrderDetails{}, err
 	}
@@ -74,10 +74,10 @@ func (cr *orderUseCase) GetOrderDetails(userID int, page int) ([]models.FullOrde
 
 }
 
-func (cr *orderUseCase) CancelOrder(orderID string, userID int) (string, error) {
+func (o *orderUseCase) CancelOrder(orderID string, userID int) (string, error) {
 
 	// check whether the orderID corresponds to the given user (other user with token may try to send orderID as path variables) (have to add this logic to so many places)
-	userTest, err := cr.orderRepository.UserOrderRelationship(orderID, userID)
+	userTest, err := o.orderRepository.UserOrderRelationship(orderID, userID)
 	if err != nil {
 		return "", err
 	}
@@ -86,41 +86,41 @@ func (cr *orderUseCase) CancelOrder(orderID string, userID int) (string, error) 
 		return "", errors.New("the order is not done by this user")
 	}
 
-	orderProducts, err := cr.orderRepository.GetProductDetailsFromOrders(orderID)
+	orderProducts, err := o.orderRepository.GetProductDetailsFromOrders(orderID)
 	if err != nil {
 		return "", err
 	}
 
 	// update the quantity to products since th order is cancelled
-	err = cr.orderRepository.UpdateQuantityOfProduct(orderProducts)
+	err = o.orderRepository.UpdateQuantityOfProduct(orderProducts)
 	if err != nil {
 		return "", err
 	}
 
-	return cr.orderRepository.CancelOrder(orderID)
+	return o.orderRepository.CancelOrder(orderID)
 
 }
 
-func (cr *orderUseCase) CancelOrderFromAdminSide(orderID string) (string, error) {
+func (o *orderUseCase) CancelOrderFromAdminSide(orderID string) (string, error) {
 
-	orderProducts, err := cr.orderRepository.GetProductDetailsFromOrders(orderID)
+	orderProducts, err := o.orderRepository.GetProductDetailsFromOrders(orderID)
 	if err != nil {
 		return "", err
 	}
 
 	// update the quantity to products since th order is cancelled
-	err = cr.orderRepository.UpdateQuantityOfProduct(orderProducts)
+	err = o.orderRepository.UpdateQuantityOfProduct(orderProducts)
 	if err != nil {
 		return "", err
 	}
 
-	return cr.orderRepository.CancelOrder(orderID)
+	return o.orderRepository.CancelOrder(orderID)
 
 }
 
-func (cr *orderUseCase) GetAllOrderDetailsForAdmin(page int) ([]models.CombinedOrderDetails, error) {
+func (o *orderUseCase) GetAllOrderDetailsForAdmin(page int) ([]models.CombinedOrderDetails, error) {
 
-	orderDetails, err := cr.orderRepository.GetOrderDetailsBrief(page)
+	orderDetails, err := o.orderRepository.GetOrderDetailsBrief(page)
 	if err != nil {
 		return []models.CombinedOrderDetails{}, err
 	}
@@ -128,20 +128,20 @@ func (cr *orderUseCase) GetAllOrderDetailsForAdmin(page int) ([]models.CombinedO
 	var allCombinedOrderDetails []models.CombinedOrderDetails
 
 	// we will take the order details from orders table,  and for each order we combine it with the corresponding user details and address of that particular user that made the order
-	for _, o := range orderDetails {
+	for _, od := range orderDetails {
 
 		// get users details who made that order
-		userDetails, err := cr.userRepository.FindUserByOrderID(o.OrderId)
+		userDetails, err := o.userRepository.FindUserByOrderID(od.OrderId)
 		if err != nil {
 			return []models.CombinedOrderDetails{}, err
 		}
 		//  get shipping address for that particular order
-		userAddress, err := cr.userRepository.FindUserAddressByOrderID(o.OrderId)
+		userAddress, err := o.userRepository.FindUserAddressByOrderID(od.OrderId)
 		if err != nil {
 			return []models.CombinedOrderDetails{}, err
 		}
 		// combine all the three details
-		combinedOrderDetails, err := helper.CombinedOrderDetails(o, userDetails, userAddress)
+		combinedOrderDetails, err := helper.CombinedOrderDetails(od, userDetails, userAddress)
 		if err != nil {
 			return []models.CombinedOrderDetails{}, err
 		}
@@ -153,17 +153,17 @@ func (cr *orderUseCase) GetAllOrderDetailsForAdmin(page int) ([]models.CombinedO
 	return allCombinedOrderDetails, nil
 }
 
-func (cr *orderUseCase) ApproveOrder(orderID string) (string, error) {
+func (o *orderUseCase) ApproveOrder(orderID string) (string, error) {
 
 	// check whether the specified orderID exist
-	ok, err := cr.orderRepository.CheckOrderID(orderID)
+	ok, err := o.orderRepository.CheckOrderID(orderID)
 	fmt.Println(ok)
 	if !ok {
 		return "Order ID does not exist", err
 	}
 
 	// check the shipment status - if the status cancelled, don't approve it
-	shipmentStatus, err := cr.orderRepository.GetShipmentStatus(orderID)
+	shipmentStatus, err := o.orderRepository.GetShipmentStatus(orderID)
 	if err != nil {
 		return "", err
 	}
@@ -175,7 +175,7 @@ func (cr *orderUseCase) ApproveOrder(orderID string) (string, error) {
 
 	if shipmentStatus == "processing" {
 		fmt.Println("reached here")
-		err := cr.orderRepository.ApproveOrder(orderID)
+		err := o.orderRepository.ApproveOrder(orderID)
 
 		if err != nil {
 			return "", err

@@ -24,10 +24,10 @@ func NewAdminUseCase(repo interfaces.AdminRepository) services.AdminUseCase {
 	}
 }
 
-func (cr *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.TokenAdmin, error) {
+func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.TokenAdmin, error) {
 
 	// getting details of the admin based on the email provided
-	adminCompareDetails, err := cr.adminRepository.LoginHandler(adminDetails)
+	adminCompareDetails, err := ad.adminRepository.LoginHandler(adminDetails)
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
@@ -68,7 +68,7 @@ func (cr *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.Tok
 }
 
 // signup handler for the admin
-func (cr *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdmin, error) {
+func (ad *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdmin, error) {
 
 	// validator package to check the constraints specified in the struct which is used to retrieve these details
 	if err := validator.New().Struct(admin); err != nil {
@@ -76,7 +76,7 @@ func (cr *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdm
 	}
 
 	// check whether the admin already exist in the database -
-	userExist := cr.adminRepository.CheckAdminAvailability(admin)
+	userExist := ad.adminRepository.CheckAdminAvailability(admin)
 	if userExist {
 		return domain.TokenAdmin{}, errors.New("admin already exist, sign in")
 	}
@@ -87,7 +87,7 @@ func (cr *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdm
 	}
 	admin.Password = string(hashedPassword)
 
-	adminDetails, err := cr.adminRepository.SignUpHandler(admin)
+	adminDetails, err := ad.adminRepository.SignUpHandler(admin)
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
@@ -112,9 +112,9 @@ func (cr *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdm
 
 }
 
-func (cr *adminUseCase) GetUsers(page int, count int) ([]models.UserDetailsAtAdmin, error) {
+func (ad *adminUseCase) GetUsers(page int, count int) ([]models.UserDetailsAtAdmin, error) {
 
-	userDetails, err := cr.adminRepository.GetUsers(page, count)
+	userDetails, err := ad.adminRepository.GetUsers(page, count)
 	if err != nil {
 		return []models.UserDetailsAtAdmin{}, err
 	}
@@ -124,24 +124,24 @@ func (cr *adminUseCase) GetUsers(page int, count int) ([]models.UserDetailsAtAdm
 }
 
 // business logic to get all the category
-func (cr *adminUseCase) GetFullCategory() (domain.CategoryResponse, error) {
+func (ad *adminUseCase) GetFullCategory() (domain.CategoryResponse, error) {
 
-	genres, err := cr.adminRepository.GetGenres()
+	genres, err := ad.adminRepository.GetGenres()
 	if err != nil {
 		return domain.CategoryResponse{}, err
 	}
 
-	directors, err := cr.adminRepository.GetDirectors()
+	directors, err := ad.adminRepository.GetDirectors()
 	if err != nil {
 		return domain.CategoryResponse{}, err
 	}
 
-	formats, err := cr.adminRepository.GetMovieFormat()
+	formats, err := ad.adminRepository.GetMovieFormat()
 	if err != nil {
 		return domain.CategoryResponse{}, err
 	}
 
-	languages, err := cr.adminRepository.GetMovieLanguages()
+	languages, err := ad.adminRepository.GetMovieLanguages()
 	if err != nil {
 		return domain.CategoryResponse{}, err
 	}
@@ -156,7 +156,7 @@ func (cr *adminUseCase) GetFullCategory() (domain.CategoryResponse, error) {
 }
 
 // add new category
-func (cr *adminUseCase) AddCategory(category models.CategoryUpdate) (domain.CategoryManagement, error) {
+func (ad *adminUseCase) AddCategory(category models.CategoryUpdate) (domain.CategoryManagement, error) {
 
 	var (
 		genre    domain.Genre
@@ -167,14 +167,14 @@ func (cr *adminUseCase) AddCategory(category models.CategoryUpdate) (domain.Cate
 	)
 	var count int
 	// to check if a category with same name exists in the database
-	categoryCount, err := cr.adminRepository.CategoryCount(category)
+	categoryCount, err := ad.adminRepository.CategoryCount(category)
 	if err != nil {
 		return domain.CategoryManagement{}, nil
 	}
 
 	if category.Genre != "" && categoryCount.GenreCount == 0 {
 		count++
-		genre, err = cr.adminRepository.AddGenre(category.Genre)
+		genre, err = ad.adminRepository.AddGenre(category.Genre)
 		if err != nil {
 			return domain.CategoryManagement{}, err
 		}
@@ -182,7 +182,7 @@ func (cr *adminUseCase) AddCategory(category models.CategoryUpdate) (domain.Cate
 
 	if category.Director != "" && categoryCount.DirectorCount == 0 {
 		count++
-		director, err = cr.adminRepository.AddDirector(category.Director)
+		director, err = ad.adminRepository.AddDirector(category.Director)
 		if err != nil {
 			return domain.CategoryManagement{}, err
 		}
@@ -190,7 +190,7 @@ func (cr *adminUseCase) AddCategory(category models.CategoryUpdate) (domain.Cate
 
 	if category.Format != "" && categoryCount.FormatCount == 0 {
 		count++
-		format, err = cr.adminRepository.AddFormat(category.Format)
+		format, err = ad.adminRepository.AddFormat(category.Format)
 		if err != nil {
 			return domain.CategoryManagement{}, err
 		}
@@ -198,7 +198,7 @@ func (cr *adminUseCase) AddCategory(category models.CategoryUpdate) (domain.Cate
 
 	if category.Language != "" && categoryCount.LanguageCount == 0 {
 		count++
-		language, err = cr.adminRepository.AddLanguage(category.Language)
+		language, err = ad.adminRepository.AddLanguage(category.Language)
 		if err != nil {
 			return domain.CategoryManagement{}, err
 		}
@@ -218,9 +218,9 @@ func (cr *adminUseCase) AddCategory(category models.CategoryUpdate) (domain.Cate
 
 }
 
-func (cr *adminUseCase) Delete(genre_id string) error {
+func (ad *adminUseCase) Delete(genre_id string) error {
 
-	err := cr.adminRepository.Delete(genre_id)
+	err := ad.adminRepository.Delete(genre_id)
 	if err != nil {
 		return err
 	}
@@ -229,9 +229,9 @@ func (cr *adminUseCase) Delete(genre_id string) error {
 }
 
 // block user
-func (cr *adminUseCase) BlockUser(id string) error {
+func (ad *adminUseCase) BlockUser(id string) error {
 
-	user, err := cr.adminRepository.GetUserByID(id)
+	user, err := ad.adminRepository.GetUserByID(id)
 	if err != nil {
 		return err
 	}
@@ -242,7 +242,7 @@ func (cr *adminUseCase) BlockUser(id string) error {
 		user.Blocked = true
 	}
 
-	err = cr.adminRepository.UpdateBlockUserByID(user)
+	err = ad.adminRepository.UpdateBlockUserByID(user)
 	if err != nil {
 		return err
 	}
@@ -252,9 +252,9 @@ func (cr *adminUseCase) BlockUser(id string) error {
 }
 
 // unblock user
-func (cr *adminUseCase) UnBlockUser(id string) error {
+func (ad *adminUseCase) UnBlockUser(id string) error {
 
-	user, err := cr.adminRepository.GetUserByID(id)
+	user, err := ad.adminRepository.GetUserByID(id)
 	if err != nil {
 		return err
 	}
@@ -265,7 +265,7 @@ func (cr *adminUseCase) UnBlockUser(id string) error {
 		return errors.New("already unblocked")
 	}
 
-	err = cr.adminRepository.UpdateBlockUserByID(user)
+	err = ad.adminRepository.UpdateBlockUserByID(user)
 	if err != nil {
 		return err
 	}

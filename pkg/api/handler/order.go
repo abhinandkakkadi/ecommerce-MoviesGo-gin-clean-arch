@@ -31,7 +31,7 @@ func NewOrderHandler(useCase services.OrderUseCase) *OrderHandler {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /order [post]
-func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
+func (o *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
 	id, _ := c.Get("user_id")
 	userID := id.(int)
@@ -47,7 +47,7 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		return
 	}
 
-	orderSuccessResponse, err := cr.orderUseCase.OrderItemsFromCart(orderFromCart, userID)
+	orderSuccessResponse, err := o.orderUseCase.OrderItemsFromCart(orderFromCart, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -87,14 +87,14 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /users/orders/{id} [get]
-func (cr *OrderHandler) GetOrderDetails(c *gin.Context) {
+func (o *OrderHandler) GetOrderDetails(c *gin.Context) {
 
 	pageStr := c.Param("page")
 	page, _ := strconv.Atoi(pageStr)
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
-	fullOrderDetails, err := cr.orderUseCase.GetOrderDetails(userID, page)
+	fullOrderDetails, err := o.orderUseCase.GetOrderDetails(userID, page)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -124,14 +124,14 @@ func (cr *OrderHandler) GetOrderDetails(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /users/cancel-order/{id} [put]
-func (cr *OrderHandler) CancelOrder(c *gin.Context) {
+func (o *OrderHandler) CancelOrder(c *gin.Context) {
 
 	orderID := c.Param("id")
 	fmt.Println(orderID)
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
-	message, err := cr.orderUseCase.CancelOrder(orderID, userID)
+	message, err := o.orderUseCase.CancelOrder(orderID, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -161,11 +161,11 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/orders/{id} [get]
-func (cr *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
+func (o *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 
 	pageStr := c.Param("page")
 	page, _ := strconv.Atoi(pageStr)
-	allOrderDetails, err := cr.orderUseCase.GetAllOrderDetailsForAdmin(page)
+	allOrderDetails, err := o.orderUseCase.GetAllOrderDetailsForAdmin(page)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -195,10 +195,10 @@ func (cr *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/orders/approve-order/{id} [get]
-func (cr *OrderHandler) ApproveOrder(c *gin.Context) {
+func (o *OrderHandler) ApproveOrder(c *gin.Context) {
 
 	orderId := c.Param("order_id")
-	message, err := cr.orderUseCase.ApproveOrder(orderId)
+	message, err := o.orderUseCase.ApproveOrder(orderId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -228,12 +228,12 @@ func (cr *OrderHandler) ApproveOrder(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/orders/cancel-order/{id} [get]
-func (cr *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
+func (o *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 
 	orderID := c.Param("order_id")
 	fmt.Println(orderID)
 
-	message, err := cr.orderUseCase.CancelOrderFromAdminSide(orderID)
+	message, err := o.orderUseCase.CancelOrderFromAdminSide(orderID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,

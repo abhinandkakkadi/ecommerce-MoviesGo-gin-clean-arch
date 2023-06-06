@@ -19,10 +19,10 @@ func NewCouponRepository(DB *gorm.DB) interfaces.CouponRepository {
 	}
 }
 
-func (cr *couponRepository) CouponExist(couponName string) (bool, error) {
+func (co *couponRepository) CouponExist(couponName string) (bool, error) {
 
 	var count int
-	err := cr.DB.Raw("select count(*) from coupons where coupon = ?", couponName).Scan(&count).Error
+	err := co.DB.Raw("select count(*) from coupons where coupon = ?", couponName).Scan(&count).Error
 	if err != nil {
 		return false, err
 	}
@@ -31,10 +31,10 @@ func (cr *couponRepository) CouponExist(couponName string) (bool, error) {
 
 }
 
-func (cr *couponRepository) CouponRevalidateIfExpired(couponName string) (bool, error) {
+func (co *couponRepository) CouponRevalidateIfExpired(couponName string) (bool, error) {
 
 	var isValid bool
-	err := cr.DB.Raw("select validity from coupons where coupon = ?", couponName).Scan(&isValid).Error
+	err := co.DB.Raw("select validity from coupons where coupon = ?", couponName).Scan(&isValid).Error
 	if err != nil {
 		return false, err
 	}
@@ -43,7 +43,7 @@ func (cr *couponRepository) CouponRevalidateIfExpired(couponName string) (bool, 
 		return true, nil
 	}
 
-	err = cr.DB.Exec("update coupons set validity = true where coupon = ?", couponName).Error
+	err = co.DB.Exec("update coupons set validity = true where coupon = ?", couponName).Error
 	if err != nil {
 		return false, err
 	}
@@ -52,9 +52,9 @@ func (cr *couponRepository) CouponRevalidateIfExpired(couponName string) (bool, 
 
 }
 
-func (cr *couponRepository) AddCoupon(coupon models.AddCoupon) error {
+func (co *couponRepository) AddCoupon(coupon models.AddCoupon) error {
 	fmt.Println("from add coupon repository: ", coupon)
-	err := cr.DB.Exec("insert into coupons (coupon,discount_percentage,minimum_price,validity) values (?, ?, ?, ?)", coupon.Coupon, coupon.DiscountPercentage, coupon.MinimumPrice, true).Error
+	err := co.DB.Exec("insert into coupons (coupon,discount_percentage,minimum_price,validity) values (?, ?, ?, ?)", coupon.Coupon, coupon.DiscountPercentage, coupon.MinimumPrice, true).Error
 	if err != nil {
 		return nil
 	}
@@ -62,10 +62,10 @@ func (cr *couponRepository) AddCoupon(coupon models.AddCoupon) error {
 	return nil
 }
 
-func (cr *couponRepository) GetCoupon() ([]models.Coupon, error) {
+func (co *couponRepository) GetCoupon() ([]models.Coupon, error) {
 
 	var coupons []models.Coupon
-	err := cr.DB.Raw("select id,coupon,discount_percentage,minimum_price,Validity from coupons").Scan(&coupons).Error
+	err := co.DB.Raw("select id,coupon,discount_percentage,minimum_price,Validity from coupons").Scan(&coupons).Error
 	if err != nil {
 		return []models.Coupon{}, err
 	}
@@ -73,10 +73,10 @@ func (cr *couponRepository) GetCoupon() ([]models.Coupon, error) {
 	return coupons, nil
 }
 
-func (cr *couponRepository) ExistCoupon(couponID int) (bool, error) {
+func (co *couponRepository) ExistCoupon(couponID int) (bool, error) {
 
 	var count int
-	err := cr.DB.Raw("select count(*) from coupons where id = ?", couponID).Scan(&count).Error
+	err := co.DB.Raw("select count(*) from coupons where id = ?", couponID).Scan(&count).Error
 	if err != nil {
 		return false, err
 	}
@@ -84,16 +84,16 @@ func (cr *couponRepository) ExistCoupon(couponID int) (bool, error) {
 	return count > 0, nil
 }
 
-func (cr *couponRepository) CouponAlreadyExpired(couponID int) error {
+func (co *couponRepository) CouponAlreadyExpired(couponID int) error {
 	fmt.Println("the code reached here")
 	var valid bool
-	err := cr.DB.Raw("select validity from coupons where id = ?", couponID).Scan(&valid).Error
+	err := co.DB.Raw("select validity from coupons where id = ?", couponID).Scan(&valid).Error
 	if err != nil {
 		return err
 	}
 	fmt.Println("the validity = ", valid)
 	if valid {
-		err := cr.DB.Exec("update coupons set validity = false where id = ?", couponID).Error
+		err := co.DB.Exec("update coupons set validity = false where id = ?", couponID).Error
 		if err != nil {
 			return err
 		}

@@ -21,9 +21,9 @@ func NewProductUseCase(repo interfaces.ProductRepository, cartRepo interfaces.Ca
 	}
 }
 
-func (cr *productUseCase) ShowAllProducts(page int, count int) ([]models.ProductsBrief, error) {
+func (pr *productUseCase) ShowAllProducts(page int, count int) ([]models.ProductsBrief, error) {
 
-	productsBrief, err := cr.productRepo.ShowAllProducts(page, count)
+	productsBrief, err := pr.productRepo.ShowAllProducts(page, count)
 
 	// here memory address of each item in productBrief is taken so that a copy of each instance is not made while updating
 	for i := range productsBrief {
@@ -40,9 +40,9 @@ func (cr *productUseCase) ShowAllProducts(page int, count int) ([]models.Product
 
 }
 
-func (cr *productUseCase) ShowIndividualProducts(id string) (models.ProductResponse, error) {
+func (pr *productUseCase) ShowIndividualProducts(id string) (models.ProductResponse, error) {
 
-	product, err := cr.productRepo.ShowIndividualProducts(id)
+	product, err := pr.productRepo.ShowIndividualProducts(id)
 	if product.Movie_Name == "" {
 		err = errors.New("record not available")
 	}
@@ -50,7 +50,7 @@ func (cr *productUseCase) ShowIndividualProducts(id string) (models.ProductRespo
 
 }
 
-func (cr *productUseCase) AddProduct(product models.ProductsReceiver) (models.ProductResponse, error) {
+func (pr *productUseCase) AddProduct(product models.ProductsReceiver) (models.ProductResponse, error) {
 	// this logic is to add the quantity of product if admin try to add duplicate product (have to work on this in the future)
 	// alreadyPresent,err := cr.productRepo.CheckIfAlreadyPresent(c,product)
 
@@ -68,7 +68,7 @@ func (cr *productUseCase) AddProduct(product models.ProductsReceiver) (models.Pr
 	// 	return nil
 	// }
 
-	productResponse, err := cr.productRepo.AddProduct(product)
+	productResponse, err := pr.productRepo.AddProduct(product)
 
 	if err != nil {
 		return models.ProductResponse{}, err
@@ -78,9 +78,9 @@ func (cr *productUseCase) AddProduct(product models.ProductsReceiver) (models.Pr
 
 }
 
-func (cr *productUseCase) DeleteProduct(product_id string) error {
+func (pr *productUseCase) DeleteProduct(product_id string) error {
 
-	err := cr.productRepo.DeleteProduct(product_id)
+	err := pr.productRepo.DeleteProduct(product_id)
 	if err != nil {
 		return err
 	}
@@ -88,9 +88,9 @@ func (cr *productUseCase) DeleteProduct(product_id string) error {
 
 }
 
-func (cr *productUseCase) UpdateProduct(productID int, quantity int) error {
+func (pr *productUseCase) UpdateProduct(productID int, quantity int) error {
 
-	ok, err := cr.cartRepo.CheckProduct(productID)
+	ok, err := pr.cartRepo.CheckProduct(productID)
 	if err != nil {
 		return err
 	}
@@ -99,18 +99,18 @@ func (cr *productUseCase) UpdateProduct(productID int, quantity int) error {
 		return errors.New("error does not exist")
 	}
 
-	return cr.productRepo.UpdateQuantity(productID, quantity)
+	return pr.productRepo.UpdateQuantity(productID, quantity)
 
 }
 
-func (cr *productUseCase) FilterCategory(data map[string]int) ([]models.ProductsBrief, error) {
+func (pr *productUseCase) FilterCategory(data map[string]int) ([]models.ProductsBrief, error) {
 
-	err := cr.productRepo.CheckValidityOfCategory(data)
+	err := pr.productRepo.CheckValidityOfCategory(data)
 	if err != nil {
 		return []models.ProductsBrief{}, err
 	}
 
-	productByCategory, err := cr.productRepo.GetProductFromCategory(data)
+	productByCategory, err := pr.productRepo.GetProductFromCategory(data)
 	if err != nil {
 		return []models.ProductsBrief{}, err
 	}

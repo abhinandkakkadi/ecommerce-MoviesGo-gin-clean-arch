@@ -30,14 +30,14 @@ func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /products/page/{page} [get]
-func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
+func (pr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 	pageStr := c.Param("page")
 	page, _ := strconv.Atoi(pageStr)
 
 	count, _ := strconv.Atoi(c.Query("count"))
 
-	products, err := cr.productUseCase.ShowAllProducts(page, count)
+	products, err := pr.productUseCase.ShowAllProducts(page, count)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -67,14 +67,14 @@ func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/products [get]
-func (cr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
+func (pr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 	pageStr := c.Param("page")
 	page, _ := strconv.Atoi(pageStr)
 
 	count, _ := strconv.Atoi(c.Query("count"))
 
-	products, err := cr.productUseCase.ShowAllProducts(page, count)
+	products, err := pr.productUseCase.ShowAllProducts(page, count)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -103,10 +103,10 @@ func (cr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /products/{id} [get]
-func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
+func (pr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 
 	id := c.Param("id")
-	product, err := cr.productUseCase.ShowIndividualProducts(id)
+	product, err := pr.productUseCase.ShowIndividualProducts(id)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
@@ -127,7 +127,7 @@ func (cr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 
 }
 
-func (cr *ProductHandler) AddProduct(c *gin.Context) {
+func (pr *ProductHandler) AddProduct(c *gin.Context) {
 
 	var product models.ProductsReceiver
 	if err := c.BindJSON(&product); err != nil {
@@ -140,7 +140,7 @@ func (cr *ProductHandler) AddProduct(c *gin.Context) {
 		return
 	}
 
-	productResponse, err := cr.productUseCase.AddProduct(product)
+	productResponse, err := pr.productUseCase.AddProduct(product)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -170,10 +170,10 @@ func (cr *ProductHandler) AddProduct(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/products/delete-product/{id} [delete]
-func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
+func (pr *ProductHandler) DeleteProduct(c *gin.Context) {
 
 	product_id := c.Param("id")
-	err := cr.productUseCase.DeleteProduct(product_id)
+	err := pr.productUseCase.DeleteProduct(product_id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusBadRequest,
@@ -203,7 +203,7 @@ func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/products/update-product/ [post]
-func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
+func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 
 	var p models.UpdateProduct
 
@@ -217,7 +217,7 @@ func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	err := cr.productUseCase.UpdateProduct(p.ProductID, p.Quantity)
+	err := pr.productUseCase.UpdateProduct(p.ProductID, p.Quantity)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusBadRequest,
@@ -246,7 +246,7 @@ func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /filter [post]
-func (cr *ProductHandler) FilterCategory(c *gin.Context) {
+func (pr *ProductHandler) FilterCategory(c *gin.Context) {
 
 	var data map[string]int
 	if err := c.ShouldBindJSON(&data); err != nil {
@@ -259,7 +259,7 @@ func (cr *ProductHandler) FilterCategory(c *gin.Context) {
 		return
 	}
 
-	productCategory, err := cr.productUseCase.FilterCategory(data)
+	productCategory, err := pr.productUseCase.FilterCategory(data)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -288,7 +288,7 @@ func (cr *ProductHandler) FilterCategory(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /search [post]
-func (cr *ProductHandler) SearchProduct(c *gin.Context) {
+func (pr *ProductHandler) SearchProduct(c *gin.Context) {
 
 	var prefix models.SearchItems
 	if err := c.ShouldBindJSON(&prefix); err != nil {
@@ -301,7 +301,7 @@ func (cr *ProductHandler) SearchProduct(c *gin.Context) {
 		return
 	}
 
-	productDetails, err := cr.productUseCase.SearchItemBasedOnPrefix(prefix.Name)
+	productDetails, err := pr.productUseCase.SearchItemBasedOnPrefix(prefix.Name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,

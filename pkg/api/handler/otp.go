@@ -28,7 +28,7 @@ func NewOtpHandler(useCase services.OtpUseCase) *OtpHandler {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /send-otp [post]
-func (cr *OtpHandler) SendOTP(c *gin.Context) {
+func (ot *OtpHandler) SendOTP(c *gin.Context) {
 
 	var phone models.OTPData
 	if err := c.BindJSON(&phone); err != nil {
@@ -40,7 +40,7 @@ func (cr *OtpHandler) SendOTP(c *gin.Context) {
 		})
 	}
 
-	err := cr.otpUseCase.SendOTP(phone.PhoneNumber)
+	err := ot.otpUseCase.SendOTP(phone.PhoneNumber)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -69,7 +69,7 @@ func (cr *OtpHandler) SendOTP(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /verify-otp [post]
-func (cr *OtpHandler) VerifyOTP(c *gin.Context) {
+func (ot *OtpHandler) VerifyOTP(c *gin.Context) {
 
 	var code models.VerifyData
 	if err := c.BindJSON(&code); err != nil {
@@ -82,7 +82,7 @@ func (cr *OtpHandler) VerifyOTP(c *gin.Context) {
 		return
 	}
 
-	user, err := cr.otpUseCase.VerifyOTP(code)
+	user, err := ot.otpUseCase.VerifyOTP(code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusBadRequest,

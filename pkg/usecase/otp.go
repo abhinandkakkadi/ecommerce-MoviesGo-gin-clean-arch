@@ -23,15 +23,15 @@ func NewOtpUseCase(cfg config.Config, repo interfaces.OtpRepository) services.Ot
 	}
 }
 
-func (cr *otpUseCase) SendOTP(phone string) error {
+func (ot *otpUseCase) SendOTP(phone string) error {
 
-	ok := cr.otpRepository.FindUserByMobileNumber(phone)
+	ok := ot.otpRepository.FindUserByMobileNumber(phone)
 	if !ok {
 		return errors.New("the user does not exist")
 	}
 
-	helper.TwilioSetup(cr.cfg.ACCOUNTSID, cr.cfg.AUTHTOKEN)
-	_, err := helper.TwilioSendOTP(phone, cr.cfg.SERVICESSID)
+	helper.TwilioSetup(ot.cfg.ACCOUNTSID, ot.cfg.AUTHTOKEN)
+	_, err := helper.TwilioSendOTP(phone, ot.cfg.SERVICESSID)
 	if err != nil {
 		return errors.New("error ocurred while generating OTP")
 	}
@@ -40,16 +40,16 @@ func (cr *otpUseCase) SendOTP(phone string) error {
 
 }
 
-func (cr *otpUseCase) VerifyOTP(code models.VerifyData) (models.TokenUsers, error) {
+func (ot *otpUseCase) VerifyOTP(code models.VerifyData) (models.TokenUsers, error) {
 
-	helper.TwilioSetup(cr.cfg.ACCOUNTSID, cr.cfg.AUTHTOKEN)
-	err := helper.TwilioVerifyOTP(cr.cfg.SERVICESSID, code.Code, code.User.PhoneNumber)
+	helper.TwilioSetup(ot.cfg.ACCOUNTSID, ot.cfg.AUTHTOKEN)
+	err := helper.TwilioVerifyOTP(ot.cfg.SERVICESSID, code.Code, code.User.PhoneNumber)
 	if err != nil {
 		return models.TokenUsers{}, errors.New("error while verifying")
 	}
 
 	// if user is authenticated using OTP send back user details
-	userDetails, err := cr.otpRepository.UserDetailsUsingPhone(code.User.PhoneNumber)
+	userDetails, err := ot.otpRepository.UserDetailsUsingPhone(code.User.PhoneNumber)
 	if err != nil {
 		return models.TokenUsers{}, err
 	}

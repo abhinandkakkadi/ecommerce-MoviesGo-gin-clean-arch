@@ -28,10 +28,10 @@ func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.Ca
 	}
 }
 
-func (c *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
+func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
 	fmt.Println("add users")
 	// Check whether the user already exist. If yes, show the error message, since this is signUp
-	userExist := c.userRepo.CheckUserAvailability(user.Email)
+	userExist := u.userRepo.CheckUserAvailability(user.Email)
 	fmt.Println("user exists", userExist)
 	if userExist {
 		return models.TokenUsers{}, errors.New("user already exist, sign in")
@@ -49,7 +49,7 @@ func (c *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	user.Password = string(hashedPassword)
 
 	// add user details to the database
-	userData, err := c.userRepo.UserSignUp(user)
+	userData, err := u.userRepo.UserSignUp(user)
 	if err != nil {
 		return models.TokenUsers{}, err
 	}
@@ -73,15 +73,15 @@ func (c *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	}, nil
 }
 
-func (c *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, error) {
+func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, error) {
 
 	// checking if a username exist with this email address
-	ok := c.userRepo.CheckUserAvailability(user.Email)
+	ok := u.userRepo.CheckUserAvailability(user.Email)
 	if !ok {
 		return models.TokenUsers{}, errors.New("the user does not exist")
 	}
 
-	isBlocked, err := c.userRepo.UserBlockStatus(user.Email)
+	isBlocked, err := u.userRepo.UserBlockStatus(user.Email)
 	if err != nil {
 		return models.TokenUsers{}, err
 	}
@@ -91,7 +91,7 @@ func (c *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 	}
 
 	// Get the user details in order to check the password, in this case ( The same function can be reused in future )
-	user_details, err := c.userRepo.FindUserByEmail(user)
+	user_details, err := u.userRepo.FindUserByEmail(user)
 	if err != nil {
 		return models.TokenUsers{}, err
 	}
@@ -119,9 +119,9 @@ func (c *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 
 }
 
-func (cr *userUseCase) AddAddress(address models.AddressInfo, userID int) ([]models.AddressInfoResponse, error) {
+func (u *userUseCase) AddAddress(address models.AddressInfo, userID int) ([]models.AddressInfoResponse, error) {
 
-	addressResponse, err := cr.userRepo.AddAddress(address, userID)
+	addressResponse, err := u.userRepo.AddAddress(address, userID)
 	if err != nil {
 		return []models.AddressInfoResponse{}, err
 	}
@@ -129,40 +129,40 @@ func (cr *userUseCase) AddAddress(address models.AddressInfo, userID int) ([]mod
 	return addressResponse, nil
 }
 
-func (cr *userUseCase) UpdateAddress(address models.AddressInfo, addressID int, userID int) (models.AddressInfoResponse, error) {
+func (u *userUseCase) UpdateAddress(address models.AddressInfo, addressID int, userID int) (models.AddressInfoResponse, error) {
 
-	return cr.userRepo.UpdateAddress(address, addressID, userID)
+	return u.userRepo.UpdateAddress(address, addressID, userID)
 
 }
 
 // user checkout section
-func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
+func (u *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 
 	// list all address added by the user
-	allUserAddress, err := cr.userRepo.GetAllAddresses(userID)
+	allUserAddress, err := u.userRepo.GetAllAddresses(userID)
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}
 
 	// get available payment options
-	paymentDetails, err := cr.userRepo.GetAllPaymentOption()
+	paymentDetails, err := u.userRepo.GetAllPaymentOption()
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}
 
-	walletDetails, err := cr.userRepo.GetWalletDetails(userID)
+	walletDetails, err := u.userRepo.GetWalletDetails(userID)
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}
 
 	// get all items from users cart
-	cartItems, err := cr.cartRepo.GetAllItemsFromCart(userID)
+	cartItems, err := u.cartRepo.GetAllItemsFromCart(userID)
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}
 
 	// get grand total of all the product
-	grandTotal, err := cr.cartRepo.GetTotalPrice(userID)
+	grandTotal, err := u.cartRepo.GetTotalPrice(userID)
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}
@@ -177,15 +177,15 @@ func (cr *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 	}, nil
 }
 
-func (cr *userUseCase) UserDetails(userID int) (models.UsersProfileDetails, error) {
+func (u *userUseCase) UserDetails(userID int) (models.UsersProfileDetails, error) {
 
-	return cr.userRepo.UserDetails(userID)
+	return u.userRepo.UserDetails(userID)
 
 }
 
-func (cr *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, error) {
+func (u *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, error) {
 
-	userAddress, err := cr.userRepo.GetAllAddresses(userID)
+	userAddress, err := u.userRepo.GetAllAddresses(userID)
 
 	if err != nil {
 		return []models.AddressInfoResponse{}, nil
@@ -195,7 +195,7 @@ func (cr *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, 
 
 }
 
-func (cr *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails, ctx context.Context) (models.UsersProfileDetails, error) {
+func (u *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails, ctx context.Context) (models.UsersProfileDetails, error) {
 
 	var userID int
 	var ok bool
@@ -204,7 +204,7 @@ func (cr *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails,
 		return models.UsersProfileDetails{}, errors.New("error retreiving user details")
 	}
 
-	userExist := cr.userRepo.CheckUserAvailability(userDetails.Email)
+	userExist := u.userRepo.CheckUserAvailability(userDetails.Email)
 
 	// update with email that does not already exist
 	if userExist {
@@ -212,22 +212,22 @@ func (cr *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails,
 	}
 	// which all field are not empty (which are provided from the front end should be updated)
 	if userDetails.Email != "" {
-		cr.userRepo.UpdateUserEmail(userDetails.Email, userID)
+		u.userRepo.UpdateUserEmail(userDetails.Email, userID)
 	}
 
 	if userDetails.Name != "" {
-		cr.userRepo.UpdateUserName(userDetails.Name, userID)
+		u.userRepo.UpdateUserName(userDetails.Name, userID)
 	}
 
 	if userDetails.Phone != "" {
-		cr.userRepo.UpdateUserPhone(userDetails.Phone, userID)
+		u.userRepo.UpdateUserPhone(userDetails.Phone, userID)
 	}
 
-	return cr.userRepo.UserDetails(userID)
+	return u.userRepo.UserDetails(userID)
 
 }
 
-func (cr *userUseCase) UpdatePassword(ctx context.Context, body models.UpdatePassword) error {
+func (u *userUseCase) UpdatePassword(ctx context.Context, body models.UpdatePassword) error {
 
 	var userID int
 	var ok bool
@@ -235,7 +235,7 @@ func (cr *userUseCase) UpdatePassword(ctx context.Context, body models.UpdatePas
 		return errors.New("error retrieving user details")
 	}
 
-	userPassword, err := cr.userRepo.UserPassword(userID)
+	userPassword, err := u.userRepo.UserPassword(userID)
 	if err != nil {
 		return err
 	}
@@ -254,13 +254,13 @@ func (cr *userUseCase) UpdatePassword(ctx context.Context, body models.UpdatePas
 		return errors.New("internal server error")
 	}
 
-	return cr.userRepo.UpdateUserPassword(string(hashedPassword), userID)
+	return u.userRepo.UpdateUserPassword(string(hashedPassword), userID)
 
 }
 
-func (cr *userUseCase) AddToWishList(productID int, userID int) error {
+func (u *userUseCase) AddToWishList(productID int, userID int) error {
 
-	productExist, err := cr.productRepo.DoesProductExist(productID)
+	productExist, err := u.productRepo.DoesProductExist(productID)
 	if err != nil {
 		return err
 	}
@@ -269,7 +269,7 @@ func (cr *userUseCase) AddToWishList(productID int, userID int) error {
 		return errors.New("product does not exist")
 	}
 
-	productExistInWishList, err := cr.userRepo.ProductExistInWishList(productID, userID)
+	productExistInWishList, err := u.userRepo.ProductExistInWishList(productID, userID)
 	if err != nil {
 		return err
 	}
@@ -277,7 +277,7 @@ func (cr *userUseCase) AddToWishList(productID int, userID int) error {
 		return errors.New("product already exist in database")
 	}
 
-	err = cr.userRepo.AddToWishList(userID, productID)
+	err = u.userRepo.AddToWishList(userID, productID)
 	if err != nil {
 		return err
 	}
@@ -285,9 +285,9 @@ func (cr *userUseCase) AddToWishList(productID int, userID int) error {
 	return nil
 }
 
-func (cr *userUseCase) GetWishList(userID int) ([]models.WishListResponse, error) {
+func (u *userUseCase) GetWishList(userID int) ([]models.WishListResponse, error) {
 
-	wishList, err := cr.userRepo.GetWishList(userID)
+	wishList, err := u.userRepo.GetWishList(userID)
 	if err != nil {
 		return []models.WishListResponse{}, err
 	}
@@ -295,9 +295,9 @@ func (cr *userUseCase) GetWishList(userID int) ([]models.WishListResponse, error
 	return wishList, err
 }
 
-func (cr *userUseCase) RemoveFromWishList(productID int, userID int) error {
+func (u *userUseCase) RemoveFromWishList(productID int, userID int) error {
 
-	productExistInWishList, err := cr.userRepo.ProductExistInWishList(productID, userID)
+	productExistInWishList, err := u.userRepo.ProductExistInWishList(productID, userID)
 	if err != nil {
 		return err
 	}
@@ -305,7 +305,7 @@ func (cr *userUseCase) RemoveFromWishList(productID int, userID int) error {
 		return errors.New("product does not exist in wishlist")
 	}
 
-	err = cr.userRepo.RemoveFromWishList(userID, productID)
+	err = u.userRepo.RemoveFromWishList(userID, productID)
 	if err != nil {
 		return err
 	}

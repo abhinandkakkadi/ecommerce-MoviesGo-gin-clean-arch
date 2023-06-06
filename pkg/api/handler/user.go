@@ -33,7 +33,7 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /signup [post]
-func (cr *UserHandler) UserSignUp(c *gin.Context) {
+func (u *UserHandler) UserSignUp(c *gin.Context) {
 
 	var user models.UserDetails
 	// bind the user details to the struct
@@ -61,7 +61,7 @@ func (cr *UserHandler) UserSignUp(c *gin.Context) {
 	}
 
 	// business logic goes inside this function
-	userCreated, err := cr.userUseCase.UserSignUp(user)
+	userCreated, err := u.userUseCase.UserSignUp(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -90,7 +90,7 @@ func (cr *UserHandler) UserSignUp(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /login [post]
-func (cr *UserHandler) LoginHandler(c *gin.Context) {
+func (u *UserHandler) LoginHandler(c *gin.Context) {
 
 	var user models.UserLogin
 
@@ -115,7 +115,7 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 		return
 	}
 
-	user_details, err := cr.userUseCase.LoginHandler(user)
+	user_details, err := u.userUseCase.LoginHandler(user)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -146,7 +146,7 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /address [post]
-func (cr *UserHandler) AddAddress(c *gin.Context) {
+func (u *UserHandler) AddAddress(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
 
@@ -172,7 +172,7 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 		})
 	}
 
-	addressResponse, err := cr.userUseCase.AddAddress(address, userID.(int))
+	addressResponse, err := u.userUseCase.AddAddress(address, userID.(int))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -204,7 +204,7 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /address/{id} [put]
-func (cr *UserHandler) UpdateAddress(c *gin.Context) {
+func (u *UserHandler) UpdateAddress(c *gin.Context) {
 
 	id := c.Param("id")
 	addressId, err := strconv.Atoi(id)
@@ -232,7 +232,7 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 
 	fmt.Println(address)
 	fmt.Println(address)
-	updatedAddress, err := cr.userUseCase.UpdateAddress(address, addressId, user_id)
+	updatedAddress, err := u.userUseCase.UpdateAddress(address, addressId, user_id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -262,10 +262,10 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /checkout [get]
-func (cr *UserHandler) CheckOut(c *gin.Context) {
+func (u *UserHandler) CheckOut(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
-	checkoutDetails, err := cr.userUseCase.Checkout(userID.(int))
+	checkoutDetails, err := u.userUseCase.Checkout(userID.(int))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -294,11 +294,11 @@ func (cr *UserHandler) CheckOut(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /users [get]
-func (cr *UserHandler) UserDetails(c *gin.Context) {
+func (u *UserHandler) UserDetails(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
 
-	userDetails, err := cr.userUseCase.UserDetails(userID.(int))
+	userDetails, err := u.userUseCase.UserDetails(userID.(int))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -327,10 +327,10 @@ func (cr *UserHandler) UserDetails(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /users/address [get]
-func (cr *UserHandler) GetAllAddress(c *gin.Context) {
+func (u *UserHandler) GetAllAddress(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
-	userAddress, err := cr.userUseCase.GetAllAddress(userID.(int))
+	userAddress, err := u.userUseCase.GetAllAddress(userID.(int))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -350,7 +350,7 @@ func (cr *UserHandler) GetAllAddress(c *gin.Context) {
 
 }
 
-func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
+func (u *UserHandler) UpdateUserDetails(c *gin.Context) {
 
 	user_id, _ := c.Get("user_id")
 	ctx := context.Background()
@@ -368,7 +368,7 @@ func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
 		return
 	}
 
-	updatedDetails, err := cr.userUseCase.UpdateUserDetails(user, ctx)
+	updatedDetails, err := u.userUseCase.UpdateUserDetails(user, ctx)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -397,7 +397,7 @@ func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /users/update-password [post]
-func (cr *UserHandler) UpdatePassword(c *gin.Context) {
+func (u *UserHandler) UpdatePassword(c *gin.Context) {
 
 	user_id, _ := c.Get("user_id")
 	ctx := context.Background()
@@ -416,7 +416,7 @@ func (cr *UserHandler) UpdatePassword(c *gin.Context) {
 	// fmt.Printf(body.NewPassword)
 	fmt.Println(body.ConfirmNewPassword)
 
-	err := cr.userUseCase.UpdatePassword(ctx, body)
+	err := u.userUseCase.UpdatePassword(ctx, body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -445,7 +445,7 @@ func (cr *UserHandler) UpdatePassword(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /wishlist/add/{id} [get]
-func (cr *UserHandler) AddToWishList(c *gin.Context) {
+func (u *UserHandler) AddToWishList(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
 	id := c.Param("id")
@@ -460,7 +460,7 @@ func (cr *UserHandler) AddToWishList(c *gin.Context) {
 		return
 	}
 
-	err = cr.userUseCase.AddToWishList(productID, userID.(int))
+	err = u.userUseCase.AddToWishList(productID, userID.(int))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -489,10 +489,10 @@ func (cr *UserHandler) AddToWishList(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /wishlist [get]
-func (cr *UserHandler) GetWishList(c *gin.Context) {
+func (u *UserHandler) GetWishList(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
-	wishList, err := cr.userUseCase.GetWishList(userID.(int))
+	wishList, err := u.userUseCase.GetWishList(userID.(int))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -522,7 +522,7 @@ func (cr *UserHandler) GetWishList(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /wishlist/remove/{id} [get]
-func (cr *UserHandler) RemoveFromWishList(c *gin.Context) {
+func (u *UserHandler) RemoveFromWishList(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
 	id := c.Param("id")
@@ -537,7 +537,7 @@ func (cr *UserHandler) RemoveFromWishList(c *gin.Context) {
 		return
 	}
 
-	err = cr.userUseCase.RemoveFromWishList(productID, userID.(int))
+	err = u.userUseCase.RemoveFromWishList(productID, userID.(int))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusInternalServerError,

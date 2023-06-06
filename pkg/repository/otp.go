@@ -16,10 +16,10 @@ func NewOtpRepository(DB *gorm.DB) interfaces.OtpRepository {
 	}
 }
 
-func (cr *otpRepository) FindUserByMobileNumber(phone string) bool {
+func (ot *otpRepository) FindUserByMobileNumber(phone string) bool {
 
 	var count int
-	if err := cr.DB.Raw("select count(*) from users where phone = ?", phone).Scan(&count).Error; err != nil {
+	if err := ot.DB.Raw("select count(*) from users where phone = ?", phone).Scan(&count).Error; err != nil {
 		return false
 	}
 
@@ -27,10 +27,10 @@ func (cr *otpRepository) FindUserByMobileNumber(phone string) bool {
 
 }
 
-func (cr *otpRepository) UserDetailsUsingPhone(phone string) (models.UserDetailsResponse, error) {
+func (ot *otpRepository) UserDetailsUsingPhone(phone string) (models.UserDetailsResponse, error) {
 
 	var usersDetails models.UserDetailsResponse
-	if err := cr.DB.Raw("select * from users where phone = ?", phone).Scan(&usersDetails).Error; err != nil {
+	if err := ot.DB.Raw("select * from users where phone = ?", phone).Scan(&usersDetails).Error; err != nil {
 		return models.UserDetailsResponse{}, err
 	}
 

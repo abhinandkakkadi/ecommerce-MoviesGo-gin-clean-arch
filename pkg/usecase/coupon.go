@@ -19,16 +19,16 @@ func NewCouponUseCase(couponRepo interfaces.CouponRepository) services.CouponUse
 	}
 }
 
-func (cr *couponUseCase) AddCoupon(coupon models.AddCoupon) (string, error) {
+func (co *couponUseCase) AddCoupon(coupon models.AddCoupon) (string, error) {
 
 	// if coupon already exist and if it is expired revalidate it. else give back an error message saying the coupon already exist
-	couponExist, err := cr.couponRepository.CouponExist(coupon.Coupon)
+	couponExist, err := co.couponRepository.CouponExist(coupon.Coupon)
 	if err != nil {
 		return "", err
 	}
 	fmt.Println("coupon exist :", couponExist)
 	if couponExist {
-		alreadyValid, err := cr.couponRepository.CouponRevalidateIfExpired(coupon.Coupon)
+		alreadyValid, err := co.couponRepository.CouponRevalidateIfExpired(coupon.Coupon)
 		if err != nil {
 			return "", nil
 		}
@@ -41,7 +41,7 @@ func (cr *couponUseCase) AddCoupon(coupon models.AddCoupon) (string, error) {
 
 	}
 
-	err = cr.couponRepository.AddCoupon(coupon)
+	err = co.couponRepository.AddCoupon(coupon)
 	if err != nil {
 		return "", err
 	}
@@ -49,22 +49,22 @@ func (cr *couponUseCase) AddCoupon(coupon models.AddCoupon) (string, error) {
 	return "successfully added the coupon", nil
 }
 
-func (cr *couponUseCase) GetCoupon() ([]models.Coupon, error) {
+func (co *couponUseCase) GetCoupon() ([]models.Coupon, error) {
 
-	return cr.couponRepository.GetCoupon()
+	return co.couponRepository.GetCoupon()
 }
 
-func (cr *couponUseCase) ExpireCoupon(couponID int) error {
+func (co *couponUseCase) ExpireCoupon(couponID int) error {
 
 	// check whether coupon exist
-	couponExist, err := cr.couponRepository.ExistCoupon(couponID)
+	couponExist, err := co.couponRepository.ExistCoupon(couponID)
 	if err != nil {
 		return err
 	}
 
 	// if it exists expire it, if already expired send back relevant message
 	if couponExist {
-		err = cr.couponRepository.CouponAlreadyExpired(couponID)
+		err = co.couponRepository.CouponAlreadyExpired(couponID)
 		if err != nil {
 			return err
 		}

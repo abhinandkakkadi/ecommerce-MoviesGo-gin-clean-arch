@@ -31,7 +31,7 @@ func NewCouponHandler(useCase services.CouponUseCase) *CouponHandler {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/coupon/addcoupon [post]
-func (cr *CouponHandler) AddCoupon(c *gin.Context) {
+func (co *CouponHandler) AddCoupon(c *gin.Context) {
 
 	var coupon models.AddCoupon
 	if err := c.BindJSON(&coupon); err != nil {
@@ -44,7 +44,7 @@ func (cr *CouponHandler) AddCoupon(c *gin.Context) {
 		return
 	}
 	fmt.Println(coupon)
-	message, err := cr.couponUseCase.AddCoupon(coupon)
+	message, err := co.couponUseCase.AddCoupon(coupon)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -73,9 +73,9 @@ func (cr *CouponHandler) AddCoupon(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/coupon [get]
-func (cr *CouponHandler) GetCoupon(c *gin.Context) {
+func (co *CouponHandler) GetCoupon(c *gin.Context) {
 
-	coupons, err := cr.couponUseCase.GetCoupon()
+	coupons, err := co.couponUseCase.GetCoupon()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -105,12 +105,12 @@ func (cr *CouponHandler) GetCoupon(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/coupon/expire/{id} [get]
-func (cr *CouponHandler) ExpireCoupon(c *gin.Context) {
+func (co *CouponHandler) ExpireCoupon(c *gin.Context) {
 
 	id := c.Param("id")
 	couponID, _ := strconv.Atoi(id)
 
-	err := cr.couponUseCase.ExpireCoupon(couponID)
+	err := co.couponUseCase.ExpireCoupon(couponID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
