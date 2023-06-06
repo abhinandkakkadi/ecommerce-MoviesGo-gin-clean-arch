@@ -141,6 +141,7 @@ func (cr *UserHandler) LoginHandler(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Param address body models.AddressInfo true "User Address Input"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
@@ -183,8 +184,8 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
+	c.JSON(http.StatusCreated, response.Response{
+		StatusCode: http.StatusCreated,
 		Message:    "address added successfully",
 		Data:       addressResponse,
 		Error:      nil,
@@ -197,6 +198,7 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Param id path string true "address id"
 // @Param address body models.AddressInfo true "User Address Input"
 // @Success 200 {object} response.Response{}
@@ -256,6 +258,7 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /checkout [get]
@@ -287,6 +290,7 @@ func (cr *UserHandler) CheckOut(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /users [get]
@@ -319,9 +323,10 @@ func (cr *UserHandler) UserDetails(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /address [get]
+// @Router /users/address [get]
 func (cr *UserHandler) GetAllAddress(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
@@ -387,6 +392,7 @@ func (cr *UserHandler) UpdateUserDetails(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Param body body models.UpdatePassword true "User Password update"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
@@ -434,6 +440,7 @@ func (cr *UserHandler) UpdatePassword(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Param id path string true "product id"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
@@ -478,6 +485,7 @@ func (cr *UserHandler) AddToWishList(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /wishlist [get]
@@ -509,6 +517,7 @@ func (cr *UserHandler) GetWishList(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Param id path string true "product id"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}

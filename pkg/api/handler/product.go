@@ -60,6 +60,7 @@ func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Param page path string true "Page number"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
@@ -160,6 +161,7 @@ func (cr *ProductHandler) AddProduct(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Param id path string true "product id"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
@@ -192,6 +194,7 @@ func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Param p body models.UpdateProduct true "Product details"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}

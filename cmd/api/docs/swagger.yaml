@@ -148,24 +148,6 @@ info:
   contact: {}
 paths:
   /address:
-    get:
-      consumes:
-      - application/json
-      description: Display all the added user addresses
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Get all address for the user
-      tags:
-      - Users
     post:
       consumes:
       - application/json
@@ -188,6 +170,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: AddAddress functionality for user
       tags:
       - Users
@@ -219,6 +203,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: Update User Address
       tags:
       - Users
@@ -529,6 +515,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: Get Products To Admin
       tags:
       - Admin
@@ -554,6 +542,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: Add Products
       tags:
       - Admin
@@ -580,6 +570,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: Update Products
       tags:
       - Admin
@@ -775,6 +767,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: Checkout Order
       tags:
       - Users
@@ -1032,7 +1026,30 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: User Details
+      tags:
+      - Users
+  /users/address:
+    get:
+      consumes:
+      - application/json
+      description: Display all the added user addresses
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get all address for the user
       tags:
       - Users
   /users/cancel-order/{id}:
@@ -1112,6 +1129,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: Update User Password
       tags:
       - Users
@@ -1157,6 +1176,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: Display Wishlist
       tags:
       - Users
@@ -1182,6 +1203,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: Add to Wishlist
       tags:
       - Users
@@ -1207,6 +1230,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: Add to Wishlist
       tags:
       - Users

@@ -15,36 +15,21 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
     "paths": {
         "/address": {
-            "get": {
-                "description": "Display all the added user addresses",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get all address for the user",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            },
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "AddAddress functionality at the user side",
                 "consumes": [
                     "application/json"
@@ -85,6 +70,11 @@ const docTemplate = `{
         },
         "/address/{id}": {
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Update User address by sending in address id",
                 "consumes": [
                     "application/json"
@@ -585,6 +575,11 @@ const docTemplate = `{
         },
         "/admin/products": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Retrieve products with pagination to Admin side",
                 "consumes": [
                     "application/json"
@@ -623,6 +618,11 @@ const docTemplate = `{
         },
         "/admin/products/delete-product/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Add a new product from the admin side",
                 "consumes": [
                     "application/json"
@@ -661,6 +661,11 @@ const docTemplate = `{
         },
         "/admin/products/update-product/": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Update quantity of already existing product",
                 "consumes": [
                     "application/json"
@@ -982,6 +987,11 @@ const docTemplate = `{
         },
         "/checkout": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Checkout at the user side",
                 "consumes": [
                     "application/json"
@@ -1380,6 +1390,11 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "User Details from User Profile",
                 "consumes": [
                     "application/json"
@@ -1391,6 +1406,40 @@ const docTemplate = `{
                     "Users"
                 ],
                 "summary": "User Details",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/address": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Display all the added user addresses",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all address for the user",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1495,6 +1544,11 @@ const docTemplate = `{
         },
         "/users/update-password": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Update User Password",
                 "consumes": [
                     "application/json"
@@ -1575,6 +1629,11 @@ const docTemplate = `{
         },
         "/wishlist": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Display wish List",
                 "consumes": [
                     "application/json"
@@ -1604,6 +1663,11 @@ const docTemplate = `{
         },
         "/wishlist/add/{id}": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Add To wish List",
                 "consumes": [
                     "application/json"
@@ -1642,6 +1706,11 @@ const docTemplate = `{
         },
         "/wishlist/remove/{id}": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Add To wish List",
                 "consumes": [
                     "application/json"
