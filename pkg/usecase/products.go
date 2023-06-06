@@ -21,9 +21,9 @@ func NewProductUseCase(repo interfaces.ProductRepository, cartRepo interfaces.Ca
 	}
 }
 
-func (cr *productUseCase) ShowAllProducts(page int,count int) ([]models.ProductsBrief, error) {
+func (cr *productUseCase) ShowAllProducts(page int, count int) ([]models.ProductsBrief, error) {
 
-	productsBrief, err := cr.productRepo.ShowAllProducts(page,count)
+	productsBrief, err := cr.productRepo.ShowAllProducts(page, count)
 
 	// here memory address of each item in productBrief is taken so that a copy of each instance is not made while updating
 	for i := range productsBrief {

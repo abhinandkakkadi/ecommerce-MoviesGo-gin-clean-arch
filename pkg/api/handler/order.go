@@ -47,9 +47,7 @@ func (cr *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		return
 	}
 
-	
-
-	orderSuccessResponse, err := cr.orderUseCase.OrderItemsFromCart(orderFromCart,userID)
+	orderSuccessResponse, err := cr.orderUseCase.OrderItemsFromCart(orderFromCart, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,

@@ -37,7 +37,7 @@ func (cr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 	count := c.Query("count")
 
-	products, err := cr.productUseCase.ShowAllProducts(page,count)
+	products, err := cr.productUseCase.ShowAllProducts(page, count)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,

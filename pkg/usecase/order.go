@@ -26,7 +26,7 @@ func NewOrderUseCase(orderRepo interfaces.OrderRepository, cartRepo interfaces.C
 	}
 }
 
-func (cr *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart,userID int) (domain.OrderSuccessResponse, error) {
+func (cr *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, userID int) (domain.OrderSuccessResponse, error) {
 
 	var orderBody models.OrderIncoming
 	err := copier.Copy(&orderBody, &orderFromCart)

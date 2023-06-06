@@ -18,7 +18,7 @@ func NewProductRepository(DB *gorm.DB) interfaces.ProductRepository {
 	return &productDatabase{DB}
 }
 
-func (c *productDatabase) ShowAllProducts(page int,count int) ([]models.ProductsBrief, error) {
+func (c *productDatabase) ShowAllProducts(page int, count int) ([]models.ProductsBrief, error) {
 	if page == 0 {
 		page = 1
 	}
@@ -203,7 +203,7 @@ func (cr *productDatabase) GetProductFromCategory(data map[string]int) ([]models
 		var quantity int
 		err = cr.DB.Raw("select quantity from products where id = ?", product.ID).Scan(&quantity).Error
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
 
 		if quantity == 0 {
