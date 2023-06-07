@@ -63,7 +63,7 @@ func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, us
 }
 
 // get order details
-func (o *orderUseCase) GetOrderDetails(userID int, page int,count int) ([]models.FullOrderDetails, error) {
+func (o *orderUseCase) GetOrderDetails(userID int, page int, count int) ([]models.FullOrderDetails, error) {
 
 	fullOrderDetails, err := o.orderRepository.GetOrderDetails(userID, page, count)
 	if err != nil {

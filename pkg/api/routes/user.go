@@ -11,10 +11,10 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 	// USER SIDE
 	router.POST("/signup", userHandler.UserSignUp)
 	router.POST("/login", userHandler.LoginHandler)
-	
+
 	router.POST("/send-otp", otpHandler.SendOTP)
 	router.POST("/verify-otp", otpHandler.VerifyOTP)
-	
+
 	product := router.Group("/products")
 	{
 		product.GET("", productHandler.ShowAllProducts)
@@ -23,7 +23,7 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 		router.POST("/filter", productHandler.FilterCategory)
 		router.POST("/search", productHandler.SearchProduct)
 	}
-	
+
 	router.Use(middleware.AuthMiddleware())
 
 	{

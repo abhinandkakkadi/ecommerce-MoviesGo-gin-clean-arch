@@ -38,7 +38,7 @@ func (u *UserHandler) UserSignUp(c *gin.Context) {
 	var user models.UserDetails
 	// bind the user details to the struct
 	if err := c.BindJSON(&user); err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -46,7 +46,7 @@ func (u *UserHandler) UserSignUp(c *gin.Context) {
 	// checking whether the data sent by the user has all the correct constraints specified by Users struct
 	err := validator.New().Struct(user)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest,"constraints not satisfied",nil,err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "constraints not satisfied", nil, err.Error())
 		c.JSON(http.StatusBadRequest,
 			errRes)
 		return
@@ -55,12 +55,12 @@ func (u *UserHandler) UserSignUp(c *gin.Context) {
 	// business logic goes inside this function
 	userCreated, err := u.userUseCase.UserSignUp(user)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusInternalServerError,"User could not signed up",nil,err.Error())
+		errRes := response.ClientResponse(http.StatusInternalServerError, "User could not signed up", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"User successfully signed up",userCreated,nil)
+	successRes := response.ClientResponse(http.StatusOK, "User successfully signed up", userCreated, nil)
 	c.JSON(http.StatusCreated, successRes)
 
 }
@@ -79,26 +79,26 @@ func (u *UserHandler) LoginHandler(c *gin.Context) {
 	var user models.UserLogin
 
 	if err := c.BindJSON(&user); err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
 	err := validator.New().Struct(user)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest,"constraints not satisfied",nil,err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "constraints not satisfied", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
 	user_details, err := u.userUseCase.LoginHandler(user)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusInternalServerError,"User could not be logged in",nil,err.Error())
+		errRes := response.ClientResponse(http.StatusInternalServerError, "User could not be logged in", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"User successfully logged in",user_details,nil)
+	successRes := response.ClientResponse(http.StatusOK, "User successfully logged in", user_details, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
@@ -120,26 +120,26 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 	var address models.AddressInfo
 
 	if err := c.BindJSON(&address); err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
-		c.JSON(http.StatusBadRequest,errRes)
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
 	err := validator.New().Struct(address)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest,"constraints does not match",nil,err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "constraints does not match", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 	}
 
 	addressResponse, err := u.userUseCase.AddAddress(address, userID.(int))
 
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusInternalServerError,"failed adding address",nil,err.Error())
+		errRes := response.ClientResponse(http.StatusInternalServerError, "failed adding address", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusCreated,"address added successfully",addressResponse,nil)
+	successRes := response.ClientResponse(http.StatusCreated, "address added successfully", addressResponse, nil)
 	c.JSON(http.StatusCreated, successRes)
 
 }
@@ -160,7 +160,7 @@ func (u *UserHandler) UpdateAddress(c *gin.Context) {
 	id := c.Param("id")
 	addressId, err := strconv.Atoi(id)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest,"address id not in the right format",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "address id not in the right format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -169,19 +169,19 @@ func (u *UserHandler) UpdateAddress(c *gin.Context) {
 	user_id := userID.(int)
 	var address models.AddressInfo
 	if err := c.BindJSON(&address); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	updatedAddress, err := u.userUseCase.UpdateAddress(address, addressId, user_id)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"failed updating address",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "failed updating address", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"address updated successfully",updatedAddress,nil)
+	successRes := response.ClientResponse(http.StatusOK, "address updated successfully", updatedAddress, nil)
 	c.JSON(http.StatusCreated, successRes)
 
 }
@@ -201,12 +201,12 @@ func (u *UserHandler) CheckOut(c *gin.Context) {
 	checkoutDetails, err := u.userUseCase.Checkout(userID.(int))
 
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"failed to retrieve details",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "failed to retrieve details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"Checkout Page loaded successfully",checkoutDetails,nil)
+	successRes := response.ClientResponse(http.StatusOK, "Checkout Page loaded successfully", checkoutDetails, nil)
 	c.JSON(http.StatusOK, successRes)
 }
 
@@ -225,12 +225,12 @@ func (u *UserHandler) UserDetails(c *gin.Context) {
 
 	userDetails, err := u.userUseCase.UserDetails(userID.(int))
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"failed to retrieve details",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "failed to retrieve details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"user Details",userDetails,nil)
+	successRes := response.ClientResponse(http.StatusOK, "user Details", userDetails, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
@@ -249,12 +249,12 @@ func (u *UserHandler) GetAllAddress(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	userAddress, err := u.userUseCase.GetAllAddress(userID.(int))
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"failed to retrieve details",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "failed to retrieve details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"User Address",userAddress,nil)
+	successRes := response.ClientResponse(http.StatusOK, "User Address", userAddress, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
@@ -268,19 +268,19 @@ func (u *UserHandler) UpdateUserDetails(c *gin.Context) {
 
 	var user models.UsersProfileDetails
 	if err := c.BindJSON(&user); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	updatedDetails, err := u.userUseCase.UpdateUserDetails(user, ctx)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"failed update user",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "failed update user", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"Updated User Details",updatedDetails,nil)
+	successRes := response.ClientResponse(http.StatusOK, "Updated User Details", updatedDetails, nil)
 	c.JSON(http.StatusOK, successRes)
 }
 
@@ -302,7 +302,7 @@ func (u *UserHandler) UpdatePassword(c *gin.Context) {
 
 	var body models.UpdatePassword
 	if err := c.BindJSON(&body); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -311,12 +311,12 @@ func (u *UserHandler) UpdatePassword(c *gin.Context) {
 
 	err := u.userUseCase.UpdatePassword(ctx, body)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"failed updating password",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "failed updating password", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusCreated,"Password updated successfully",nil,nil)
+	successRes := response.ClientResponse(http.StatusCreated, "Password updated successfully", nil, nil)
 	c.JSON(http.StatusCreated, successRes)
 }
 
@@ -336,19 +336,19 @@ func (u *UserHandler) AddToWishList(c *gin.Context) {
 	id := c.Param("id")
 	productID, err := strconv.Atoi(id)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest,"product id is in wrong format",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "product id is in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	err = u.userUseCase.AddToWishList(productID, userID.(int))
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"failed to item to the wishlist",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "failed to item to the wishlist", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"SuccessFully added product to the wishlist",nil,nil)
+	successRes := response.ClientResponse(http.StatusOK, "SuccessFully added product to the wishlist", nil, nil)
 	c.JSON(http.StatusNoContent, successRes)
 
 }
@@ -367,12 +367,12 @@ func (u *UserHandler) GetWishList(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	wishList, err := u.userUseCase.GetWishList(userID.(int))
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"failed to retrieve wishlist detailss",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "failed to retrieve wishlist detailss", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"SuccessFully retrieved wishlist",wishList,nil)
+	successRes := response.ClientResponse(http.StatusOK, "SuccessFully retrieved wishlist", wishList, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
@@ -393,19 +393,19 @@ func (u *UserHandler) RemoveFromWishList(c *gin.Context) {
 	id := c.Param("id")
 	productID, err := strconv.Atoi(id)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest,"product id is in wrong format",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "product id is in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	err = u.userUseCase.RemoveFromWishList(productID, userID.(int))
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"failed to remove item from wishlist",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "failed to remove item from wishlist", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"SuccessFully deleted product from wishlist",nil,nil)
+	successRes := response.ClientResponse(http.StatusOK, "SuccessFully deleted product from wishlist", nil, nil)
 	c.JSON(http.StatusNoContent, successRes)
 
 }

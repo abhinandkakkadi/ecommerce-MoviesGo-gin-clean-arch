@@ -35,19 +35,19 @@ func (co *CouponHandler) AddCoupon(c *gin.Context) {
 
 	var coupon models.AddCoupon
 	if err := c.BindJSON(&coupon); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest,"could not bind the coupon details",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not bind the coupon details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 	fmt.Println(coupon)
 	message, err := co.couponUseCase.AddCoupon(coupon)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"Could not add coupon",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not add coupon", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"Coupon Added",message,nil)
+	successRes := response.ClientResponse(http.StatusOK, "Coupon Added", message, nil)
 	c.JSON(http.StatusCreated, successRes)
 
 }
@@ -65,12 +65,12 @@ func (co *CouponHandler) GetCoupon(c *gin.Context) {
 
 	coupons, err := co.couponUseCase.GetCoupon()
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"Could not get coupon details",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not get coupon details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"Coupon Retrieved successfully",coupons,nil)
+	successRes := response.ClientResponse(http.StatusOK, "Coupon Retrieved successfully", coupons, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
@@ -90,19 +90,19 @@ func (co *CouponHandler) ExpireCoupon(c *gin.Context) {
 	id := c.Param("id")
 	couponID, err := strconv.Atoi(id)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest,"coupon id not in correct format",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "coupon id not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	err = co.couponUseCase.ExpireCoupon(couponID)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError,"could not expire coupon",nil,err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not expire coupon", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"Coupon expired successfully",nil,nil)
+	successRes := response.ClientResponse(http.StatusOK, "Coupon expired successfully", nil, nil)
 	c.JSON(http.StatusNoContent, successRes)
 
 }
