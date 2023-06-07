@@ -122,7 +122,7 @@ func (o *OrderHandler) CancelOrder(c *gin.Context) {
 	}
 
 	successRes := response.ClientResponse(http.StatusOK, "Cancel Successfull", message, nil)
-	c.JSON(http.StatusNoContent, successRes)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -179,7 +179,7 @@ func (o *OrderHandler) ApproveOrder(c *gin.Context) {
 	}
 
 	successRes := response.ClientResponse(http.StatusOK, "Order approved successfully", message, nil)
-	c.JSON(http.StatusNoContent, successRes)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -206,5 +206,5 @@ func (o *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 	}
 
 	successRes := response.ClientResponse(http.StatusOK, "Cancel Successfull", message, nil)
-	c.JSON(http.StatusNoContent, successRes)
+	c.JSON(http.StatusOK, successRes)
 }

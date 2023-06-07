@@ -37,7 +37,7 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 	var adminDetails models.AdminLogin
 	fmt.Println("it is here")
 	if err := c.BindJSON(&adminDetails); err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "deatails not in correct format", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -191,8 +191,8 @@ func (ad *AdminHandler) DeleteGenre(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, errorRes)
 	}
 
-	successRes := response.ClientResponse(http.StatusNoContent, "Successfully deleted the product", nil, nil)
-	c.JSON(http.StatusNoContent, successRes)
+	successRes := response.ClientResponse(http.StatusOK, "Successfully deleted the product", nil, nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -216,8 +216,8 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusNoContent, "Successfully blocked the user", nil, nil)
-	c.JSON(http.StatusNoContent, successRes)
+	successRes := response.ClientResponse(http.StatusOK, "Successfully blocked the user", nil, nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -242,8 +242,8 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusNoContent, "Successfully unblocked the user", nil, nil)
-	c.JSON(http.StatusNoContent, successRes)
+	successRes := response.ClientResponse(http.StatusOK, "Successfully unblocked the user", nil, nil)
+	c.JSON(http.StatusOK, successRes)
 }
 
 // check this before doing ny operations on this.
@@ -273,7 +273,7 @@ func (ad *UserHandler) AddNewUsers(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "User successfully created", userCreated, nil)
+	successRes := response.ClientResponse(http.StatusCreated, "User successfully created", userCreated, nil)
 	c.JSON(http.StatusCreated, successRes)
 
 }

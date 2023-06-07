@@ -60,7 +60,7 @@ func (u *UserHandler) UserSignUp(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "User successfully signed up", userCreated, nil)
+	successRes := response.ClientResponse(http.StatusCreated, "User successfully signed up", userCreated, nil)
 	c.JSON(http.StatusCreated, successRes)
 
 }
@@ -181,7 +181,7 @@ func (u *UserHandler) UpdateAddress(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "address updated successfully", updatedAddress, nil)
+	successRes := response.ClientResponse(http.StatusCreated, "address updated successfully", updatedAddress, nil)
 	c.JSON(http.StatusCreated, successRes)
 
 }
@@ -349,7 +349,7 @@ func (u *UserHandler) AddToWishList(c *gin.Context) {
 	}
 
 	successRes := response.ClientResponse(http.StatusOK, "SuccessFully added product to the wishlist", nil, nil)
-	c.JSON(http.StatusNoContent, successRes)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -406,6 +406,6 @@ func (u *UserHandler) RemoveFromWishList(c *gin.Context) {
 	}
 
 	successRes := response.ClientResponse(http.StatusOK, "SuccessFully deleted product from wishlist", nil, nil)
-	c.JSON(http.StatusNoContent, successRes)
+	c.JSON(http.StatusOK, successRes)
 
 }

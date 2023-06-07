@@ -47,7 +47,7 @@ func (co *CouponHandler) AddCoupon(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Coupon Added", message, nil)
+	successRes := response.ClientResponse(http.StatusCreated, "Coupon Added", message, nil)
 	c.JSON(http.StatusCreated, successRes)
 
 }
@@ -103,6 +103,6 @@ func (co *CouponHandler) ExpireCoupon(c *gin.Context) {
 	}
 
 	successRes := response.ClientResponse(http.StatusOK, "Coupon expired successfully", nil, nil)
-	c.JSON(http.StatusNoContent, successRes)
+	c.JSON(http.StatusOK, successRes)
 
 }

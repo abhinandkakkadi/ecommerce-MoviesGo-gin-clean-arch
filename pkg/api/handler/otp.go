@@ -43,8 +43,8 @@ func (ot *OtpHandler) SendOTP(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusNoContent, "OTP sent successfully", nil, nil)
-	c.JSON(http.StatusNoContent, successRes)
+	successRes := response.ClientResponse(http.StatusOK, "OTP sent successfully", nil, nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 

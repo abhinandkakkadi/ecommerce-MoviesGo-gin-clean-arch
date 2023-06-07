@@ -154,8 +154,8 @@ func (pr *ProductHandler) DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusNoContent, "Successfully deleted the item", nil, nil)
-	c.JSON(http.StatusNoContent, successRes)
+	successRes := response.ClientResponse(http.StatusOK, "Successfully deleted the item", nil, nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
