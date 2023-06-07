@@ -111,15 +111,15 @@ func (o *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, car
 	return orderSuccessResponse, nil
 }
 
-func (o *orderRepository) GetOrderDetails(userID int, page int) ([]models.FullOrderDetails, error) {
+func (o *orderRepository) GetOrderDetails(userID int, page int,count int) ([]models.FullOrderDetails, error) {
 	// details of order created byt his particular user
 	if page == 0 {
 		page = 1
 	}
-	offset := (page - 1) * 2
+	offset := (page - 1) * count
 
 	var orderDetails []models.OrderDetails
-	o.DB.Raw("select order_id,final_price,shipment_status,payment_status from orders where user_id = ? limit ? offset ? ", userID, 2, offset).Scan(&orderDetails)
+	o.DB.Raw("select order_id,final_price,shipment_status,payment_status from orders where user_id = ? limit ? offset ? ", userID, count, offset).Scan(&orderDetails)
 	fmt.Println(orderDetails)
 
 	var fullOrderDetails []models.FullOrderDetails

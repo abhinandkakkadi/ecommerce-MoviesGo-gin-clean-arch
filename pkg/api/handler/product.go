@@ -33,9 +33,27 @@ func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
 func (pr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 	pageStr := c.Param("page")
-	page, _ := strconv.Atoi(pageStr)
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "page number not in right format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
 
-	count, _ := strconv.Atoi(c.Query("count"))
+	count, err := strconv.Atoi(c.Query("count"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "page count not in right format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
 
 	products, err := pr.productUseCase.ShowAllProducts(page, count)
 	if err != nil {
@@ -48,7 +66,7 @@ func (pr *ProductHandler) ShowAllProducts(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.Response{
+	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
 		Message:    "Successfully Retrieved all products",
 		Data:       products,
@@ -85,7 +103,7 @@ func (pr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.Response{
+	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
 		Message:    "Successfully Retrieved all products to admin side",
 		Data:       products,
@@ -119,7 +137,7 @@ func (pr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusBadRequest,
+		StatusCode: http.StatusOK,
 		Message:    "Product details retrieved successfully",
 		Data:       product,
 		Error:      nil,
@@ -184,8 +202,8 @@ func (pr *ProductHandler) DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusBadRequest,
+	c.JSON(http.StatusNoContent, response.Response{
+		StatusCode: http.StatusNoContent,
 		Message:    "Successfully deleted the item",
 		Data:       nil,
 		Error:      nil,
@@ -208,7 +226,7 @@ func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 	var p models.UpdateProduct
 
 	if err := c.BindJSON(&p); err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
+		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
 			Message:    "fields provided are in wrong format",
 			Data:       nil,
@@ -220,7 +238,7 @@ func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 	err := pr.productUseCase.UpdateProduct(p.ProductID, p.Quantity)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusBadRequest,
+			StatusCode: http.StatusInternalServerError,
 			Message:    "could not update the product",
 			Data:       nil,
 			Error:      err.Error(),
@@ -229,7 +247,7 @@ func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusBadRequest,
+		StatusCode: http.StatusOK,
 		Message:    "Successfully updated the item",
 		Data:       nil,
 		Error:      nil,
@@ -245,7 +263,7 @@ func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 // @Param data body map[string]int true "Category IDs and quantities"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /filter [post]
+// @Router /products/filter [post]
 func (pr *ProductHandler) FilterCategory(c *gin.Context) {
 
 	var data map[string]int
@@ -287,7 +305,7 @@ func (pr *ProductHandler) FilterCategory(c *gin.Context) {
 // @Param prefix body models.SearchItems true "Name prefix to search"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /search [post]
+// @Router /products/search [post]
 func (pr *ProductHandler) SearchProduct(c *gin.Context) {
 
 	var prefix models.SearchItems

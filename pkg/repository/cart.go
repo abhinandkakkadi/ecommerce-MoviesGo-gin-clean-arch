@@ -58,7 +58,7 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 
 	if itemsPresentInCart == 0 && productQuantity == 0 {
 
-		return []models.Cart{}, nil
+		return []models.Cart{}, errors.New("product out of stock")
 	}
 
 	// quantity in carts is equal to quantity in STOCK  -- don't allow to add further products OR product out of stock  -- or if prodctQuanity = 0 - which means the item is out of stock

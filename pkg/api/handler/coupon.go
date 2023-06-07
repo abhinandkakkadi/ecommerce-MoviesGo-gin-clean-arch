@@ -86,8 +86,8 @@ func (co *CouponHandler) GetCoupon(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.Response{
-		StatusCode: http.StatusCreated,
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
 		Error:      nil,
 		Data:       coupons,
 		Message:    "Coupon Retrieved successfully",
@@ -130,8 +130,8 @@ func (co *CouponHandler) ExpireCoupon(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.Response{
-		StatusCode: http.StatusCreated,
+	c.JSON(http.StatusNoContent, response.Response{
+		StatusCode: http.StatusNoContent,
 		Error:      nil,
 		Data:       nil,
 		Message:    "Coupon expired successfully",

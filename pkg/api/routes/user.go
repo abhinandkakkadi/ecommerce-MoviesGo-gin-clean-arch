@@ -11,17 +11,21 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 	// USER SIDE
 	router.POST("/signup", userHandler.UserSignUp)
 	router.POST("/login", userHandler.LoginHandler)
+	
 	router.POST("/send-otp", otpHandler.SendOTP)
 	router.POST("/verify-otp", otpHandler.VerifyOTP)
+	
 	product := router.Group("/products")
-	product.GET("", productHandler.ShowAllProducts)
-	product.GET("/page/:page", productHandler.ShowAllProducts)
-	product.GET("/:id", productHandler.ShowIndividualProducts)
-
-	router.POST("/filter", productHandler.FilterCategory)
-	router.POST("/search", productHandler.SearchProduct)
-
+	{
+		product.GET("", productHandler.ShowAllProducts)
+		product.GET("/page/:page", productHandler.ShowAllProducts)
+		product.GET("/:id", productHandler.ShowIndividualProducts)
+		router.POST("/filter", productHandler.FilterCategory)
+		router.POST("/search", productHandler.SearchProduct)
+	}
+	
 	router.Use(middleware.AuthMiddleware())
+
 	{
 		cart := router.Group("/cart")
 		{
@@ -68,7 +72,6 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 		}
 
 		router.GET("/checkout", userHandler.CheckOut)
-
 		router.POST("/order", orderHandler.OrderItemsFromCart)
 
 		router.GET("/payment/:id", paymentHandler.MakePaymentRazorPay)

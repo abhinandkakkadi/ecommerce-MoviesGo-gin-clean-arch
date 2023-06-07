@@ -51,8 +51,8 @@ func (ot *OtpHandler) SendOTP(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
+	c.JSON(http.StatusNoContent, response.Response{
+		StatusCode: http.StatusNoContent,
 		Message:    "OTP sent successfully",
 		Data:       nil,
 		Error:      nil,
@@ -85,7 +85,7 @@ func (ot *OtpHandler) VerifyOTP(c *gin.Context) {
 	user, err := ot.otpUseCase.VerifyOTP(code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusBadRequest,
+			StatusCode: http.StatusInternalServerError,
 			Message:    "Could not verify OTP",
 			Data:       nil,
 			Error:      err.Error(),
@@ -94,10 +94,10 @@ func (ot *OtpHandler) VerifyOTP(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusBadRequest,
+		StatusCode: http.StatusOK,
 		Message:    "Successfully verified OTP",
-		Data:       nil,
-		Error:      user,
+		Data:       user,
+		Error:     	nil,
 	})
 
 }

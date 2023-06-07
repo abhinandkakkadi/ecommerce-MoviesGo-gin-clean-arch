@@ -190,15 +190,15 @@ func (ad *adminRepository) GetUserByID(id string) (domain.Users, error) {
 
 	user_id, err := strconv.Atoi(id)
 	if err != nil {
-		return domain.Users{},err
+		return domain.Users{}, err
 	}
 
 	var count int
 	if err := ad.DB.Raw("select count(*) from users where id = ?").Scan(&count).Error; err != nil {
-		return domain.Users{},err
+		return domain.Users{}, err
 	}
 	if count < 1 {
-		return domain.Users{},errors.New("user for the given id does not exist")
+		return domain.Users{}, errors.New("user for the given id does not exist")
 	}
 
 	query := fmt.Sprintf("select * from users where id = '%d'", user_id)

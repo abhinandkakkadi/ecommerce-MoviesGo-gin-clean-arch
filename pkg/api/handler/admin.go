@@ -37,32 +37,20 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 	var adminDetails models.AdminLogin
 	fmt.Println("it is here")
 	if err := c.BindJSON(&adminDetails); err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "details not in the correct format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errRes := response.ClientResponse(http.StatusBadRequest,"deatails not in correct format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
 	admin, err := cr.adminUseCase.LoginHandler(adminDetails)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "cannot authenticate user",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errRes := response.ClientResponse(http.StatusInternalServerError,"cannot authenticate user",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Admin authenticated successfully",
-		Data:       admin,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Admin authenticated successfully",admin,nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -79,31 +67,19 @@ func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 
 	var admin models.AdminSignUp
 	if err := c.BindJSON(&admin); err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "fields provided are wrong",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errRes := response.ClientResponse(http.StatusBadRequest,"fields provided are wrong",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
 	}
 
 	adminDetails, err := cr.adminUseCase.SignUpHandler(admin)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "cannot authenticate user",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errRes := response.ClientResponse(http.StatusInternalServerError,"cannot authenticate user",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully signed up the user ",
-		Data:       adminDetails,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusCreated,"Successfully signed up the user",adminDetails,nil)
+	c.JSON(http.StatusCreated, successRes)
 
 }
 
@@ -123,42 +99,25 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 	page, err := strconv.Atoi(pageStr)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "page number not in right format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"page number not in right format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 	count, err := strconv.Atoi(c.Query("count"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "user count in a page not in right format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"user count in a page not in right format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	users, err := ad.adminUseCase.GetUsers(page, count)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "could not retrieve records",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"could not retrieve records",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
-
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully retrieved the users",
-		Data:       users,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Successfully retrieved the users",users,nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -175,21 +134,12 @@ func (ad *AdminHandler) GetGenres(c *gin.Context) {
 
 	genres, err := ad.adminUseCase.GetFullCategory()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "fields provided are in wrong format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"fields provided are in wrong format",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
-
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully retrieved the genres",
-		Data:       genres,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Successfully retrieved the genres",genres,nil)
+	c.JSON(http.StatusOK, successRes)
 }
 
 // @Summary Add Category
@@ -206,32 +156,19 @@ func (ad *AdminHandler) AddCategory(c *gin.Context) {
 
 	var category models.CategoryUpdate
 	if err := c.BindJSON(&category); err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "fields provided are in wrong format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	addedCategory, err := ad.adminUseCase.AddCategory(category)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "The category could not be added",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"The category could not be added",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
-
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully added the record",
-		Data:       addedCategory,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusCreated,"Successfully added the record",addedCategory,nil)
+	c.JSON(http.StatusCreated, successRes)
 
 }
 
@@ -249,21 +186,13 @@ func (ad *AdminHandler) DeleteGenre(c *gin.Context) {
 
 	genre_id := c.Param("id")
 	err := ad.adminUseCase.Delete(genre_id)
+	errorRes := response.ClientResponse(http.StatusBadRequest,"could not delete the specified genre",nil,err.Error())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "could not delete the specified genre",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		c.JSON(http.StatusInternalServerError, errorRes)
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully deleted the product",
-		Data:       nil,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusNoContent,"Successfully deleted the product",nil,nil)
+	c.JSON(http.StatusNoContent, successRes)
 
 }
 
@@ -282,21 +211,13 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 	id := c.Param("id")
 	err := ad.adminUseCase.BlockUser(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "user could not be blocked",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"user could not be blocked",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusBadRequest,
-		Message:    "Successfully blocked the user",
-		Data:       nil,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusNoContent,"Successfully blocked the user",nil,nil)
+	c.JSON(http.StatusNoContent, successRes)
 
 }
 
@@ -316,21 +237,13 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 	err := ad.adminUseCase.UnBlockUser(id)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "user could not be unblocked",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"user could not be unblocked",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusBadRequest,
-		Message:    "Successfully unblocked the user",
-		Data:       nil,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusNoContent,"Successfully unblocked the user",nil,nil)
+	c.JSON(http.StatusNoContent, successRes)
 }
 
 // check this before doing ny operations on this.
@@ -338,45 +251,29 @@ func (ad *UserHandler) AddNewUsers(c *gin.Context) {
 	fmt.Println("add users")
 	var userDetails models.UserDetails
 	if err := c.BindJSON(&userDetails); err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "could not bind the user details",
-			Data:       nil,
-			Error:      err,
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"could not bind the user details",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	// checking whether the data sent by the user has all the correct constraints specified by Users struct
 	err := validator.New().Struct(userDetails)
 	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest,"constraints not satisfied",nil,err.Error())
 		c.JSON(http.StatusBadRequest,
-			response.Response{
-				StatusCode: http.StatusBadRequest,
-				Message:    "constraints not satisfied",
-				Data:       nil,
-				Error:      err.Error(),
-			})
+			errorRes)
 		return
 	}
 
 	// business logic goes inside this function
 	userCreated, err := ad.userUseCase.UserSignUp(userDetails)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "User could not be created up",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"user could not be created",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.Response{
-		StatusCode: http.StatusCreated,
-		Message:    "User successfully created",
-		Data:       userCreated,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"User successfully created",userCreated,nil)
+	c.JSON(http.StatusCreated, successRes)
 
 }

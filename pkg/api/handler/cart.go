@@ -63,7 +63,7 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, response.Response{
-		StatusCode: http.StatusOK,
+		StatusCode: http.StatusCreated,
 		Error:      nil,
 		Data:       cartResponse,
 		Message:    "successfully added product to the cart",
@@ -173,7 +173,7 @@ func (cr *CartHandler) EmptyCart(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusInternalServerError, response.Response{
+	c.JSON(http.StatusOK, response.Response{
 		StatusCode: http.StatusOK,
 		Error:      nil,
 		Data:       emptyCart,
@@ -219,8 +219,8 @@ func (cr *CartHandler) AddCoupon(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusInternalServerError, response.Response{
-		StatusCode: http.StatusOK,
+	c.JSON(http.StatusCreated, response.Response{
+		StatusCode: http.StatusCreated,
 		Error:      nil,
 		Data:       nil,
 		Message:    "Coupon added successfully",

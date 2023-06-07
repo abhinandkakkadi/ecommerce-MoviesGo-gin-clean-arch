@@ -38,7 +38,7 @@ func (o *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
 	var orderFromCart models.OrderFromCart
 	if err := c.BindJSON(&orderFromCart); err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
+		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: http.StatusBadRequest,
 			Error:      err.Error(),
 			Data:       nil,
@@ -100,10 +100,22 @@ func (o *OrderHandler) GetOrderDetails(c *gin.Context) {
 		})
 		return
 	}
+
+	count, err := strconv.Atoi(c.Query("count"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "page count not in right format",
+			Data:       nil,
+			Error:      err.Error(),
+		})
+		return
+	}
+
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
-	fullOrderDetails, err := o.orderUseCase.GetOrderDetails(userID, page)
+	fullOrderDetails, err := o.orderUseCase.GetOrderDetails(userID, page, count)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -151,8 +163,8 @@ func (o *OrderHandler) CancelOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
+	c.JSON(http.StatusNoContent, response.Response{
+		StatusCode: http.StatusNoContent,
 		Error:      nil,
 		Data:       message,
 		Message:    "Cancel Successfull",
@@ -228,11 +240,11 @@ func (o *OrderHandler) ApproveOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
+	c.JSON(http.StatusNoContent, response.Response{
+		StatusCode: http.StatusNoContent,
 		Error:      nil,
 		Data:       message,
-		Message:    "Order Details Retrieved successfully",
+		Message:    "Order approved successfully",
 	})
 
 }
@@ -263,8 +275,8 @@ func (o *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
+	c.JSON(http.StatusNoContent, response.Response{
+		StatusCode: http.StatusNoContent,
 		Error:      nil,
 		Data:       message,
 		Message:    "Cancel Successfull",

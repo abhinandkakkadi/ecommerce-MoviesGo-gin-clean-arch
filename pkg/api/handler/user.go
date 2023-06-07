@@ -118,7 +118,7 @@ func (u *UserHandler) LoginHandler(c *gin.Context) {
 	user_details, err := u.userUseCase.LoginHandler(user)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
+		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "User could not be logged in",
 			Data:       nil,
@@ -165,7 +165,7 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 	err := validator.New().Struct(address)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusInternalServerError,
+			StatusCode: http.StatusBadRequest,
 			Message:    "constraints does not match",
 			Data:       nil,
 			Error:      err.Error(),
@@ -175,7 +175,7 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 	addressResponse, err := u.userUseCase.AddAddress(address, userID.(int))
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
+		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "failed adding address",
 			Data:       nil,
@@ -235,7 +235,7 @@ func (u *UserHandler) UpdateAddress(c *gin.Context) {
 	updatedAddress, err := u.userUseCase.UpdateAddress(address, addressId, user_id)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
+		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "failed updating address",
 			Data:       nil,
@@ -244,8 +244,8 @@ func (u *UserHandler) UpdateAddress(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
+	c.JSON(http.StatusCreated, response.Response{
+		StatusCode: http.StatusCreated,
 		Message:    "address updated successfully",
 		Data:       updatedAddress,
 		Error:      nil,
@@ -268,7 +268,7 @@ func (u *UserHandler) CheckOut(c *gin.Context) {
 	checkoutDetails, err := u.userUseCase.Checkout(userID.(int))
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
+		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "failed to retrieve details",
 			Data:       nil,
@@ -300,7 +300,7 @@ func (u *UserHandler) UserDetails(c *gin.Context) {
 
 	userDetails, err := u.userUseCase.UserDetails(userID.(int))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
+		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "failed to retrieve details",
 			Data:       nil,
@@ -332,7 +332,7 @@ func (u *UserHandler) GetAllAddress(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	userAddress, err := u.userUseCase.GetAllAddress(userID.(int))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
+		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "failed to retrieve details",
 			Data:       nil,
@@ -370,7 +370,7 @@ func (u *UserHandler) UpdateUserDetails(c *gin.Context) {
 
 	updatedDetails, err := u.userUseCase.UpdateUserDetails(user, ctx)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
+		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "failed update user",
 			Data:       nil,
@@ -418,7 +418,7 @@ func (u *UserHandler) UpdatePassword(c *gin.Context) {
 
 	err := u.userUseCase.UpdatePassword(ctx, body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
+		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "failed updating password",
 			Data:       nil,
@@ -427,8 +427,8 @@ func (u *UserHandler) UpdatePassword(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
+	c.JSON(http.StatusCreated, response.Response{
+		StatusCode: http.StatusCreated,
 		Message:    "Password updated successfully ",
 		Data:       nil,
 		Error:      nil,
@@ -462,7 +462,7 @@ func (u *UserHandler) AddToWishList(c *gin.Context) {
 
 	err = u.userUseCase.AddToWishList(productID, userID.(int))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
+		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "failed to item to the wishlist",
 			Data:       nil,
@@ -471,8 +471,8 @@ func (u *UserHandler) AddToWishList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
+	c.JSON(http.StatusNoContent, response.Response{
+		StatusCode: http.StatusNoContent,
 		Message:    "SuccessFully added product to the wishlist",
 		Data:       nil,
 		Error:      nil,
@@ -494,7 +494,7 @@ func (u *UserHandler) GetWishList(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	wishList, err := u.userUseCase.GetWishList(userID.(int))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
+		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "failed to retrieve wishlist details",
 			Data:       nil,
@@ -539,7 +539,7 @@ func (u *UserHandler) RemoveFromWishList(c *gin.Context) {
 
 	err = u.userUseCase.RemoveFromWishList(productID, userID.(int))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
+		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "failed to remove item from wishlist",
 			Data:       nil,
@@ -548,8 +548,8 @@ func (u *UserHandler) RemoveFromWishList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
+	c.JSON(http.StatusNoContent, response.Response{
+		StatusCode: http.StatusNoContent,
 		Message:    "SuccessFully deleted product from wishlist",
 		Data:       nil,
 		Error:      nil,
