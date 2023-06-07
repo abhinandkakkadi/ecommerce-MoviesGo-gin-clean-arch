@@ -35,43 +35,27 @@ func (pr *ProductHandler) ShowAllProducts(c *gin.Context) {
 	pageStr := c.Param("page")
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "page number not in right format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"page number not in right format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	count, err := strconv.Atoi(c.Query("count"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "page count not in right format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"page count not in right format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	products, err := pr.productUseCase.ShowAllProducts(page, count)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Could not retrieve products",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"Could not retrieve products",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully Retrieved all products",
-		Data:       products,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Successfully Retrieved all products",products,nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -94,21 +78,13 @@ func (pr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 	products, err := pr.productUseCase.ShowAllProducts(page, count)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Could not retrieve products to admin side",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"could not retrieve records",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully Retrieved all products to admin side",
-		Data:       products,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Successfully Retrieved all products to admin side",products,nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -127,21 +103,13 @@ func (pr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 	product, err := pr.productUseCase.ShowIndividualProducts(id)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "path variables in wrong format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"path variables in wrong format",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Product details retrieved successfully",
-		Data:       product,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Product details retrieved successfully",product,nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -149,32 +117,20 @@ func (pr *ProductHandler) AddProduct(c *gin.Context) {
 
 	var product models.ProductsReceiver
 	if err := c.BindJSON(&product); err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "fields provided are in wrong format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	productResponse, err := pr.productUseCase.AddProduct(product)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Could not add the product",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"Could not add the product",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully added products",
-		Data:       productResponse,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Successfully added products",productResponse,nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -193,21 +149,13 @@ func (pr *ProductHandler) DeleteProduct(c *gin.Context) {
 	product_id := c.Param("id")
 	err := pr.productUseCase.DeleteProduct(product_id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "fields provided are in wrong format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusNoContent, response.Response{
-		StatusCode: http.StatusNoContent,
-		Message:    "Successfully deleted the item",
-		Data:       nil,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusNoContent,"Successfully deleted the item",nil,nil)
+	c.JSON(http.StatusNoContent, successRes)
 
 }
 
@@ -226,32 +174,20 @@ func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 	var p models.UpdateProduct
 
 	if err := c.BindJSON(&p); err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "fields provided are in wrong format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	err := pr.productUseCase.UpdateProduct(p.ProductID, p.Quantity)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "could not update the product",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"could not update the product",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully updated the item",
-		Data:       nil,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Successfully retrieved the users",nil,nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -268,32 +204,20 @@ func (pr *ProductHandler) FilterCategory(c *gin.Context) {
 
 	var data map[string]int
 	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "fields provided are in wrong format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	productCategory, err := pr.productUseCase.FilterCategory(data)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "could not retrieve products by category",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"could not retrieve products by category",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully filtered the category",
-		Data:       productCategory,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Successfully filtered the category",productCategory,nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
 
@@ -310,31 +234,19 @@ func (pr *ProductHandler) SearchProduct(c *gin.Context) {
 
 	var prefix models.SearchItems
 	if err := c.ShouldBindJSON(&prefix); err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "fields provided are in wrong format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	productDetails, err := pr.productUseCase.SearchItemBasedOnPrefix(prefix.Name)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "could not retrieve products by prefix seae",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"could not retrieve products by prefix search",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully filtered the category",
-		Data:       productDetails,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Successfully filtered the category",productDetails,nil)
+	c.JSON(http.StatusOK, successRes)
 
 }

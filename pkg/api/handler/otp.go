@@ -32,31 +32,19 @@ func (ot *OtpHandler) SendOTP(c *gin.Context) {
 
 	var phone models.OTPData
 	if err := c.BindJSON(&phone); err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "fields provided are in wrong format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 	}
 
 	err := ot.otpUseCase.SendOTP(phone.PhoneNumber)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Could not send OTP",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"Could not send OTP",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusNoContent, response.Response{
-		StatusCode: http.StatusNoContent,
-		Message:    "OTP sent successfully",
-		Data:       nil,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusNoContent,"OTP sent successfully",nil,nil)
+	c.JSON(http.StatusNoContent, successRes)
 
 }
 
@@ -73,31 +61,19 @@ func (ot *OtpHandler) VerifyOTP(c *gin.Context) {
 
 	var code models.VerifyData
 	if err := c.BindJSON(&code); err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "fields provided are in wrong format",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusBadRequest,"fields provided are in wrong format",nil,err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	user, err := ot.otpUseCase.VerifyOTP(code)
+	users, err := ot.otpUseCase.VerifyOTP(code)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Could not verify OTP",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"Could not verify OTP",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
-	}
+	}	
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully verified OTP",
-		Data:       user,
-		Error:     	nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Successfully verified OTP",users,nil)
+	c.JSON(http.StatusOK, successRes)
 
 }

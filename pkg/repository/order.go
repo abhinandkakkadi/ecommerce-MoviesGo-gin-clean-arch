@@ -80,6 +80,7 @@ func (o *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, car
 		if walletAvailable < orderDetails.FinalPrice {
 			orderDetails.PaymentStatus = "not paid"
 			orderDetails.ShipmentStatus = "pending"
+			return domain.OrderSuccessResponse{},errors.New("wallet amount is less than total amount")
 		} else {
 			o.DB.Exec("update wallets set wallet_amount = ? where user_id = ? ", walletAvailable-orderDetails.FinalPrice, orderBody.UserID)
 			orderDetails.PaymentStatus = "paid"

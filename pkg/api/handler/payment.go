@@ -26,12 +26,8 @@ func (p *PaymentHandler) MakePaymentRazorPay(c *gin.Context) {
 
 	orderDetail, razorID, err := p.paymentUseCase.MakePaymentRazorPay(orderID, userID.(int))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "could not generate order details",
-			Error:      err.Error(),
-			Data:       nil,
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"could not generate order details",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
@@ -53,20 +49,12 @@ func (p *PaymentHandler) VerifyPayment(c *gin.Context) {
 	fmt.Println("paymentID := ", paymentID, " razorID := ", razorID)
 	err := p.paymentUseCase.SavePaymentDetails(paymentID, razorID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "could not update payment details",
-			Data:       nil,
-			Error:      err.Error(),
-		})
+		errorRes := response.ClientResponse(http.StatusInternalServerError,"could not update payment details",nil,err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Successfully updated payment details",
-		Data:       nil,
-		Error:      nil,
-	})
+	successRes := response.ClientResponse(http.StatusOK,"Successfully updated payment details",nil,nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
