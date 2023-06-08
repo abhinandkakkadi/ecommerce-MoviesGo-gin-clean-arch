@@ -196,7 +196,7 @@ func (o *orderRepository) CancelOrder(orderID string) (string, error) {
 	}
 
 	if shipmentStatus == "pending" {
-		return "The order was not placed, so no point in cancelling", nil
+		return "", errors.New("the order was not placed, so no point in cancelling")
 	}
 
 	if shipmentStatus == "cancelled" {
@@ -347,25 +347,34 @@ func (o *orderRepository) AddRazorPayDetails(orderID string, razorPayOrderID str
 	return nil
 }
 
-func (o *orderRepository) CheckPaymentStatus(razorID string) error {
+func (o *orderRepository) CheckPaymentStatus(razorID string,orderID string) error {
 
-	fmt.Println(razorID)
-	var OrderID string
-	err := o.DB.Raw("select order_id from razer_pays where razor_id = ?", razorID).Scan(&OrderID).Error
-	if err != nil {
-		return err
-	}
+	// fmt.Println(razorID)
+	// var orderID string
+	// err := o.DB.Raw("select order_id from razer_pays where razor_id = ?", razorID).Scan(&orderID).Error
+	// if err != nil {
+	// 	return err
+	// }
+	// fmt.Printf("%T",razorID)
+	// type Order struct {
+	// 	OrderID string `json:"order_id"`
+	// }
+	// var orderID Order
+	// err := o.DB.Raw("SELECT order_id FROM razer_pays WHERE razor_id = ?",razorID).Scan(&orderID).Error
+	// if err != nil {
+  //   return err
+	// }
 
-	fmt.Print("order id corresponding to razor id := ", OrderID)
+	fmt.Print("order id corresponding to razor id := ", orderID)
 	var paymentStatus string
-	err = o.DB.Raw("select payment_status from orders where order_id = ?", OrderID).Scan(&paymentStatus).Error
+	err := o.DB.Raw("select payment_status from orders where order_id = ?",orderID).Scan(&paymentStatus).Error
 	if err != nil {
 		return err
 	}
 
 	if paymentStatus == "not paid" {
 		fmt.Println("have to reach here")
-		err = o.DB.Exec("update orders set payment_status = paid, shipment_status = processing from orders where order_id = ?", OrderID).Scan(&paymentStatus).Error
+		err = o.DB.Exec("update orders set payment_status = 'paid', shipment_status = 'processing' where order_id = ?",orderID).Error
 		if err != nil {
 			return err
 		}
@@ -376,9 +385,9 @@ func (o *orderRepository) CheckPaymentStatus(razorID string) error {
 
 }
 
-func (o *orderRepository) UpdatePaymentDetails(razorID string, paymentID string) error {
+func (o *orderRepository) UpdatePaymentDetails(orderID string, paymentID string) error {
 
-	err := o.DB.Exec("update razer_pays set payment_id = ? where razor_id = ?", paymentID, razorID).Error
+	err := o.DB.Exec("update razer_pays set payment_id = ? where order_id = ?", paymentID, orderID).Error
 	if err != nil {
 		return err
 	}

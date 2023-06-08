@@ -91,7 +91,8 @@ func (o *orderUseCase) CancelOrder(orderID string, userID int) (string, error) {
 		return "", err
 	}
 
-	// update the quantity to products since th order is cancelled
+	// there is an error in this code. even though the order is 
+	// update the quantity to products since the order is cancelled
 	err = o.orderRepository.UpdateQuantityOfProduct(orderProducts)
 	if err != nil {
 		return "", err
