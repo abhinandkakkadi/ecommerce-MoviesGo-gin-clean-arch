@@ -36,6 +36,8 @@ func (p *PaymentHandler) MakePaymentRazorPay(c *gin.Context) {
 		"razor_id":    razorID,
 		"user_id":     userID,
 		"order_id":    orderDetail.OrderId,
+		"user_name":   orderDetail.Name,
+		"total":       int(orderDetail.FinalPrice),
 	})
 }
 

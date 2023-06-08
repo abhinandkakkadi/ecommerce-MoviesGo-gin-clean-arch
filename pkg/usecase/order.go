@@ -178,6 +178,11 @@ func (o *orderUseCase) ApproveOrder(orderID string) (string, error) {
 		return "The order is cancelled, cannot approve it", nil
 	}
 
+	if shipmentStatus == "pending" {
+
+		return "The order is pending, cannot approve it", nil
+	}
+
 	if shipmentStatus == "processing" {
 		fmt.Println("reached here")
 		err := o.orderRepository.ApproveOrder(orderID)
