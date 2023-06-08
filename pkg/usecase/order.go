@@ -91,14 +91,18 @@ func (o *orderUseCase) CancelOrder(orderID string, userID int) (string, error) {
 		return "", err
 	}
 
-	// there is an error in this code. even though the order is 
+	successMessage, err := o.orderRepository.CancelOrder(orderID)
+	if err != nil {
+		return "", err
+	}
+
 	// update the quantity to products since the order is cancelled
 	err = o.orderRepository.UpdateQuantityOfProduct(orderProducts)
 	if err != nil {
 		return "", err
 	}
 
-	return o.orderRepository.CancelOrder(orderID)
+	return successMessage, nil
 
 }
 

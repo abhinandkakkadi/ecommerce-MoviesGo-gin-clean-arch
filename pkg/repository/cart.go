@@ -23,7 +23,7 @@ func NewCartRepository(DB *gorm.DB) interfaces.CartRepository {
 func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, error) {
 
 	var cartResponse []models.Cart
-	// transation to achieve all or none property
+	// trancation to achieve all or none property
 	tx := cr.DB.Begin()
 	var count int
 	// to check if product for this particular user exist in the cart. If it does not add a new item else update the quantity

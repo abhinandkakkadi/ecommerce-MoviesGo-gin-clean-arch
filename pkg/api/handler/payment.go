@@ -42,7 +42,7 @@ func (p *PaymentHandler) MakePaymentRazorPay(c *gin.Context) {
 func (p *PaymentHandler) VerifyPayment(c *gin.Context) {
 
 	orderID := c.Query("order_id")
-	fmt.Println("this is the order id : ",orderID)
+	fmt.Println("this is the order id : ", orderID)
 	paymentID := c.Query("payment_id")
 	razorID := c.Query("order_id")
 

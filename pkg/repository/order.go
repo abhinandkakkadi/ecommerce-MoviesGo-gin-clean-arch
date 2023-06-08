@@ -196,11 +196,11 @@ func (o *orderRepository) CancelOrder(orderID string) (string, error) {
 	}
 
 	if shipmentStatus == "pending" {
-		return "", errors.New("the order was not placed, so no point in cancelling")
+		return "", errors.New("the order is in pending state , so no point in cancelling")
 	}
 
 	if shipmentStatus == "cancelled" {
-		return "Order already cancelled", nil
+		return "", errors.New("the order is already cancelled, so no point in cancelling")
 	}
 
 	shipmentStatus = "cancelled"
@@ -347,7 +347,7 @@ func (o *orderRepository) AddRazorPayDetails(orderID string, razorPayOrderID str
 	return nil
 }
 
-func (o *orderRepository) CheckPaymentStatus(razorID string,orderID string) error {
+func (o *orderRepository) CheckPaymentStatus(razorID string, orderID string) error {
 
 	// fmt.Println(razorID)
 	// var orderID string
@@ -362,19 +362,19 @@ func (o *orderRepository) CheckPaymentStatus(razorID string,orderID string) erro
 	// var orderID Order
 	// err := o.DB.Raw("SELECT order_id FROM razer_pays WHERE razor_id = ?",razorID).Scan(&orderID).Error
 	// if err != nil {
-  //   return err
+	//   return err
 	// }
 
 	fmt.Print("order id corresponding to razor id := ", orderID)
 	var paymentStatus string
-	err := o.DB.Raw("select payment_status from orders where order_id = ?",orderID).Scan(&paymentStatus).Error
+	err := o.DB.Raw("select payment_status from orders where order_id = ?", orderID).Scan(&paymentStatus).Error
 	if err != nil {
 		return err
 	}
 
 	if paymentStatus == "not paid" {
 		fmt.Println("have to reach here")
-		err = o.DB.Exec("update orders set payment_status = 'paid', shipment_status = 'processing' where order_id = ?",orderID).Error
+		err = o.DB.Exec("update orders set payment_status = 'paid', shipment_status = 'processing' where order_id = ?", orderID).Error
 		if err != nil {
 			return err
 		}

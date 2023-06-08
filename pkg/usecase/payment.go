@@ -75,7 +75,7 @@ func (p *paymentUseCase) MakePaymentRazorPay(orderID string, userID int) (models
 func (p *paymentUseCase) SavePaymentDetails(paymentID string, razorID string, orderID string) error {
 
 	// to check whether the order is already paid
-	err := p.orderRepository.CheckPaymentStatus(razorID,orderID)
+	err := p.orderRepository.CheckPaymentStatus(razorID, orderID)
 	if err != nil {
 		return err
 	}
