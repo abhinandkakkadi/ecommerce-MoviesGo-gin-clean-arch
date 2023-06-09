@@ -99,8 +99,8 @@ func (pr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 // @Router /products/{id} [get]
 func (pr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 
-	id := c.Param("id")
-	product, err := pr.productUseCase.ShowIndividualProducts(id)
+	sku := c.Param("id")
+	product, err := pr.productUseCase.ShowIndividualProducts(sku)
 
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "path variables in wrong format", nil, err.Error())

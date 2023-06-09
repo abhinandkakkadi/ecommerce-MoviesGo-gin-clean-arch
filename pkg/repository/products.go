@@ -40,11 +40,9 @@ func (p *productDatabase) ShowAllProducts(page int, count int) ([]models.Product
 }
 
 // detailed product details
-func (p *productDatabase) ShowIndividualProducts(id string) (models.ProductResponse, error) {
+func (p *productDatabase) ShowIndividualProducts(sku string) (models.ProductResponse, error) {
 
 	var product models.ProductResponse
-	product_id, _ := strconv.Atoi(id)
-
 	err := p.DB.Raw(`
 	SELECT
 		p.id,
@@ -67,8 +65,8 @@ func (p *productDatabase) ShowIndividualProducts(id string) (models.ProductRespo
 		JOIN
 			movie_studios s ON p.studio_id = s.id 
 		WHERE
-			p.id = ?
-			`, product_id).Scan(&product).Error
+			p.sku = ?
+			`, sku).Scan(&product).Error
 
 	if err != nil {
 		return models.ProductResponse{}, errors.New("error retrieved record")

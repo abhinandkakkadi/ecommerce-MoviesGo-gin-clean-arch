@@ -6,7 +6,7 @@ import (
 
 type ProductRepository interface {
 	ShowAllProducts(page int, count int) ([]models.ProductsBrief, error)
-	ShowIndividualProducts(id string) (models.ProductResponse, error)
+	ShowIndividualProducts(sku string) (models.ProductResponse, error)
 	// CheckIfAlreadyPresent(c context.Context,product domain.Products) (bool,error)
 	UpdateQuantity(productID int, quantity int) error
 	AddProduct(product models.ProductsReceiver) (models.ProductResponse, error)
