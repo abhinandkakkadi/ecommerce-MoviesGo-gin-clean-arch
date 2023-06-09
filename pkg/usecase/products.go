@@ -24,15 +24,15 @@ func NewProductUseCase(repo interfaces.ProductRepository, cartRepo interfaces.Ca
 func (pr *productUseCase) ShowAllProducts(page int, count int) ([]models.ProductsBrief, error) {
 
 	productsBrief, err := pr.productRepo.ShowAllProducts(page, count)
-
+	fmt.Println(productsBrief)
 	// here memory address of each item in productBrief is taken so that a copy of each instance is not made while updating
 	for i := range productsBrief {
 		fmt.Println("the code reached here")
 		p := &productsBrief[i]
 		if p.Quantity == 0 {
-			p.Product_Status = "out of stock"
+			p.ProductStatus = "out of stock"
 		} else {
-			p.Product_Status = "in stock"
+			p.ProductStatus = "in stock"
 		}
 	}
 
@@ -43,10 +43,11 @@ func (pr *productUseCase) ShowAllProducts(page int, count int) ([]models.Product
 func (pr *productUseCase) ShowIndividualProducts(id string) (models.ProductResponse, error) {
 
 	product, err := pr.productRepo.ShowIndividualProducts(id)
-	if product.Movie_Name == "" {
+	if product.MovieName == "" {
 		err = errors.New("record not available")
+		return models.ProductResponse{},err
 	}
-	return product, err
+	return product, nil
 
 }
 

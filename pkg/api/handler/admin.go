@@ -130,17 +130,17 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/genres [get]
-func (ad *AdminHandler) GetGenres(c *gin.Context) {
+// func (ad *AdminHandler) GetGenres(c *gin.Context) {
 
-	genres, err := ad.adminUseCase.GetFullCategory()
-	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError, "fields provided are in wrong format", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errorRes)
-		return
-	}
-	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the genres", genres, nil)
-	c.JSON(http.StatusOK, successRes)
-}
+// 	genres, err := ad.adminUseCase.GetFullCategory()
+// 	if err != nil {
+// 		errorRes := response.ClientResponse(http.StatusInternalServerError, "fields provided are in wrong format", nil, err.Error())
+// 		c.JSON(http.StatusInternalServerError, errorRes)
+// 		return
+// 	}
+// 	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the genres", genres, nil)
+// 	c.JSON(http.StatusOK, successRes)
+// }
 
 // @Summary Add Category
 // @Description Add Category for existing films
@@ -152,25 +152,25 @@ func (ad *AdminHandler) GetGenres(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/genres/add_genre [POST]
-func (ad *AdminHandler) AddCategory(c *gin.Context) {
+// func (ad *AdminHandler) AddCategory(c *gin.Context) {
 
-	var category models.CategoryUpdate
-	if err := c.BindJSON(&category); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
+// 	var category models.CategoryUpdate
+// 	if err := c.BindJSON(&category); err != nil {
+// 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+// 		c.JSON(http.StatusBadRequest, errorRes)
+// 		return
+// 	}
 
-	addedCategory, err := ad.adminUseCase.AddCategory(category)
-	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError, "The category could not be added", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errorRes)
-		return
-	}
-	successRes := response.ClientResponse(http.StatusCreated, "Successfully added the record", addedCategory, nil)
-	c.JSON(http.StatusCreated, successRes)
+// 	addedCategory, err := ad.adminUseCase.AddCategory(category)
+// 	if err != nil {
+// 		errorRes := response.ClientResponse(http.StatusInternalServerError, "The category could not be added", nil, err.Error())
+// 		c.JSON(http.StatusInternalServerError, errorRes)
+// 		return
+// 	}
+// 	successRes := response.ClientResponse(http.StatusCreated, "Successfully added the record", addedCategory, nil)
+// 	c.JSON(http.StatusCreated, successRes)
 
-}
+// }
 
 // @Summary Delete Category
 // @Description Delete Category for existing films and films long with it

@@ -3,17 +3,17 @@ package domain
 type Products struct {
 	ID                  uint           `json:"id" gorm:"unique;not null"`
 	MovieName           string         `json:"movie_name"`
+	SKU                 string         `json:"sku"`
 	GenreID             uint           `json:"genre_id"`
 	Genre               Genre          `json:"-" gorm:"foreignkey:GenreID;constraint:OnDelete:CASCADE"`
-	DirectorID          uint           `json:"director_id"`
-	Directors           Directors      `json:"-" gorm:"foreignkey:DirectorID;constraint:OnDelete:CASCADE"`
+	Language            string         `json:"language"`
+	Director         		string         `json:"director"`
 	ReleaseYear         string         `json:"release_year"`
-	FormatID            uint           `json:"format_id"`
-	MovieFormat         Movie_Format   `json:"-" gorm:"foreignkey:FormatID;constraint:OnDelete:CASCADE"`
+	Format       				string   			 `json:"format"`
 	ProductsDescription string         `json:"products_discription"`
-	RunTime             float64        `json:"runtime"`
-	LanguageID          uint           `json:"language_id"`
-	MovieLanguage       Movie_Language `json:"-" gorm:"foreignkey:LanguageID;constraint:OnDelete:CASCADE"`
+	RunTime             float64        `json:"run_time"`
+	StudioID         	  uint           `json:"studio_id"`
+	MovieStudio         MovieStudio 	 `json:"-" gorm:"foreignkey:StudioID;constraint:OnDelete:CASCADE"`
 	Quantity            int            `json:"quantity"`
 	Price               float64        `json:"price"`
 }
@@ -23,15 +23,6 @@ type Genre struct {
 	GenreName string `json:"genre_name"`
 }
 
-type Directors struct {
-	ID           uint   `json:"id" gorm:"unique; not null"`
-	DirectorName string `json:"director_name"`
-}
-
-type Movie_Format struct {
-	ID     uint   `json:"id" gorm:"unique; not null"`
-	Format string `json:"movie_format"`
-}
 
 type Rating struct {
 	ID        uint     `json:"id" gorm:"unique; not null"`
@@ -40,7 +31,7 @@ type Rating struct {
 	Rating    int      `json:"rating"`
 }
 
-type Movie_Language struct {
+type MovieStudio struct {
 	ID       uint   `json:"id" gorm:"unique; not null"`
-	Language string `json:"language"`
+	Studio string 	`json:"studio"`
 }

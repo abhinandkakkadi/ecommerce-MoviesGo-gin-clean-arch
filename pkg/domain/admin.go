@@ -14,16 +14,16 @@ type TokenAdmin struct {
 	Token string
 }
 
-type CategoryManagement struct {
-	Genre    Genre          `json:"genre"`
-	Director Directors      `json:"director"`
-	Format   Movie_Format   `json:"format"`
-	Language Movie_Language `json:"language"`
-}
+// type CategoryManagement struct {
+// 	Genre    Genre          `json:"genre"`
+// 	Director Directors      `json:"director"`
+// 	Format   Movie_Format   `json:"format"`
+// 	Language Movie_Language `json:"language"`
+// }
 
-type CategoryResponse struct {
-	Genre          []Genre
-	Directors      []Directors
-	Movie_Format   []Movie_Format
-	Movie_Language []Movie_Language
-}
+// type CategoryResponse struct {
+// 	Genre          []Genre
+// 	Directors      []Directors
+// 	Movie_Format   []Movie_Format
+// 	Movie_Language []Movie_Language
+// }

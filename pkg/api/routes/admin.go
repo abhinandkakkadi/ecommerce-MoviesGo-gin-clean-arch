@@ -17,8 +17,8 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 	{
 		genres := router.Group("/genres")
 		{
-			genres.GET("", adminHandler.GetGenres) // change this to get category
-			genres.POST("/add_genre", adminHandler.AddCategory)
+			// genres.GET("", adminHandler.GetGenres) // change this to get category
+			// genres.POST("/add_genre", adminHandler.AddCategory)
 			genres.GET("/delete_genre/:id", adminHandler.DeleteGenre)
 		}
 

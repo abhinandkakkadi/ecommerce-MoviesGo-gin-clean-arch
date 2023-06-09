@@ -25,10 +25,10 @@ func (p *productDatabase) ShowAllProducts(page int, count int) ([]models.Product
 	offset := (page - 1) * count
 	var productsBrief []models.ProductsBrief
 	err := p.DB.Raw(`
-		SELECT products.id, products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language,products.price,products.quantity
+		SELECT products.id, products.movie_name,products.sku,genres.genre_name AS genre, products.language AS movie_language,products.price,products.quantity
 		FROM products
 		JOIN genres ON products.genre_id = genres.id
-		JOIN movie_languages ON products.language_id = movie_languages.id limit ? offset ?
+		 limit ? offset ?
 	`, count, offset).Scan(&productsBrief).Error
 
 	if err != nil {
@@ -48,14 +48,16 @@ func (p *productDatabase) ShowIndividualProducts(id string) (models.ProductRespo
 	err := p.DB.Raw(`
 	SELECT
 		p.id,
+		p.sku,
 		p.movie_name,
 		g.genre_name,
-		d.director_name,
+		p.director,
 		p.release_year,
-		mf.format,
+		p.format,
 		p.products_description,
 		p.run_time,
-		ml.language AS movie_language,
+		p.language,
+		s.studio,
 		p.quantity,
 		p.price
 		FROM
@@ -63,17 +65,13 @@ func (p *productDatabase) ShowIndividualProducts(id string) (models.ProductRespo
 		JOIN
 			genres g ON p.genre_id = g.id
 		JOIN
-			directors d ON p.director_id = d.id
-		JOIN
-			movie_formats mf ON p.format_id = mf.id
-		JOIN
-			movie_languages ml ON p.language_id = ml.id 
+			movie_studios s ON p.studio_id = s.id 
 		WHERE
 			p.id = ?
 			`, product_id).Scan(&product).Error
 
 	if err != nil {
-		return models.ProductResponse{}, errors.New("error entering record")
+		return models.ProductResponse{}, errors.New("error retrieved record")
 	}
 	return product, nil
 
@@ -98,7 +96,9 @@ func (p *productDatabase) UpdateQuantity(productID int, quantity int) error {
 func (p *productDatabase) AddProduct(product models.ProductsReceiver) (models.ProductResponse, error) {
 
 	var id int
-	err := p.DB.Raw("INSERT INTO products (movie_name, genre_id, director_id, release_year,format_id,products_description,run_time,language_id,quantity,price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id", product.Movie_Name, product.GenreID, product.DirectorID, product.Release_Year, product.FormatID, product.Products_Description, product.Run_time, product.LanguageID, product.Quantity, product.Price).Scan(&id).Error
+
+	sku := product.MovieName + product.Format + product.Director
+	err := p.DB.Raw("INSERT INTO products (movie_name, genre_id,language,director,release_year,format,products_description,run_time,studio_id,quantity,price,sku) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?) RETURNING id", product.MovieName, product.GenreID, product.Language, product.Director, product.ReleaseYear, product.Format, product.ProductsDescription, product.Runtime, product.StudioID, product.Quantity,product.Price,sku).Scan(&id).Error
 	if err != nil {
 		return models.ProductResponse{}, err
 	}
@@ -107,14 +107,16 @@ func (p *productDatabase) AddProduct(product models.ProductsReceiver) (models.Pr
 	err = p.DB.Raw(`
 	SELECT
 		p.id,
+		p.sku,
 		p.movie_name,
 		g.genre_name,
-		d.director_name,
+		p.director,
 		p.release_year,
-		mf.format,
+		p.format,
 		p.products_description,
 		p.run_time,
-		ml.language AS movie_language,
+		p.language,
+		s.studio,
 		p.quantity,
 		p.price
 		FROM
@@ -122,11 +124,7 @@ func (p *productDatabase) AddProduct(product models.ProductsReceiver) (models.Pr
 		JOIN
 			genres g ON p.genre_id = g.id
 		JOIN
-			directors d ON p.director_id = d.id
-		JOIN
-			movie_formats mf ON p.format_id = mf.id
-		JOIN
-			movie_languages ml ON p.language_id = ml.id 
+			movie_studios s ON p.studio_id = s.id 
 		WHERE
 			p.id = ?
 			`, id).Scan(&productResponse).Error
@@ -207,9 +205,9 @@ func (p *productDatabase) GetProductFromCategory(data map[string]int) ([]models.
 		}
 
 		if quantity == 0 {
-			product.Product_Status = "out of stock"
+			product.ProductStatus = "out of stock"
 		} else {
-			product.Product_Status = "in stock"
+			product.ProductStatus = "in stock"
 		}
 		// if a product exist for that genre. Then only append it
 		if product.ID != 0 {
@@ -241,10 +239,10 @@ func (p *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.Produ
 	var filteredProductBrief []models.ProductsBrief
 	for _, p := range productsBrief {
 		// If length of the movie name is greater than prefix - continue the logic
-		length := len(p.Movie_Name)
+		length := len(p.MovieName)
 		if length >= lengthOfPrefix {
 			// slice the movie name to length of prefix
-			moviePrefix := p.Movie_Name[:lengthOfPrefix]
+			moviePrefix := p.MovieName[:lengthOfPrefix]
 			// if they are equal - append that movie to the returning slice
 			if moviePrefix == prefix {
 				fmt.Println("got the condition right")

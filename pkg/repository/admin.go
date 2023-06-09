@@ -81,35 +81,35 @@ func (ad *adminRepository) GetGenres() ([]domain.Genre, error) {
 
 }
 
-func (ad *adminRepository) GetDirectors() ([]domain.Directors, error) {
+// func (ad *adminRepository) GetDirectors() ([]domain.Directors, error) {
 
-	var directors []domain.Directors
-	if err := ad.DB.Raw("select * from directors").Scan(&directors).Error; err != nil {
-		return []domain.Directors{}, err
-	}
+// 	var directors []domain.Directors
+// 	if err := ad.DB.Raw("select * from directors").Scan(&directors).Error; err != nil {
+// 		return []domain.Directors{}, err
+// 	}
 
-	return directors, nil
+// 	return directors, nil
 
-}
+// }
 
-func (ad *adminRepository) GetMovieFormat() ([]domain.Movie_Format, error) {
-	var formats []domain.Movie_Format
-	if err := ad.DB.Raw("select * from movie_formats").Scan(&formats).Error; err != nil {
-		return []domain.Movie_Format{}, err
-	}
+// func (ad *adminRepository) GetMovieFormat() ([]domain.Movie_Format, error) {
+// 	var formats []domain.Movie_Format
+// 	if err := ad.DB.Raw("select * from movie_formats").Scan(&formats).Error; err != nil {
+// 		return []domain.Movie_Format{}, err
+// 	}
 
-	return formats, nil
-}
+// 	return formats, nil
+// }
 
-func (ad *adminRepository) GetMovieLanguages() ([]domain.Movie_Language, error) {
+// func (ad *adminRepository) GetMovieLanguages() ([]domain.Movie_Language, error) {
 
-	var languages []domain.Movie_Language
-	if err := ad.DB.Raw("select * from movie_languages").Scan(&languages).Error; err != nil {
-		return []domain.Movie_Language{}, err
-	}
+// 	var languages []domain.Movie_Language
+// 	if err := ad.DB.Raw("select * from movie_languages").Scan(&languages).Error; err != nil {
+// 		return []domain.Movie_Language{}, err
+// 	}
 
-	return languages, nil
-}
+// 	return languages, nil
+// }
 
 func (ad *adminRepository) CategoryCount(category models.CategoryUpdate) (models.CategoryUpdateCheck, error) {
 	// sub query to check if category name added by the admin already exist (add category where count = 0)
@@ -133,35 +133,35 @@ func (ad *adminRepository) AddGenre(genre string) (domain.Genre, error) {
 
 }
 
-func (ad *adminRepository) AddDirector(director string) (domain.Directors, error) {
+// func (ad *adminRepository) AddDirector(director string) (domain.Directors, error) {
 
-	var dir domain.Directors
-	if err := ad.DB.Raw("insert into directors (director_name) values (?) returning id,director_name", director).Scan(&dir).Error; err != nil {
-		return domain.Directors{}, err
-	}
-	return dir, nil
+// 	var dir domain.Directors
+// 	if err := ad.DB.Raw("insert into directors (director_name) values (?) returning id,director_name", director).Scan(&dir).Error; err != nil {
+// 		return domain.Directors{}, err
+// 	}
+// 	return dir, nil
 
-}
+// }
 
-func (ad *adminRepository) AddFormat(format string) (domain.Movie_Format, error) {
+// func (ad *adminRepository) AddFormat(format string) (domain.Movie_Format, error) {
 
-	var form domain.Movie_Format
-	if err := ad.DB.Raw("insert into movie_formats (format) values  (?) returning id,format", format).Scan(&form).Error; err != nil {
-		return domain.Movie_Format{}, err
-	}
-	return form, nil
+// 	var form domain.Movie_Format
+// 	if err := ad.DB.Raw("insert into movie_formats (format) values  (?) returning id,format", format).Scan(&form).Error; err != nil {
+// 		return domain.Movie_Format{}, err
+// 	}
+// 	return form, nil
 
-}
+// }
 
-func (ad *adminRepository) AddLanguage(language string) (domain.Movie_Language, error) {
+// func (ad *adminRepository) AddLanguage(language string) (domain.Movie_Language, error) {
 
-	var lang domain.Movie_Language
-	if err := ad.DB.Raw("insert into movie_languages (language) values (?) returning id,language", language).Scan(&lang).Error; err != nil {
-		return domain.Movie_Language{}, nil
-	}
-	return lang, nil
+// 	var lang domain.Movie_Language
+// 	if err := ad.DB.Raw("insert into movie_languages (language) values (?) returning id,language", language).Scan(&lang).Error; err != nil {
+// 		return domain.Movie_Language{}, nil
+// 	}
+// 	return lang, nil
 
-}
+// }
 
 func (ad *adminRepository) Delete(genre_id string) error {
 
