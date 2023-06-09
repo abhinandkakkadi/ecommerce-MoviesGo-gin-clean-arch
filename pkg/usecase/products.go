@@ -45,7 +45,7 @@ func (pr *productUseCase) ShowIndividualProducts(id string) (models.ProductRespo
 	product, err := pr.productRepo.ShowIndividualProducts(id)
 	if product.MovieName == "" {
 		err = errors.New("record not available")
-		return models.ProductResponse{},err
+		return models.ProductResponse{}, err
 	}
 	return product, nil
 

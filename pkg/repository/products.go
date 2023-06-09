@@ -98,7 +98,7 @@ func (p *productDatabase) AddProduct(product models.ProductsReceiver) (models.Pr
 	var id int
 
 	sku := product.MovieName + product.Format + product.Director
-	err := p.DB.Raw("INSERT INTO products (movie_name, genre_id,language,director,release_year,format,products_description,run_time,studio_id,quantity,price,sku) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?) RETURNING id", product.MovieName, product.GenreID, product.Language, product.Director, product.ReleaseYear, product.Format, product.ProductsDescription, product.Runtime, product.StudioID, product.Quantity,product.Price,sku).Scan(&id).Error
+	err := p.DB.Raw("INSERT INTO products (movie_name, genre_id,language,director,release_year,format,products_description,run_time,studio_id,quantity,price,sku) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?) RETURNING id", product.MovieName, product.GenreID, product.Language, product.Director, product.ReleaseYear, product.Format, product.ProductsDescription, product.Runtime, product.StudioID, product.Quantity, product.Price, sku).Scan(&id).Error
 	if err != nil {
 		return models.ProductResponse{}, err
 	}
