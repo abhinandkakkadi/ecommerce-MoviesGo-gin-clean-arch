@@ -54,14 +54,27 @@ func (pr *productUseCase) ShowAllProducts(page int, count int) ([]models.Product
 
 }
 
-func (pr *productUseCase) ShowIndividualProducts(id string) (models.ProductResponse, error) {
+func (pr *productUseCase) ShowIndividualProducts(id string) (models.ProductOfferLongResponse, error) {
 
 	product, err := pr.productRepo.ShowIndividualProducts(id)
+	if err != nil {
+		return models.ProductOfferLongResponse{}, err
+	}
 	if product.MovieName == "" {
 		err = errors.New("record not available")
-		return models.ProductResponse{}, err
+		return models.ProductOfferLongResponse{}, err
 	}
-	return product, nil
+
+	var productOfferResponse models.ProductOfferLongResponse
+	offerDetails, err := pr.couponRepo.OfferDetails(product.ID, product.GenreName)
+	if err != nil {
+		return models.ProductOfferLongResponse{}, err
+	}
+
+	productOfferResponse.ProductsResponse = product
+	productOfferResponse.OfferResponse = offerDetails
+
+	return productOfferResponse, nil
 
 }
 

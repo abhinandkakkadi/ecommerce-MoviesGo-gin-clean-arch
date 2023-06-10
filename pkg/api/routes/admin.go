@@ -60,6 +60,7 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 			}
 
 			offer.POST("/product-offer", couponHandler.AddProdcutOffer)
+			offer.POST("/category-offer", couponHandler.AddCategoryOffer)
 
 		}
 

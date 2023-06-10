@@ -108,19 +108,74 @@ func (co *couponRepository) AddProductOffer(productOffer models.ProductOfferRece
 
 	// check if the offer with the offer name already exist in the database
 	var count int
-	err := co.DB.Raw("select count(*) from product_offers where offer_name = ?", productOffer.OfferName).Scan(&count).Error
+	err := co.DB.Raw("select count(*) from product_offers where offer_name = ? and product_id = ?", productOffer.OfferName, productOffer.ProductID).Scan(&count).Error
 	if err != nil {
 		return err
 	}
 
 	if count > 0 {
-		return errors.New("the coupon already exists")
+		return errors.New("the offer already exists")
+	}
+
+	// if there is any other offer for this product delete that before adding this one
+	count = 0
+	err = co.DB.Raw("select count(*) from product_offers where product_id = ?", productOffer.ProductID).Scan(&count).Error
+	if err != nil {
+		return err
+	}
+
+	if count > 0 {
+		fmt.Println("reached here since offer already exist and is ready to delete")
+		err = co.DB.Exec("delete from product_offers where product_id = ?", productOffer.ProductID).Error
+		if err != nil {
+			return err
+		}
 	}
 
 	startDate := time.Now()
-	endDate := time.Now().Truncate(time.Hour * 24 * 5)
+	endDate := time.Now().Add(time.Hour * 24 * 5)
 	fmt.Println(productOffer)
-	err = co.DB.Exec("INSERT INTO product_offers (product_id, offer_name, offer_description, discount_percentage, start_date, end_date,offer_limit) VALUES (?, ?, ?, ?, ?, ?, ?)", productOffer.ProductID, productOffer.OfferName, productOffer.OfferDescription, productOffer.DiscountPercentage, startDate, endDate, productOffer.OfferLimit).Error
+	err = co.DB.Exec("INSERT INTO product_offers (product_id, offer_name, discount_percentage, start_date, end_date) VALUES (?, ?, ?, ?, ?)", productOffer.ProductID, productOffer.OfferName, productOffer.DiscountPercentage, startDate, endDate).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (co *couponRepository) AddCategoryOffer(categoryOffer models.CategoryOfferReceiver) error {
+
+	// check if the offer with the offer name already exist in the database
+	var count int
+	err := co.DB.Raw("select count(*) from category_offers where offer_name = ?", categoryOffer.OfferName).Scan(&count).Error
+	if err != nil {
+		return err
+	}
+
+	if count > 0 {
+		return errors.New("the offer already exists")
+	}
+
+	// if there is any other offer for this category delete that before adding this one
+	count = 0
+	err = co.DB.Raw("select count(*) from category_offers where genre_id = ?", categoryOffer.GenreID).Scan(&count).Error
+	if err != nil {
+		return err
+	}
+
+	if count > 0 {
+
+		err = co.DB.Exec("delete from category_offers where genre_id = ?", categoryOffer.GenreID).Error
+		if err != nil {
+			return err
+		}
+	}
+
+	startDate := time.Now()
+	endDate := time.Now().Add(time.Hour * 24 * 5)
+	fmt.Println(categoryOffer)
+	err = co.DB.Exec("INSERT INTO category_offers (genre_id, offer_name, discount_percentage, start_date, end_date) VALUES (?, ?, ?, ?, ?)", categoryOffer.GenreID, categoryOffer.OfferName, categoryOffer.DiscountPercentage, startDate, endDate).Error
 	if err != nil {
 		return err
 	}
@@ -138,10 +193,12 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	type Offer struct {
 		OfferName          string
 		DiscountPercentage int
+		StartDate          time.Time
+		EndDate            time.Time
 	}
 	var pOff Offer
 	var cOff Offer
-	err := co.DB.Raw("select offer_name,discount_percentage from product_offers where product_id = ?", productID).Scan(&pOff).Error
+	err := co.DB.Raw("select offer_name,discount_percentage,start_date,end_date from product_offers where product_id = ?", productID).Scan(&pOff).Error
 	if err != nil {
 		return models.OfferResponse{}, err
 	}
@@ -159,20 +216,49 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	}
 	fmt.Println("price of the product is ", price)
 
-	err = co.DB.Raw("select offer_name,discount_percentage from category_offers where genre_id = ?", genreID).Scan(&cOff).Error
+	err = co.DB.Raw("select offer_name,discount_percentage,start_date,end_date from category_offers where genre_id = ?", genreID).Scan(&cOff).Error
 	if err != nil {
 		return models.OfferResponse{}, err
+	}
+	fmt.Println("product offer details : ", pOff)
+	fmt.Println("category offer details : ", cOff)
+
+	// if product offer exist check whether it is still active or if it have been expired
+	currentTime := time.Now()
+	if pOff.OfferName != "" {
+		fmt.Println("reached here and checking is done in product offer")
+		if currentTime.After(pOff.StartDate) && currentTime.Before(pOff.EndDate) {
+			fmt.Println("Offer is currently active!")
+		} else {
+			pOff.OfferName = ""
+			pOff.DiscountPercentage = 0
+		}
+	}
+
+	// if category offer exist check whether it is still active or if it have been expired
+	if cOff.OfferName != "" {
+		fmt.Println("reached here and checking is done in category offer")
+		if currentTime.After(cOff.StartDate) && currentTime.Before(cOff.EndDate) {
+			fmt.Println("Offer is currently active!")
+		} else {
+			cOff.OfferName = ""
+			cOff.DiscountPercentage = 0
+		}
 	}
 
 	if pOff.DiscountPercentage > cOff.DiscountPercentage {
 		offer.OfferName = pOff.OfferName
 		offer.OfferPercentage = pOff.DiscountPercentage
-	} else {
+	} else if cOff.DiscountPercentage > pOff.DiscountPercentage {
 		offer.OfferName = cOff.OfferName
 		offer.OfferPercentage = cOff.DiscountPercentage
+	} else {
+		offer.OfferName = "sorry no offer at this time"
+		offer.OfferPercentage = 0
+		return offer, err
 	}
-
-	// select price from Price table and add it to the mix
-
+	// select price from Price table and add it to the mix and
+	offer.OfferPrice = price - ((float64(offer.OfferPercentage) * price) / 100)
+	fmt.Println("discounted price : ", offer.OfferPrice)
 	return offer, err
 }

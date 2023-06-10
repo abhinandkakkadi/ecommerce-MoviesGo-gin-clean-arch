@@ -127,3 +127,24 @@ func (co *CouponHandler) AddProdcutOffer(c *gin.Context) {
 	c.JSON(http.StatusCreated, successRes)
 
 }
+
+func (co *CouponHandler) AddCategoryOffer(c *gin.Context) {
+
+	var categoryOffer models.CategoryOfferReceiver
+	if err := c.BindJSON(&categoryOffer); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "request fields in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	err := co.couponUseCase.AddCategoryOffer(categoryOffer)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusInternalServerError, "could not add offer", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusCreated, "Successfully added offer", nil, nil)
+	c.JSON(http.StatusCreated, successRes)
+
+}

@@ -7,4 +7,5 @@ type CouponUseCase interface {
 	GetCoupon() ([]models.Coupon, error)
 	ExpireCoupon(couponID int) error
 	AddProductOffer(productOffer models.ProductOfferReceiver) error
+	AddCategoryOffer(categoryOffer models.CategoryOfferReceiver) error
 }

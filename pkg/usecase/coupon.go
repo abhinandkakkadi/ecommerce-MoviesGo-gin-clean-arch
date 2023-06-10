@@ -79,4 +79,11 @@ func (co *couponUseCase) ExpireCoupon(couponID int) error {
 func (co *couponUseCase) AddProductOffer(productOffer models.ProductOfferReceiver) error {
 
 	return co.couponRepository.AddProductOffer(productOffer)
+
+}
+
+func (co *couponUseCase) AddCategoryOffer(categoryOffer models.CategoryOfferReceiver) error {
+
+	return co.couponRepository.AddCategoryOffer(categoryOffer)
+
 }

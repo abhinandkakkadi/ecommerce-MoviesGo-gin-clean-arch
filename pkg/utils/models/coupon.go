@@ -24,7 +24,13 @@ type ProductOfferReceiver struct {
 	OfferName          string `json:"offer_name"`
 	OfferDescription   string `json:"offer_description"`
 	DiscountPercentage int    `json:"discount_percentage"`
-	OfferLimit         int    `json:"offer_limit"`
+}
+
+type CategoryOfferReceiver struct {
+	GenreID            uint   `json:"genre_id"`
+	OfferName          string `json:"offer_name"`
+	OfferDescription   string `json:"offer_description"`
+	DiscountPercentage int    `json:"discount_percentage"`
 }
 
 type OfferResponse struct {
@@ -36,4 +42,9 @@ type OfferResponse struct {
 type ProductOfferBriefResponse struct {
 	ProductsBrief ProductsBrief
 	OfferResponse OfferResponse
+}
+
+type ProductOfferLongResponse struct {
+	ProductsResponse ProductResponse
+	OfferResponse    OfferResponse
 }
