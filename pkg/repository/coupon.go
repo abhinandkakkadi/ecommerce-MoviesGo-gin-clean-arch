@@ -157,8 +157,8 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	if err != nil {
 		return models.OfferResponse{}, err
 	}
-	fmt.Println("price of the product is ",price)
-	
+	fmt.Println("price of the product is ", price)
+
 	err = co.DB.Raw("select offer_name,discount_percentage from category_offers where genre_id = ?", genreID).Scan(&cOff).Error
 	if err != nil {
 		return models.OfferResponse{}, err
