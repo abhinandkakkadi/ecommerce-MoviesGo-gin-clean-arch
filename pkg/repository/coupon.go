@@ -255,10 +255,12 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	} else {
 		offer.OfferName = "sorry no offer at this time"
 		offer.OfferPercentage = 0
-		return offer, err
+		return offer, nil
 	}
 	// select price from Price table and add it to the mix and
 	offer.OfferPrice = price - ((float64(offer.OfferPercentage) * price) / 100)
-	fmt.Println("discounted price : ", offer.OfferPrice)
-	return offer, err
+
+	// fmt.Println("discounted price : ", offer.OfferPrice)
+	
+	return offer, nil
 }

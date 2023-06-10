@@ -118,7 +118,9 @@ func (pr *productUseCase) DeleteProduct(product_id string) error {
 
 func (pr *productUseCase) UpdateProduct(productID int, quantity int) error {
 
-	ok, err := pr.cartRepo.CheckProduct(productID)
+	ok,genre, err := pr.cartRepo.CheckProduct(productID)
+	_ = genre
+	
 	if err != nil {
 		return err
 	}

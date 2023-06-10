@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
@@ -10,19 +11,22 @@ import (
 
 type cartUseCase struct {
 	cartRepository interfaces.CartRepository
+	couponRepository interfaces.CouponRepository
+
 }
 
-func NewCartUseCase(repository interfaces.CartRepository) services.CartUseCase {
+func NewCartUseCase(repository interfaces.CartRepository,couponRepo interfaces.CouponRepository) services.CartUseCase {
 
 	return &cartUseCase{
 		cartRepository: repository,
+		couponRepository: couponRepo,
 	}
 
 }
 
 func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartResponse, error) {
 	//  to check whether the product exist
-	ok, err := cr.cartRepository.CheckProduct(product_id)
+	ok, genre,err := cr.cartRepository.CheckProduct(product_id)
 	if err != nil {
 		return models.CartResponse{}, err
 	}
@@ -31,7 +35,11 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 		return models.CartResponse{}, errors.New("product does not exist")
 	}
 
-	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID)
+	offerPrice,err := cr.couponRepository.OfferDetails(product_id,genre)
+	_ = err
+	fmt.Println(offerPrice)
+
+	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID,offerPrice.OfferPrice)
 
 	if err != nil {
 		return models.CartResponse{}, err
