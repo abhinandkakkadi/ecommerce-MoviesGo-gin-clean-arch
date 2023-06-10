@@ -5,7 +5,7 @@ import (
 )
 
 type ProductUseCase interface {
-	ShowAllProducts(page int, count int) ([]models.ProductsBrief, error)
+	ShowAllProducts(page int, count int) ([]models.ProductOfferBriefResponse, error)
 	ShowIndividualProducts(sku string) (models.ProductResponse, error)
 	AddProduct(product models.ProductsReceiver) (models.ProductResponse, error)
 	DeleteProduct(product_id string) error

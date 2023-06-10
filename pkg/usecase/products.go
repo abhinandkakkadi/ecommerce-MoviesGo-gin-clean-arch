@@ -12,16 +12,18 @@ import (
 type productUseCase struct {
 	productRepo interfaces.ProductRepository
 	cartRepo    interfaces.CartRepository
+	couponRepo  interfaces.CouponRepository
 }
 
-func NewProductUseCase(repo interfaces.ProductRepository, cartRepo interfaces.CartRepository) services.ProductUseCase {
+func NewProductUseCase(repo interfaces.ProductRepository, cartRepo interfaces.CartRepository, couponRepo interfaces.CouponRepository) services.ProductUseCase {
 	return &productUseCase{
 		productRepo: repo,
 		cartRepo:    cartRepo,
+		couponRepo:  couponRepo,
 	}
 }
 
-func (pr *productUseCase) ShowAllProducts(page int, count int) ([]models.ProductsBrief, error) {
+func (pr *productUseCase) ShowAllProducts(page int, count int) ([]models.ProductOfferBriefResponse, error) {
 
 	productsBrief, err := pr.productRepo.ShowAllProducts(page, count)
 	fmt.Println(productsBrief)
@@ -35,8 +37,20 @@ func (pr *productUseCase) ShowAllProducts(page int, count int) ([]models.Product
 			p.ProductStatus = "in stock"
 		}
 	}
+	var combinedProductsOffer []models.ProductOfferBriefResponse
+	for _, p := range productsBrief {
+		var productOffer models.ProductOfferBriefResponse
+		OfferDetails, err := pr.couponRepo.OfferDetails(p.ID, p.Genre)
+		if err != nil {
+			return []models.ProductOfferBriefResponse{}, err
+		}
+		fmt.Println(OfferDetails)
+		productOffer.ProductsBrief = p
+		productOffer.OfferResponse = OfferDetails
+		combinedProductsOffer = append(combinedProductsOffer, productOffer)
+	}
 
-	return productsBrief, err
+	return combinedProductsOffer, err
 
 }
 

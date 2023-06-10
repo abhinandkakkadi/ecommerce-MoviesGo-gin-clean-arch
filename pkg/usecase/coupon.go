@@ -75,3 +75,8 @@ func (co *couponUseCase) ExpireCoupon(couponID int) error {
 	return errors.New("coupon does not exist")
 
 }
+
+func (co *couponUseCase) AddProductOffer(productOffer models.ProductOfferReceiver) error {
+
+	return co.couponRepository.AddProductOffer(productOffer)
+}

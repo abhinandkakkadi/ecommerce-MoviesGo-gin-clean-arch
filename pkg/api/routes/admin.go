@@ -50,11 +50,17 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 			orders.GET("/cancel-order/:order_id", orderHandler.CancelOrderFromAdminSide)
 		}
 
-		coupon := router.Group("/coupon")
+		offer := router.Group("/offer")
 		{
-			coupon.POST("/addcoupon", couponHandler.AddCoupon)
-			coupon.GET("", couponHandler.GetCoupon)
-			coupon.PATCH("/expire/:id", couponHandler.ExpireCoupon)
+			coupon := router.Group("/coupons")
+			{
+				coupon.POST("/addcoupon", couponHandler.AddCoupon)
+				coupon.GET("", couponHandler.GetCoupon)
+				coupon.PATCH("/expire/:id", couponHandler.ExpireCoupon)
+			}
+
+			offer.POST("/product-offer", couponHandler.AddProdcutOffer)
+
 		}
 
 	}

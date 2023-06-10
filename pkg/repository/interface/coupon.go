@@ -9,4 +9,6 @@ type CouponRepository interface {
 	GetCoupon() ([]models.Coupon, error)
 	ExistCoupon(couponID int) (bool, error)
 	CouponAlreadyExpired(couponID int) error
+	AddProductOffer(productOffer models.ProductOfferReceiver) error
+	OfferDetails(productID int, genre string) (models.OfferResponse, error)
 }

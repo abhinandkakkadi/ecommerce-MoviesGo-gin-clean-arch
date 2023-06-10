@@ -74,6 +74,8 @@ func (cr *cartRepository) AddToCart(product_id int, userID int) ([]models.Cart, 
 	var totalPrice float64
 	var productPrice float64
 	// return price of product
+
+	// here is where i need to do the offer thing
 	if err := tx.Raw("select price from products where id = ?", product_id).Scan(&productPrice).Error; err != nil {
 		tx.Rollback()
 		return []models.Cart{}, err

@@ -1,5 +1,7 @@
 package domain
 
+import "time"
+
 type Products struct {
 	ID                  uint        `json:"id" gorm:"unique;not null"`
 	MovieName           string      `json:"movie_name"`
@@ -33,4 +35,24 @@ type Rating struct {
 type MovieStudio struct {
 	ID     uint   `json:"id" gorm:"unique; not null"`
 	Studio string `json:"studio"`
+}
+
+type ProductOffer struct {
+	ID                 uint      `json:"id" gorm:"unique; not null"`
+	ProductID          uint      `json:"product_id"`
+	Products           Products  `json:"-" gorm:"foreignkey:ProductID"`
+	OfferName          string    `json:"offer_name"`
+	DiscountPercentage int       `json:"discount_percentage"`
+	StartDate          time.Time `json:"start_date"`
+	EndDate            time.Time `json:"end_date"`
+}
+
+type CategoryOffer struct {
+	ID                 uint      `json:"id" gorm:"unique; not null"`
+	GenreID            uint      `json:"genre_id"`
+	Genre              Genre     `json:"-" gorm:"foreignkey:GenreID"`
+	OfferName          string    `json:"offer_name"`
+	DiscountPercentage int       `json:"discount_percentage"`
+	StartDate          time.Time `json:"start_date"`
+	EndDate            time.Time `json:"end_date"`
 }
