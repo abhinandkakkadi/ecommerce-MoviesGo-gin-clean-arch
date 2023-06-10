@@ -20,7 +20,7 @@ func NewCartRepository(DB *gorm.DB) interfaces.CartRepository {
 	}
 }
 
-func (cr *cartRepository) AddToCart(product_id int, userID int,discountPrice float64) ([]models.Cart, error) {
+func (cr *cartRepository) AddToCart(product_id int, userID int, discountPrice float64) ([]models.Cart, error) {
 
 	var cartResponse []models.Cart
 	// trancation to achieve all or none property
@@ -83,7 +83,6 @@ func (cr *cartRepository) AddToCart(product_id int, userID int,discountPrice flo
 	} else {
 		productPrice = discountPrice
 	}
-	
 
 	fmt.Println(totalPrice)
 	// if the product is not already present in the cart - fresh item
@@ -305,12 +304,12 @@ func (cr *cartRepository) GetAllItemsFromCart(userID int) ([]models.Cart, error)
 
 }
 
-func (cr *cartRepository) CheckProduct(product_id int) (bool,string,error) {
+func (cr *cartRepository) CheckProduct(product_id int) (bool, string, error) {
 
 	var count int
 	err := cr.DB.Raw("select count(*) from products where id = ?", product_id).Scan(&count).Error
 	if err != nil {
-		return false,"",err
+		return false, "", err
 	}
 	fmt.Println("product count", count, product_id)
 
@@ -318,11 +317,11 @@ func (cr *cartRepository) CheckProduct(product_id int) (bool,string,error) {
 	if count > 0 {
 		err := cr.DB.Raw("select genres.genre_name from genres inner join products on products.genre_id = genres.id where products.id = ?", product_id).Scan(&genre).Error
 		if err != nil {
-		return false,"",err
+			return false, "", err
 		}
-		return true,genre,nil
+		return true, genre, nil
 	}
-	return false,"",nil
+	return false, "", nil
 
 }
 

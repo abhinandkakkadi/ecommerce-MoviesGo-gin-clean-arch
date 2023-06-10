@@ -10,15 +10,14 @@ import (
 )
 
 type cartUseCase struct {
-	cartRepository interfaces.CartRepository
+	cartRepository   interfaces.CartRepository
 	couponRepository interfaces.CouponRepository
-
 }
 
-func NewCartUseCase(repository interfaces.CartRepository,couponRepo interfaces.CouponRepository) services.CartUseCase {
+func NewCartUseCase(repository interfaces.CartRepository, couponRepo interfaces.CouponRepository) services.CartUseCase {
 
 	return &cartUseCase{
-		cartRepository: repository,
+		cartRepository:   repository,
 		couponRepository: couponRepo,
 	}
 
@@ -26,7 +25,7 @@ func NewCartUseCase(repository interfaces.CartRepository,couponRepo interfaces.C
 
 func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartResponse, error) {
 	//  to check whether the product exist
-	ok, genre,err := cr.cartRepository.CheckProduct(product_id)
+	ok, genre, err := cr.cartRepository.CheckProduct(product_id)
 	if err != nil {
 		return models.CartResponse{}, err
 	}
@@ -35,11 +34,11 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 		return models.CartResponse{}, errors.New("product does not exist")
 	}
 
-	offerPrice,err := cr.couponRepository.OfferDetails(product_id,genre)
+	offerPrice, err := cr.couponRepository.OfferDetails(product_id, genre)
 	_ = err
 	fmt.Println(offerPrice)
 
-	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID,offerPrice.OfferPrice)
+	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID, offerPrice.OfferPrice)
 
 	if err != nil {
 		return models.CartResponse{}, err

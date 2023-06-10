@@ -1,5 +1,7 @@
 package domain
 
+import "gorm.io/gorm"
+
 type Coupons struct {
 	ID                 uint    `json:"id" gorm:"uniquekey; not null"`
 	Coupon             string  `json:"coupon" gorm:"coupon"`
@@ -23,4 +25,13 @@ type OrderCoupon struct {
 	Coupons  Coupons `json:"-" gorm:"foreignkey:CouponID"`
 	OrderID  string  `json:"order_id"`
 	Order    Order   `json:"-" gorm:"foreignkey:OrderID"`
+}
+
+type Referral struct {
+	gorm.Model
+	UserID         uint    `json:"user_id" gorm:"uniquekey; not null"`
+	Users          Users   `json:"-" gorm:"foreignkey:UserID"`
+	ReferralCode   string  `json:"referral_code"`
+	ReferralAmount float64 `json:"referral_amount"`
+	ReferredUserID uint    `json:"referred_user_id"`
 }

@@ -198,6 +198,7 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	}
 	var pOff Offer
 	var cOff Offer
+	// get details of product offer
 	err := co.DB.Raw("select offer_name,discount_percentage,start_date,end_date from product_offers where product_id = ?", productID).Scan(&pOff).Error
 	if err != nil {
 		return models.OfferResponse{}, err
@@ -215,7 +216,7 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 		return models.OfferResponse{}, err
 	}
 	fmt.Println("price of the product is ", price)
-
+	// get details of category offer
 	err = co.DB.Raw("select offer_name,discount_percentage,start_date,end_date from category_offers where genre_id = ?", genreID).Scan(&cOff).Error
 	if err != nil {
 		return models.OfferResponse{}, err
@@ -246,6 +247,7 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 		}
 	}
 
+	// whichever offer provides greater percentage
 	if pOff.DiscountPercentage > cOff.DiscountPercentage {
 		offer.OfferName = pOff.OfferName
 		offer.OfferPercentage = pOff.DiscountPercentage
@@ -261,6 +263,7 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	offer.OfferPrice = price - ((float64(offer.OfferPercentage) * price) / 100)
 
 	// fmt.Println("discounted price : ", offer.OfferPrice)
-	
+
 	return offer, nil
+
 }

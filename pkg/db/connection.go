@@ -33,6 +33,7 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	db.AutoMigrate(&domain.RazerPay{})
 	db.AutoMigrate(&domain.ProductOffer{})
 	db.AutoMigrate(&domain.CategoryOffer{})
+	db.AutoMigrate(&domain.Referral{})
 
 	return db, dbErr
 

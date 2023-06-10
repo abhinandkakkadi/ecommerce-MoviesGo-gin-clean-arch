@@ -277,3 +277,38 @@ func (cr *userDatabase) RemoveFromWishList(userID int, productID int) error {
 	return nil
 
 }
+
+func (cr *userDatabase) CreateReferralEntry(userDetails models.UserDetailsResponse, userReferral string, referralCode string) error {
+
+	err := cr.DB.Exec("insert into referrals (user_id,referral_code,referral_amount) values (?,?,?)", userDetails.Id, userReferral, 0).Error
+	if err != nil {
+		return err
+	}
+
+	if referralCode != "" {
+		// first check whether if a user with that referralCode exist
+		var referredUserId int
+		err := cr.DB.Raw("select user_id from referrals where referral_code = ?", referralCode).Scan(&referredUserId).Error
+		if err != nil {
+			return nil
+		}
+
+		if referredUserId != 0 {
+
+			referralAmount := 100
+			err := cr.DB.Exec("update referrals set referral_amount = ?,referred_user_id = ? where user_id = ? ", referralAmount, referredUserId, userDetails.Id).Error
+			if err != nil {
+				return err
+			}
+
+			// find the current amount in referred users referral table and add 100 with that
+			err = cr.DB.Exec("update referrals set referral_amount = referral_amount + ? where user_id = ? ", referralAmount, referredUserId).Error
+			if err != nil {
+				return err
+			}
+
+		}
+	}
+
+	return nil
+}

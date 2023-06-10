@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -11,6 +12,7 @@ import (
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
+	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
@@ -50,6 +52,15 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 
 	// add user details to the database
 	userData, err := u.userRepo.UserSignUp(user)
+	if err != nil {
+		return models.TokenUsers{}, err
+	}
+
+	// create referral code for the user and send in details of referred id of user if it exist
+	id := uuid.New().ID()
+	str := strconv.Itoa(int(id))
+	userReferral := str[:8]
+	err = u.userRepo.CreateReferralEntry(userData, userReferral, user.ReferralCode)
 	if err != nil {
 		return models.TokenUsers{}, err
 	}
