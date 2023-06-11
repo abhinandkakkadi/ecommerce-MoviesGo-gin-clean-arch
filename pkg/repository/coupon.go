@@ -135,7 +135,7 @@ func (co *couponRepository) AddProductOffer(productOffer models.ProductOfferRece
 	startDate := time.Now()
 	endDate := time.Now().Add(time.Hour * 24 * 5)
 	fmt.Println(productOffer)
-	err = co.DB.Exec("INSERT INTO product_offers (product_id, offer_name, discount_percentage, start_date, end_date, offer_limit,offer_used) VALUES (?, ?, ?, ?, ?, ?, ?)", productOffer.ProductID, productOffer.OfferName, productOffer.DiscountPercentage, startDate, endDate,productOffer.OfferLimit,0).Error
+	err = co.DB.Exec("INSERT INTO product_offers (product_id, offer_name, discount_percentage, start_date, end_date, offer_limit,offer_used) VALUES (?, ?, ?, ?, ?, ?, ?)", productOffer.ProductID, productOffer.OfferName, productOffer.DiscountPercentage, startDate, endDate, productOffer.OfferLimit, 0).Error
 	if err != nil {
 		return err
 	}
@@ -175,7 +175,7 @@ func (co *couponRepository) AddCategoryOffer(categoryOffer models.CategoryOfferR
 	startDate := time.Now()
 	endDate := time.Now().Add(time.Hour * 24 * 5)
 	fmt.Println(categoryOffer)
-	err = co.DB.Exec("INSERT INTO category_offers (genre_id, offer_name, discount_percentage, start_date, end_date, offer_limit,offer_used) VALUES (?, ?, ?, ?, ?, ?, ?)", categoryOffer.GenreID, categoryOffer.OfferName, categoryOffer.DiscountPercentage, startDate, endDate,categoryOffer.OfferLimit,0).Error
+	err = co.DB.Exec("INSERT INTO category_offers (genre_id, offer_name, discount_percentage, start_date, end_date, offer_limit,offer_used) VALUES (?, ?, ?, ?, ?, ?, ?)", categoryOffer.GenreID, categoryOffer.OfferName, categoryOffer.DiscountPercentage, startDate, endDate, categoryOffer.OfferLimit, 0).Error
 	if err != nil {
 		return err
 	}

@@ -74,7 +74,6 @@ func (cr *cartRepository) AddToCart(product_id int, userID int, offerDetails mod
 	var productPrice float64
 	// return price of product
 
-
 	// OFFER DETAILS ARE DONE HERE
 	if err := tx.Raw("select price from products where id = ?", product_id).Scan(&productPrice).Error; err != nil {
 		tx.Rollback()
@@ -89,13 +88,13 @@ func (cr *cartRepository) AddToCart(product_id int, userID int, offerDetails mod
 			tx.Rollback()
 			return []models.Cart{}, err
 		}
-		fmt.Println("product quantity in carts := ",pQuantity)
-		fmt.Println("offer limit for that offer := ",offerDetails.OfferLimit)
+		fmt.Println("product quantity in carts := ", pQuantity)
+		fmt.Println("offer limit for that offer := ", offerDetails.OfferLimit)
 		if pQuantity < offerDetails.OfferLimit {
 			productPrice = offerDetails.OfferPrice
-		} 
+		}
 
-	} 
+	}
 
 	fmt.Println(totalPrice)
 	// if the product is not already present in the cart - fresh item
