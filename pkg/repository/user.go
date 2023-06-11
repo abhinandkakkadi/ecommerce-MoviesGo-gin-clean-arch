@@ -145,6 +145,12 @@ func (cr *userDatabase) UserDetails(userID int) (models.UsersProfileDetails, err
 		return models.UsersProfileDetails{}, err
 	}
 
+
+	err = cr.DB.Raw("select referral_code from referrals where user_id = ?", userID).Scan(&userDetails.ReferralCode).Error
+	if err != nil {
+		return models.UsersProfileDetails{}, err
+	}
+
 	return userDetails, nil
 }
 

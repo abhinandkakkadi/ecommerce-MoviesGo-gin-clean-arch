@@ -32,9 +32,10 @@ type UserDetailsAtAdmin struct {
 
 // show in users profile / also used to update user details
 type UsersProfileDetails struct {
-	Name  string `json:"name"`
-	Email string `json:"email" validate:"email"`
-	Phone string `json:"phone"`
+	Name         string `json:"name"`
+	Email        string `json:"email" validate:"email"`
+	Phone        string `json:"phone"`
+	ReferralCode string `json:"referral_code"`
 }
 
 // user details along with embedded token which can be used by the user to access protected routes

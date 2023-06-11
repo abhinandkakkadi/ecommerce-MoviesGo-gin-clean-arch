@@ -74,7 +74,7 @@ func (cr *cartRepository) AddToCart(product_id int, userID int, discountPrice fl
 	var productPrice float64
 	// return price of product
 
-	// here is where i need to do the offer thing
+	// here is where i need to do the offer thing // to do - for first 5 items having discount give the offer and for the rest of them give the regular price
 	if discountPrice == 0 {
 		if err := tx.Raw("select price from products where id = ?", product_id).Scan(&productPrice).Error; err != nil {
 			tx.Rollback()
