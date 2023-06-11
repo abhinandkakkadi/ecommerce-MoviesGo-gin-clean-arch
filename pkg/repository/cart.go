@@ -338,6 +338,8 @@ func (cr *cartRepository) ProductExist(product_id int, userID int) (bool, error)
 
 func (cr *cartRepository) CouponValidity(coupon string, userID int) (bool, error) {
 
+	// if cart is empty don't let them add coupon
+
 	// check if the coupon exist
 	var count int
 	err := cr.DB.Raw("select count(*) from coupons where coupon = ?", coupon).Scan(&count).Error

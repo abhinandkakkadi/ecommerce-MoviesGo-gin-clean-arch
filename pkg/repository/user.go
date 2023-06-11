@@ -341,10 +341,6 @@ func (cr *userDatabase) ApplyReferral(userID int) (string, error) {
 		return "", err
 	}
 
-	if referralAmount == 0 {
-		return "ombi", nil
-	}
-
 	fmt.Println("referral amount for this particular user : ", referralAmount)
 
 	var totalCartAmount float64
