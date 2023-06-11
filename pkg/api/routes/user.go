@@ -71,6 +71,8 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			coupon.POST("/add", cartHandler.AddCoupon)
 		}
 
+		router.GET("/referral/apply", userHandler.ApplyReferral)
+
 		router.GET("/checkout", userHandler.CheckOut)
 		router.POST("/order", orderHandler.OrderItemsFromCart)
 

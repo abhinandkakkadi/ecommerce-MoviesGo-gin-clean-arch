@@ -23,12 +23,12 @@ type userUseCase struct {
 	couponRepo  interfaces.CouponRepository
 }
 
-func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.CartRepository, productRepository interfaces.ProductRepository,couponRepository interfaces.CouponRepository) services.UserUseCase {
+func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.CartRepository, productRepository interfaces.ProductRepository, couponRepository interfaces.CouponRepository) services.UserUseCase {
 	return &userUseCase{
 		userRepo:    repo,
 		cartRepo:    cartRepositiry,
 		productRepo: productRepository,
-		couponRepo: couponRepository,
+		couponRepo:  couponRepository,
 	}
 }
 
@@ -181,9 +181,9 @@ func (u *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 	}
 
 	// get referral amount
-	referralAmount,err := u.couponRepo.GetReferralAmount(userID)
+	referralAmount, err := u.couponRepo.GetReferralAmount(userID)
 	if err != nil {
-		return models.CheckoutDetails{},err
+		return models.CheckoutDetails{}, err
 	}
 
 	return models.CheckoutDetails{
@@ -191,10 +191,9 @@ func (u *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		Payment_Method:      paymentDetails,
 		Cart:                cartItems,
 		Wallet:              walletDetails,
-		ReferralAmount:       referralAmount,
+		ReferralAmount:      referralAmount,
 		Grand_Total:         grandTotal.TotalPrice,
 		Total_Price:         grandTotal.FinalPrice,
-		
 	}, nil
 }
 
@@ -332,4 +331,10 @@ func (u *userUseCase) RemoveFromWishList(productID int, userID int) error {
 	}
 
 	return nil
+}
+
+func (u *userUseCase) ApplyReferral(userID int) (string, error) {
+
+	return u.userRepo.ApplyReferral(userID)
+	
 }

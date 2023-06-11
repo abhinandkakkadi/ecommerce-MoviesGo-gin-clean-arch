@@ -30,4 +30,5 @@ type UserRepository interface {
 	RemoveFromWishList(userID int, productID int) error
 
 	CreateReferralEntry(users models.UserDetailsResponse, userReferral string, referralCode string) error
+	ApplyReferral(userID int) (string, error)
 }

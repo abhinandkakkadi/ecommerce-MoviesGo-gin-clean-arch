@@ -145,7 +145,6 @@ func (cr *userDatabase) UserDetails(userID int) (models.UsersProfileDetails, err
 		return models.UsersProfileDetails{}, err
 	}
 
-
 	err = cr.DB.Raw("select referral_code from referrals where user_id = ?", userID).Scan(&userDetails.ReferralCode).Error
 	if err != nil {
 		return models.UsersProfileDetails{}, err
@@ -317,4 +316,70 @@ func (cr *userDatabase) CreateReferralEntry(userDetails models.UserDetailsRespon
 	}
 
 	return nil
+}
+
+func (cr *userDatabase) ApplyReferral(userID int) (string, error) {
+
+	// first check whether the cart is empty -- do this for coupon too
+	tx := cr.DB.Begin()
+
+	count := 0
+	err := tx.Raw("select count(*) from carts where user_id = ?", userID).Scan(&count).Error
+	if err != nil {
+		tx.Rollback()
+		return "", err
+	}
+
+	if count < 1 {
+		return "cart empty, can't apply offer", nil
+	}
+
+	var referralAmount float64
+	err = tx.Raw("select referral_amount from referrals where user_id = ?", userID).Scan(&referralAmount).Error
+	if err != nil {
+		tx.Rollback()
+		return "", err
+	}
+	
+	if referralAmount == 0 {
+		return "ombi",nil
+	}
+
+	fmt.Println("referral amount for this particular user : ", referralAmount)
+
+	var totalCartAmount float64
+	err = tx.Raw("select COALESCE(SUM(total_price), 0) from carts where user_id = ?", userID).Scan(&totalCartAmount).Error
+	if err != nil {
+		tx.Rollback()
+		return "", err
+	}
+
+	fmt.Println("total price as of now := ", totalCartAmount)
+
+	if totalCartAmount > referralAmount {
+		totalCartAmount = totalCartAmount - referralAmount
+		referralAmount = 0
+	} else {
+		referralAmount = referralAmount - totalCartAmount
+		totalCartAmount = 0
+	}
+
+	err = tx.Exec("update referrals set referral_amount = ? where user_id = ?", referralAmount, userID).Error
+	if err != nil {
+		tx.Rollback()
+		return "", err
+	}
+
+	err = tx.Exec("update carts set total_price = ? where user_id = ?", totalCartAmount, userID).Error
+	if err != nil {
+		tx.Rollback()
+		return "", err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return "",err
+	}
+
+	return "",nil
 }

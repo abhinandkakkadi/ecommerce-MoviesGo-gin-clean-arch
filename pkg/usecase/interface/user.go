@@ -20,4 +20,5 @@ type UserUseCase interface {
 	AddToWishList(productID int, userID int) error
 	GetWishList(userID int) ([]models.WishListResponse, error)
 	RemoveFromWishList(productID int, userID int) error
+	ApplyReferral(userID int) (string, error)
 }
