@@ -81,6 +81,7 @@ type CheckoutDetails struct {
 	AddressInfoResponse []AddressInfoResponse
 	Payment_Method      []PaymentDetails
 	Wallet              Wallet
+	ReferralAmount      ReferralAmount
 	Cart                []Cart
 	Grand_Total         float64
 	Total_Price         float64

@@ -52,7 +52,7 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 
 		offer := router.Group("/offer")
 		{
-			coupon := router.Group("/coupons")
+			coupon := offer.Group("/coupons")
 			{
 				coupon.POST("/addcoupon", couponHandler.AddCoupon)
 				coupon.GET("", couponHandler.GetCoupon)

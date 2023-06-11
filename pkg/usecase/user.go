@@ -20,13 +20,15 @@ type userUseCase struct {
 	userRepo    interfaces.UserRepository
 	cartRepo    interfaces.CartRepository
 	productRepo interfaces.ProductRepository
+	couponRepo  interfaces.CouponRepository
 }
 
-func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.CartRepository, productRepository interfaces.ProductRepository) services.UserUseCase {
+func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.CartRepository, productRepository interfaces.ProductRepository,couponRepository interfaces.CouponRepository) services.UserUseCase {
 	return &userUseCase{
 		userRepo:    repo,
 		cartRepo:    cartRepositiry,
 		productRepo: productRepository,
+		couponRepo: couponRepository,
 	}
 }
 
@@ -178,13 +180,21 @@ func (u *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		return models.CheckoutDetails{}, err
 	}
 
+	// get referral amount
+	referralAmount,err := u.couponRepo.GetReferralAmount(userID)
+	if err != nil {
+		return models.CheckoutDetails{},err
+	}
+
 	return models.CheckoutDetails{
 		AddressInfoResponse: allUserAddress,
 		Payment_Method:      paymentDetails,
 		Cart:                cartItems,
 		Wallet:              walletDetails,
+		ReferralAmount:       referralAmount,
 		Grand_Total:         grandTotal.TotalPrice,
 		Total_Price:         grandTotal.FinalPrice,
+		
 	}, nil
 }
 

@@ -12,4 +12,5 @@ type CouponRepository interface {
 	AddProductOffer(productOffer models.ProductOfferReceiver) error
 	AddCategoryOffer(categoryOffer models.CategoryOfferReceiver) error
 	OfferDetails(productID int, genre string) (models.OfferResponse, error)
+	GetReferralAmount(userID int) (models.ReferralAmount,error)
 }

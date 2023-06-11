@@ -267,3 +267,17 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	return offer, nil
 
 }
+
+
+
+func (co *couponRepository) GetReferralAmount(userID int) (models.ReferralAmount,error) {
+
+	// get referral amount associated with the user 
+	var referralAmount models.ReferralAmount
+	err := co.DB.Raw("select referral_amount from referrals where user_id = ?",userID).Scan(&referralAmount).Error
+	if err != nil {
+		return models.ReferralAmount{},err
+	}
+	fmt.Println("this is the referral amount : ",referralAmount)
+	return referralAmount,nil
+}
