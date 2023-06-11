@@ -336,5 +336,5 @@ func (u *userUseCase) RemoveFromWishList(productID int, userID int) error {
 func (u *userUseCase) ApplyReferral(userID int) (string, error) {
 
 	return u.userRepo.ApplyReferral(userID)
-	
+
 }

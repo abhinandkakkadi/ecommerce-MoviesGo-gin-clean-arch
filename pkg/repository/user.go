@@ -340,9 +340,9 @@ func (cr *userDatabase) ApplyReferral(userID int) (string, error) {
 		tx.Rollback()
 		return "", err
 	}
-	
+
 	if referralAmount == 0 {
-		return "ombi",nil
+		return "ombi", nil
 	}
 
 	fmt.Println("referral amount for this particular user : ", referralAmount)
@@ -378,8 +378,8 @@ func (cr *userDatabase) ApplyReferral(userID int) (string, error) {
 
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
-		return "",err
+		return "", err
 	}
 
-	return "",nil
+	return "", nil
 }

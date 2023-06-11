@@ -413,20 +413,20 @@ func (u *UserHandler) RemoveFromWishList(c *gin.Context) {
 func (u *UserHandler) ApplyReferral(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
-	message,err := u.userUseCase.ApplyReferral(userID.(int))
+	message, err := u.userUseCase.ApplyReferral(userID.(int))
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusInternalServerError,"could not add referral amount",nil,err.Error())
-		c.JSON(http.StatusInternalServerError,errRes)
+		errRes := response.ClientResponse(http.StatusInternalServerError, "could not add referral amount", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
 
 	if message != "" {
-		errRes := response.ClientResponse(http.StatusOK,message,nil,nil)
-		c.JSON(http.StatusOK,errRes)
+		errRes := response.ClientResponse(http.StatusOK, message, nil, nil)
+		c.JSON(http.StatusOK, errRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"successfully added referral amount",nil,nil)
-	c.JSON(http.StatusOK,successRes)
+	successRes := response.ClientResponse(http.StatusOK, "successfully added referral amount", nil, nil)
+	c.JSON(http.StatusOK, successRes)
 
 }
