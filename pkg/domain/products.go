@@ -45,6 +45,8 @@ type ProductOffer struct {
 	DiscountPercentage int       `json:"discount_percentage"`
 	StartDate          time.Time `json:"start_date"`
 	EndDate            time.Time `json:"end_date"`
+	OfferLimit         int       `json:"offer_limit"`
+	OfferUsed          int       `json:"offer_used"`
 }
 
 type CategoryOffer struct {
@@ -55,4 +57,6 @@ type CategoryOffer struct {
 	DiscountPercentage int       `json:"discount_percentage"`
 	StartDate          time.Time `json:"start_date"`
 	EndDate            time.Time `json:"end_date"`
+	OfferLimit         int       `json:"offer_limit"`
+	OfferUsed          int       `json:"offer_used"`
 }

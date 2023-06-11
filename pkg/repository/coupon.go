@@ -135,7 +135,7 @@ func (co *couponRepository) AddProductOffer(productOffer models.ProductOfferRece
 	startDate := time.Now()
 	endDate := time.Now().Add(time.Hour * 24 * 5)
 	fmt.Println(productOffer)
-	err = co.DB.Exec("INSERT INTO product_offers (product_id, offer_name, discount_percentage, start_date, end_date) VALUES (?, ?, ?, ?, ?)", productOffer.ProductID, productOffer.OfferName, productOffer.DiscountPercentage, startDate, endDate).Error
+	err = co.DB.Exec("INSERT INTO product_offers (product_id, offer_name, discount_percentage, start_date, end_date, offer_limit,offer_used) VALUES (?, ?, ?, ?, ?, ?, ?)", productOffer.ProductID, productOffer.OfferName, productOffer.DiscountPercentage, startDate, endDate,productOffer.OfferLimit,0).Error
 	if err != nil {
 		return err
 	}
@@ -175,7 +175,7 @@ func (co *couponRepository) AddCategoryOffer(categoryOffer models.CategoryOfferR
 	startDate := time.Now()
 	endDate := time.Now().Add(time.Hour * 24 * 5)
 	fmt.Println(categoryOffer)
-	err = co.DB.Exec("INSERT INTO category_offers (genre_id, offer_name, discount_percentage, start_date, end_date) VALUES (?, ?, ?, ?, ?)", categoryOffer.GenreID, categoryOffer.OfferName, categoryOffer.DiscountPercentage, startDate, endDate).Error
+	err = co.DB.Exec("INSERT INTO category_offers (genre_id, offer_name, discount_percentage, start_date, end_date, offer_limit,offer_used) VALUES (?, ?, ?, ?, ?, ?, ?)", categoryOffer.GenreID, categoryOffer.OfferName, categoryOffer.DiscountPercentage, startDate, endDate,categoryOffer.OfferLimit,0).Error
 	if err != nil {
 		return err
 	}
@@ -195,11 +195,13 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 		DiscountPercentage int
 		StartDate          time.Time
 		EndDate            time.Time
+		OfferLimit         int
+		OfferUsed          int
 	}
 	var pOff Offer
 	var cOff Offer
 	// get details of product offer
-	err := co.DB.Raw("select offer_name,discount_percentage,start_date,end_date from product_offers where product_id = ?", productID).Scan(&pOff).Error
+	err := co.DB.Raw("select offer_name,discount_percentage,start_date,end_date,offer_limit,offer_used from product_offers where product_id = ?", productID).Scan(&pOff).Error
 	if err != nil {
 		return models.OfferResponse{}, err
 	}
@@ -217,7 +219,7 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	}
 	fmt.Println("price of the product is ", price)
 	// get details of category offer
-	err = co.DB.Raw("select offer_name,discount_percentage,start_date,end_date from category_offers where genre_id = ?", genreID).Scan(&cOff).Error
+	err = co.DB.Raw("select offer_name,discount_percentage,start_date,end_date,offer_limit,offer_used from category_offers where genre_id = ?", genreID).Scan(&cOff).Error
 	if err != nil {
 		return models.OfferResponse{}, err
 	}
@@ -228,7 +230,7 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	currentTime := time.Now()
 	if pOff.OfferName != "" {
 		fmt.Println("reached here and checking is done in product offer")
-		if currentTime.After(pOff.StartDate) && currentTime.Before(pOff.EndDate) {
+		if currentTime.After(pOff.StartDate) && currentTime.Before(pOff.EndDate) && pOff.OfferUsed <= pOff.OfferLimit {
 			fmt.Println("Offer is currently active!")
 		} else {
 			pOff.OfferName = ""
@@ -239,7 +241,7 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	// if category offer exist check whether it is still active or if it have been expired
 	if cOff.OfferName != "" {
 		fmt.Println("reached here and checking is done in category offer")
-		if currentTime.After(cOff.StartDate) && currentTime.Before(cOff.EndDate) {
+		if currentTime.After(cOff.StartDate) && currentTime.Before(cOff.EndDate) && cOff.OfferUsed <= cOff.OfferLimit {
 			fmt.Println("Offer is currently active!")
 		} else {
 			cOff.OfferName = ""
@@ -251,9 +253,13 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	if pOff.DiscountPercentage > cOff.DiscountPercentage {
 		offer.OfferName = pOff.OfferName
 		offer.OfferPercentage = pOff.DiscountPercentage
+		offer.OfferType = "product"
+		offer.OfferLimit = pOff.OfferLimit
 	} else if cOff.DiscountPercentage > pOff.DiscountPercentage {
 		offer.OfferName = cOff.OfferName
 		offer.OfferPercentage = cOff.DiscountPercentage
+		offer.OfferType = "category"
+		offer.OfferLimit = cOff.OfferLimit
 	} else {
 		offer.OfferName = "sorry no offer at this time"
 		offer.OfferPercentage = 0

@@ -20,7 +20,7 @@ func NewCartRepository(DB *gorm.DB) interfaces.CartRepository {
 	}
 }
 
-func (cr *cartRepository) AddToCart(product_id int, userID int, discountPrice float64) ([]models.Cart, error) {
+func (cr *cartRepository) AddToCart(product_id int, userID int, offerDetails models.OfferResponse) ([]models.Cart, error) {
 
 	var cartResponse []models.Cart
 	// trancation to achieve all or none property
@@ -74,15 +74,28 @@ func (cr *cartRepository) AddToCart(product_id int, userID int, discountPrice fl
 	var productPrice float64
 	// return price of product
 
-	// here is where i need to do the offer thing // to do - for first 5 items having discount give the offer and for the rest of them give the regular price
-	if discountPrice == 0 {
-		if err := tx.Raw("select price from products where id = ?", product_id).Scan(&productPrice).Error; err != nil {
+
+	// OFFER DETAILS ARE DONE HERE
+	if err := tx.Raw("select price from products where id = ?", product_id).Scan(&productPrice).Error; err != nil {
+		tx.Rollback()
+		return []models.Cart{}, err
+	}
+
+	// if this condition is true that means a offer exist for this product
+	if offerDetails.OfferPrice != productPrice {
+
+		var pQuantity int
+		if err := tx.Raw("select quantity from carts where product_id = ?", product_id).Scan(&pQuantity).Error; err != nil {
 			tx.Rollback()
 			return []models.Cart{}, err
 		}
-	} else {
-		productPrice = discountPrice
-	}
+		fmt.Println("product quantity in carts := ",pQuantity)
+		fmt.Println("offer limit for that offer := ",offerDetails.OfferLimit)
+		if pQuantity < offerDetails.OfferLimit {
+			productPrice = offerDetails.OfferPrice
+		} 
+
+	} 
 
 	fmt.Println(totalPrice)
 	// if the product is not already present in the cart - fresh item

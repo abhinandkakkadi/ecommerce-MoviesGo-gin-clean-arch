@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
@@ -34,11 +33,11 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 		return models.CartResponse{}, errors.New("product does not exist")
 	}
 
-	offerPrice, err := cr.couponRepository.OfferDetails(product_id, genre)
+	offerDetails, err := cr.couponRepository.OfferDetails(product_id, genre)
 	_ = err
-	fmt.Println(offerPrice)
+	// fmt.Println(offerPrice)
 
-	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID, offerPrice.OfferPrice)
+	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID, offerDetails)
 
 	if err != nil {
 		return models.CartResponse{}, err
