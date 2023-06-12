@@ -88,8 +88,7 @@ func (cr *cartRepository) AddToCart(product_id int, userID int, offerDetails mod
 			tx.Rollback()
 			return []models.Cart{}, err
 		}
-		fmt.Println("product quantity in carts := ", pQuantity)
-		fmt.Println("offer limit for that offer := ", offerDetails.OfferLimit)
+
 		if pQuantity < offerDetails.OfferLimit {
 			productPrice = offerDetails.OfferPrice
 		}

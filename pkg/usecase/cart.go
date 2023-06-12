@@ -37,6 +37,10 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 	_ = err
 	// fmt.Println(offerPrice)
 
+	// before adding to cart we have to check all the dependencies
+	// if offer id ! =0 that means some kind of offer exist - do the complete things inside this
+	err = cr.couponRepository.OfferUpdate(offerDetails, userID)
+
 	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID, offerDetails)
 
 	if err != nil {

@@ -36,6 +36,7 @@ type CategoryOfferReceiver struct {
 }
 
 type OfferResponse struct {
+	OfferID         uint    `json:"offer_id"`
 	OfferName       string  `json:"offer_name"`
 	OfferPercentage int     `json:"offer_percentage"`
 	OfferPrice      float64 `json:"offer_price"`
