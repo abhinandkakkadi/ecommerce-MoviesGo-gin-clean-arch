@@ -169,7 +169,7 @@ func (cr *cartRepository) GetTotalPrice(userID int) (models.CartTotal, error) {
 	return cartTotal, nil
 }
 
-func (cr *cartRepository) RemoveFromCart(product_id int, userID int) ([]models.Cart, error) {
+func (cr *cartRepository) RemoveFromCart(product_id int, userID int, priceDecrement float64) ([]models.Cart, error) {
 
 	// to check if the product to be removed exist inside the cart
 	var count int
@@ -212,7 +212,7 @@ func (cr *cartRepository) RemoveFromCart(product_id int, userID int) ([]models.C
 			return []models.Cart{}, err
 		}
 
-		cartDetails.TotalPrice = cartDetails.TotalPrice - cartDetails.Price
+		cartDetails.TotalPrice = cartDetails.TotalPrice - priceDecrement
 
 		if err := cr.DB.Exec("update carts set quantity = ?,total_price = ? where user_id = ? and product_id = ?", cartDetails.Quantity, cartDetails.TotalPrice, userID, product_id).Error; err != nil {
 			return []models.Cart{}, err
