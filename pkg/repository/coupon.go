@@ -294,17 +294,16 @@ func (co *couponRepository) OfferUpdate(offerDetails models.OfferResponse, userI
 			// 	return err
 			// }
 		} else {
-			err = co.DB.Exec("update product_offer_useds set offer_count = offer_count + 1 where product_offer_id = ? and user_id = ?", offerDetails.OfferID,userID).Error
+			err = co.DB.Exec("update product_offer_useds set offer_count = offer_count + 1 where product_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
 			if err != nil {
 				return err
 			}
 		}
 
 		err = co.DB.Exec("update product_offers set offer_used = offer_used + 1 where id = ?", offerDetails.OfferID).Error
-			if err != nil {
-				return err
-			}
-
+		if err != nil {
+			return err
+		}
 
 	} else if offerDetails.OfferType == "category" {
 
@@ -321,16 +320,16 @@ func (co *couponRepository) OfferUpdate(offerDetails models.OfferResponse, userI
 			// 	return err
 			// }
 		} else {
-			err = co.DB.Exec("update category_offer_useds set offer_count = offer_count + 1 where category_offer_id = ? and user_id = ?", offerDetails.OfferID,userID).Error
+			err = co.DB.Exec("update category_offer_useds set offer_count = offer_count + 1 where category_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
 			if err != nil {
 				return err
 			}
 		}
 
 		err = co.DB.Exec("update category_offers set offer_used = offer_used + 1 where id = ?", offerDetails.OfferID).Error
-			if err != nil {
-				return err
-			}
+		if err != nil {
+			return err
+		}
 
 	}
 	return nil
