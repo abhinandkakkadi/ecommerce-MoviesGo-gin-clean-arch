@@ -231,6 +231,8 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 	currentTime := time.Now()
 	if pOff.OfferName != "" {
 		fmt.Println("reached here and checking is done in product offer")
+		fmt.Println("used offer", pOff.OfferUsed)
+		fmt.Println("limit", pOff.OfferLimit)
 		if currentTime.After(pOff.StartDate) && currentTime.Before(pOff.EndDate) && pOff.OfferUsed < pOff.OfferLimit {
 			fmt.Println("Offer is currently active!")
 		} else {
@@ -252,6 +254,7 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 
 	// whichever offer provides greater percentage
 	if pOff.DiscountPercentage > cOff.DiscountPercentage {
+		fmt.Println("reached here sicne product offer exists percentage ", pOff.DiscountPercentage)
 		offer.OfferID = pOff.ID
 		offer.OfferName = pOff.OfferName
 		offer.OfferPercentage = pOff.DiscountPercentage
@@ -278,31 +281,98 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Of
 
 }
 
+func (co *couponRepository) CheckIfOfferAlreadyUsed(offerDetails models.OfferResponse, product_id int, userID int) (models.OfferResponse, error) {
+
+	if offerDetails.OfferType == "product" {
+		fmt.Println("OKOKOKOK")
+		var tableExists bool
+		co.DB.Raw(`SELECT EXISTS (
+    SELECT 1 
+    FROM information_schema.tables 
+    WHERE table_name = ?)`, "product_offer_useds").Row().Scan(&tableExists)
+
+		if tableExists {
+
+			var used bool
+			err := co.DB.Raw("select used from product_offer_useds where user_id = ? and product_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
+			if err != nil {
+				return models.OfferResponse{}, err
+			}
+
+			if used {
+				fmt.Println("PLEASE DONT GO HERE")
+				err := co.DB.Raw("select price from products where id = ? ", product_id).Scan(&offerDetails.OfferPrice).Error
+				if err != nil {
+					return models.OfferResponse{}, err
+				}
+				return offerDetails, nil
+			}
+		}
+
+	} else if offerDetails.OfferType == "category" {
+		fmt.Println("category offer exists, so that it have to reach here")
+		var tableExists bool
+		co.DB.Raw(`SELECT EXISTS (
+    SELECT 1 
+    FROM information_schema.tables 
+    WHERE table_name = ?)`, "category_offer_useds").Row().Scan(&tableExists)
+
+		if tableExists {
+			fmt.Println("this is true becasue the table exists")
+			var used bool
+			err := co.DB.Raw("select used from category_offer_useds where user_id = ? and category_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
+			if err != nil {
+				return models.OfferResponse{}, err
+			}
+			fmt.Println("used is false so it will not enter here")
+			if used {
+				fmt.Println("it have to enter here")
+				err := co.DB.Raw("select price from products where id = ? ", product_id).Scan(&offerDetails.OfferPrice).Error
+				if err != nil {
+					return models.OfferResponse{}, err
+				}
+				return offerDetails, nil
+			}
+		}
+	}
+
+	return offerDetails, nil
+}
+
 func (co *couponRepository) OfferUpdate(offerDetails models.OfferResponse, userID int) error {
 
 	if offerDetails.OfferType == "product" {
+
 		var count int
 		err := co.DB.Raw("select count(*) from product_offer_useds where product_offer_id = ? and user_id = ? ", offerDetails.OfferID, userID).Scan(&count).Error
 		if err != nil {
 			return err
 		}
 
-		// The user have not yet used this offer. create one
-		if count == 0 {
-			co.DB.Exec("insert into product_offer_useds (user_id,product_offer_id,offer_amount,offer_count,used) values (?,?,?,?,?)", userID, offerDetails.OfferID, offerDetails.OfferPrice, 1, false).Scan(&count)
-			// if err != nil {
-			// 	return err
-			// }
-		} else {
-			err = co.DB.Exec("update product_offer_useds set offer_count = offer_count + 1 where product_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
+		// find genre of the movie
+		var genreID int
+		err = co.DB.Raw("select genre_id from category_offers inner join category_offer_useds on category_offers.id = category_offer_useds.category_offer_id where user_id = ? and used = false", userID).Scan(&genreID).Error
+		if err != nil {
+			return err
+		}
+		// the user haven't used product offer. also the user did't use category offer yet. -  if both condition come true - allow it
+		if genreID == 0 {
+			if count == 0 {
+				co.DB.Exec("insert into product_offer_useds (user_id,product_offer_id,offer_amount,offer_count,used) values (?,?,?,?,?)", userID, offerDetails.OfferID, offerDetails.OfferPrice, 1, false).Scan(&count)
+				// if err != nil {
+				// 	return err
+				// }
+			} else {
+				err = co.DB.Exec("update product_offer_useds set offer_count = offer_count + 1 where product_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
+				if err != nil {
+					return err
+				}
+			}
+
+			err = co.DB.Exec("update product_offers set offer_used = offer_used + 1 where id = ?", offerDetails.OfferID).Error
 			if err != nil {
 				return err
 			}
-		}
-
-		err = co.DB.Exec("update product_offers set offer_used = offer_used + 1 where id = ?", offerDetails.OfferID).Error
-		if err != nil {
-			return err
 		}
 
 	} else if offerDetails.OfferType == "category" {
@@ -313,22 +383,30 @@ func (co *couponRepository) OfferUpdate(offerDetails models.OfferResponse, userI
 			return err
 		}
 
+		var productID int
+		err = co.DB.Raw("select product_id from product_offers inner join product_offer_useds on product_offers.id = product_offer_useds.product_offer_id where user_id = ? and used = false", userID).Scan(&productID).Error
+		if err != nil {
+			return err
+		}
+
 		// The user have not yet used this offer. create one
-		if count == 0 {
-			co.DB.Exec("insert into category_offer_useds (user_id,category_offer_id,offer_amount,offer_count,used) values (?,?,?,?,?)", userID, offerDetails.OfferID, offerDetails.OfferPrice, 1, false).Scan(&count)
-			// if err != nil {
-			// 	return err
-			// }
-		} else {
-			err = co.DB.Exec("update category_offer_useds set offer_count = offer_count + 1 where category_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
+		if productID == 0 {
+			if count == 0 {
+				co.DB.Exec("insert into category_offer_useds (user_id,category_offer_id,offer_amount,offer_count,used) values (?,?,?,?,?)", userID, offerDetails.OfferID, offerDetails.OfferPrice, 1, false).Scan(&count)
+				// if err != nil {
+				// 	return err
+				// }
+			} else {
+				err = co.DB.Exec("update category_offer_useds set offer_count = offer_count + 1 where category_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
+				if err != nil {
+					return err
+				}
+			}
+
+			err = co.DB.Exec("update category_offers set offer_used = offer_used + 1 where id = ?", offerDetails.OfferID).Error
 			if err != nil {
 				return err
 			}
-		}
-
-		err = co.DB.Exec("update category_offers set offer_used = offer_used + 1 where id = ?", offerDetails.OfferID).Error
-		if err != nil {
-			return err
 		}
 
 	}
@@ -457,7 +535,7 @@ func (co *couponRepository) GetPriceBasedOnOffer(product_id int, userID int) (fl
 		return OriginalProductPrice, nil
 	}
 
-	if categoryOfferPrice == 0 || productOfferPrice < categoryOfferPrice {
+	if productOfferPrice != 0 {
 
 		err = co.DB.Exec("update product_offer_useds set offer_count = offer_count - 1 where product_offer_id = ? and user_id = ?", pOfferID, userID).Error
 		if err != nil {
@@ -469,10 +547,9 @@ func (co *couponRepository) GetPriceBasedOnOffer(product_id int, userID int) (fl
 			return 0.0, err
 		}
 
-		return productOfferPrice, nil
 	}
 
-	if productOfferPrice == 0 || categoryOfferPrice < productOfferPrice {
+	if categoryOfferPrice != 0 {
 
 		err = co.DB.Exec("update category_offer_useds set offer_count = offer_count - 1 where category_offer_id = ? and user_id = ?", cOfferID, userID).Error
 		if err != nil {
@@ -483,11 +560,13 @@ func (co *couponRepository) GetPriceBasedOnOffer(product_id int, userID int) (fl
 		if err != nil {
 			return 0.0, err
 		}
-
-		fmt.Println("this have reached")
-		return categoryOfferPrice, nil
 	}
 
+	if categoryOfferPrice > productOfferPrice {
+		return categoryOfferPrice, nil
+	} else if productOfferPrice > categoryOfferPrice {
+		return productOfferPrice, nil
+	}
 	return OriginalProductPrice, nil
 
 }

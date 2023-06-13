@@ -12,6 +12,7 @@ type CouponRepository interface {
 	AddProductOffer(productOffer models.ProductOfferReceiver) error
 	AddCategoryOffer(categoryOffer models.CategoryOfferReceiver) error
 	OfferDetails(productID int, genre string) (models.OfferResponse, error)
+	CheckIfOfferAlreadyUsed(offerDetails models.OfferResponse, product_id int, userID int) (models.OfferResponse, error)
 	OfferUpdate(offerDetails models.OfferResponse, userID int) error
 	GetReferralAmount(userID int) (models.ReferralAmount, error)
 	GetPriceBasedOnOffer(product_id int, userID int) (float64, error)

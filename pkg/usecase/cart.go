@@ -37,7 +37,11 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 	offerDetails, err := cr.couponRepository.OfferDetails(product_id, genre)
 	_ = err
 	// fmt.Println(offerPrice)
-
+	fmt.Println("here the price was: ", offerDetails.OfferPrice)
+	// Now check if the offer is already used by the user
+	if offerDetails.OfferType != "no offer" {
+		offerDetails, err = cr.couponRepository.CheckIfOfferAlreadyUsed(offerDetails, product_id, userID)
+	}
 	// before adding to cart we have to check all the dependencies
 	// if offer id ! =0 that means some kind of offer exist - do the complete things inside this
 	err = cr.couponRepository.OfferUpdate(offerDetails, userID)
