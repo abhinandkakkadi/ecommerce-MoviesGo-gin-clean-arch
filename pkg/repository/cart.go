@@ -306,6 +306,32 @@ func (cr *cartRepository) EmptyCart(userID int) ([]models.Cart, error) {
 		return []models.Cart{}, err
 	}
 
+		// PRODUCT OFFER RESTORED 
+		var productOfferID []int
+		if err := cr.DB.Raw("select product_offer_id from product_offer_useds where user_id = ? and used = false", userID).Scan(&productOfferID).Error; err != nil {
+			return []models.Cart{}, err
+		}
+
+		for _,pOfferID := range productOfferID {
+		
+			fmt.Println("values of offer id in slice",pOfferID)
+			var offerCount int
+			if err := cr.DB.Raw("select offer_count from product_offer_useds where product_offer_id = ?",pOfferID).Scan(&offerCount).Error; err != nil {
+			return []models.Cart{}, err
+			}
+			fmt.Println("this is the offer count for this particular category which is used by this user",offerCount)
+	
+			// code for deleting this record
+			if err := cr.DB.Exec("update product_offers set offer_used = offer_used - ? where id = ?",offerCount,pOfferID).Error; err != nil {
+			return []models.Cart{}, err
+			}
+	
+		}
+	
+		if err := cr.DB.Exec("delete from product_offer_useds where user_id = ? and used = false",userID).Error; err != nil {
+			return []models.Cart{}, err
+		}
+
 	return cartResponse, nil
 
 }
