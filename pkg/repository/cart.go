@@ -280,7 +280,7 @@ func (cr *cartRepository) EmptyCart(userID int) ([]models.Cart, error) {
 
 	// loop through all the category_offer_useds
 
-	// remove offers if it exist
+	// CATEGORY OFFER RESTORED 
 	var categoryOfferID []int
 	if err := cr.DB.Raw("select category_offer_id from category_offer_useds where user_id = ? and used = false", userID).Scan(&categoryOfferID).Error; err != nil {
 		return []models.Cart{}, err
