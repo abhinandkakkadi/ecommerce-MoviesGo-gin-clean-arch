@@ -278,9 +278,33 @@ func (cr *cartRepository) EmptyCart(userID int) ([]models.Cart, error) {
 		return []models.Cart{}, err
 	}
 
-	// if err := cr.DB.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?",userID).First(&cartResponse).Error; err != nil {
-	// 	return []models.Cart{},err
-	// }
+	// loop through all the category_offer_useds
+
+	// remove offers if it exist
+	var categoryOfferID []int
+	if err := cr.DB.Raw("select category_offer_id from category_offer_useds where user_id = ? and used = false", userID).Scan(&categoryOfferID).Error; err != nil {
+		return []models.Cart{}, err
+	}
+	fmt.Println("this have to be two :",categoryOfferID)
+	for _,cOfferID := range categoryOfferID {
+	
+		fmt.Println("values of offer id in slice",cOfferID)
+		var offerCount int
+		if err := cr.DB.Raw("select offer_count from category_offer_useds where category_offer_id = ?",cOfferID).Scan(&offerCount).Error; err != nil {
+		return []models.Cart{}, err
+		}
+		fmt.Println("this is the offer count for this particular category which is used by this user",offerCount)
+
+		// code for deleting this record
+		if err := cr.DB.Exec("update category_offers set offer_used = offer_used - ? where id = ?",offerCount,cOfferID).Error; err != nil {
+		return []models.Cart{}, err
+		}
+
+	}
+
+	if err := cr.DB.Exec("delete from category_offer_useds where user_id = ? and used = false",userID).Error; err != nil {
+		return []models.Cart{}, err
+	}
 
 	return cartResponse, nil
 
