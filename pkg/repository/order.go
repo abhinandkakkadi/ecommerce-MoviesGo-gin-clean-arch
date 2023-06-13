@@ -107,9 +107,13 @@ func (o *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, car
 		o.DB.Exec("update products set quantity = quantity - ? where id = ?", c.Quantity, c.ProductID)
 	}
 
+	// o.DB.Exec("update category_offer_useds set used = true where user_id = ?",orderBody.UserID)
+	// o.DB.Exec("update product_offer_useds set used = true where user_id = ?",orderBody.UserID)
+
 	var orderSuccessResponse domain.OrderSuccessResponse
 	o.DB.Raw("select order_id,shipment_status from orders where order_id = ?", orderDetails.OrderId).Scan(&orderSuccessResponse)
 	return orderSuccessResponse, nil
+
 }
 
 func (o *orderRepository) GetOrderDetails(userID int, page int, count int) ([]models.FullOrderDetails, error) {
