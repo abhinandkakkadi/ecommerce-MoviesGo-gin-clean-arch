@@ -341,25 +341,25 @@ func (co *couponRepository) OfferUpdate(offerDetails models.OfferResponse, userI
 }
 
 // this is the most complicated function in this program
-func (co *couponRepository) GetPriceBasedOnOffer(product_id int, userID int) (float64,error) {
+func (co *couponRepository) GetPriceBasedOnOffer(product_id int, userID int) (float64, error) {
 	fmt.Println("the code actaully reached here")
 	var quantity int
-	err := co.DB.Raw("select quantity from carts where product_id = ?",product_id).Scan(&quantity).Error
+	err := co.DB.Raw("select quantity from carts where product_id = ?", product_id).Scan(&quantity).Error
 	if err != nil {
-		return 0.0,err
+		return 0.0, err
 	}
 
-	fmt.Println("this is the quantity of the product = ",quantity)
+	fmt.Println("this is the quantity of the product = ", quantity)
 
-	fmt.Println("quantity of the product",quantity)
+	fmt.Println("quantity of the product", quantity)
 	var originalPrice float64
-	err = co.DB.Raw("select price from products where id = ?",product_id).Scan(&originalPrice).Error
+	err = co.DB.Raw("select price from products where id = ?", product_id).Scan(&originalPrice).Error
 	if err != nil {
-		return 0.0,err
+		return 0.0, err
 	}
 
-	fmt.Println("price of the product",originalPrice)
-	
+	fmt.Println("price of the product", originalPrice)
+
 	var productOfferPrice float64
 	var categoryOfferPrice float64
 	var OriginalProductPrice = originalPrice
@@ -368,57 +368,56 @@ func (co *couponRepository) GetPriceBasedOnOffer(product_id int, userID int) (fl
 	// for that first find the offer id for that particular product, and now check in the product_offers_used table to check whether
 	// it is used or not i.e (if is is used that means the order have been already done)
 	var pOfferID int
-	err = co.DB.Raw("select id from product_offers where product_id = ?",product_id).Scan(&pOfferID).Error
+	err = co.DB.Raw("select id from product_offers where product_id = ?", product_id).Scan(&pOfferID).Error
 	if err != nil {
-		return 0.0,err
+		return 0.0, err
 	}
 
-	fmt.Println("here product offer does not exist so it is defenetly =",pOfferID)
+	fmt.Println("here product offer does not exist so it is defenetly =", pOfferID)
 
 	var pOfferCount int
-	err = co.DB.Raw("select count(*) from product_offer_useds where product_offer_id = ? and user_id = ? and used = false",pOfferID,userID).Scan(&pOfferCount).Error
+	err = co.DB.Raw("select count(*) from product_offer_useds where product_offer_id = ? and user_id = ? and used = false", pOfferID, userID).Scan(&pOfferCount).Error
 	if err != nil {
-		return 0.0,err
+		return 0.0, err
 	}
 
-	fmt.Println("the offer count exist for product =",pOfferCount)
+	fmt.Println("the offer count exist for product =", pOfferCount)
 
 	var genreID int
-	err = co.DB.Raw("select genre_id from products where id = ? ",product_id).Scan(&genreID).Error
+	err = co.DB.Raw("select genre_id from products where id = ? ", product_id).Scan(&genreID).Error
 	if err != nil {
-		return 0.0,err
+		return 0.0, err
 	}
 
-	fmt.Println("genreId for this product",genreID)
+	fmt.Println("genreId for this product", genreID)
 
 	var cOfferID int
-	err = co.DB.Raw("select id from category_offers where genre_id = ?",genreID).Scan(&cOfferID).Error
+	err = co.DB.Raw("select id from category_offers where genre_id = ?", genreID).Scan(&cOfferID).Error
 	if err != nil {
-		return 0.0,err
+		return 0.0, err
 	}
 
-	fmt.Println("category offer have to exist",cOfferID)
+	fmt.Println("category offer have to exist", cOfferID)
 
 	var cOfferCount int
-	err = co.DB.Raw("select count(*) from category_offer_useds where category_offer_id = ? and user_id = ? and used = false",cOfferID,userID).Scan(&cOfferCount).Error
+	err = co.DB.Raw("select count(*) from category_offer_useds where category_offer_id = ? and user_id = ? and used = false", cOfferID, userID).Scan(&cOfferCount).Error
 	if err != nil {
-		return 0.0,err
+		return 0.0, err
 	}
-
 
 	if pOfferCount > 0 {
 
 		fmt.Println("defenetly reached here")
 		var offerCount int
-		err = co.DB.Raw("select offer_count from product_offer_useds where product_offer_id = ? and user_id = ?",pOfferID,userID).Scan(&offerCount).Error
+		err = co.DB.Raw("select offer_count from product_offer_useds where product_offer_id = ? and user_id = ?", pOfferID, userID).Scan(&offerCount).Error
 		if err != nil {
-		return 0.0,err
+			return 0.0, err
 		}
-		fmt.Println("this have to be 5",offerCount)
+		fmt.Println("this have to be 5", offerCount)
 		var offerAmount float64
-		err = co.DB.Raw("select offer_amount from product_offer_useds where product_offer_id = ? and user_id = ?",pOfferID,userID).Scan(&offerAmount).Error
+		err = co.DB.Raw("select offer_amount from product_offer_useds where product_offer_id = ? and user_id = ?", pOfferID, userID).Scan(&offerAmount).Error
 		if err != nil {
-		return 0.0,err
+			return 0.0, err
 		}
 
 		if quantity <= offerCount {
@@ -432,71 +431,66 @@ func (co *couponRepository) GetPriceBasedOnOffer(product_id int, userID int) (fl
 	if cOfferCount > 0 {
 		fmt.Println("this is inside of cOfferAvailable")
 		var offerCount int
-		err = co.DB.Raw("select offer_count from category_offer_useds where category_offer_id = ? and user_id = ?",cOfferID,userID).Scan(&offerCount).Error
+		err = co.DB.Raw("select offer_count from category_offer_useds where category_offer_id = ? and user_id = ?", cOfferID, userID).Scan(&offerCount).Error
 		if err != nil {
-		return 0.0,err
+			return 0.0, err
 		}
 
-		fmt.Println("offer count here is 5 = ",offerCount)
+		fmt.Println("offer count here is 5 = ", offerCount)
 
 		var offerAmount float64
-		err = co.DB.Raw("select offer_amount from category_offer_useds where category_offer_id = ? and user_id = ?",cOfferID,userID).Scan(&offerAmount).Error
+		err = co.DB.Raw("select offer_amount from category_offer_useds where category_offer_id = ? and user_id = ?", cOfferID, userID).Scan(&offerAmount).Error
 		if err != nil {
-		return 0.0,err
+			return 0.0, err
 		}
 
-		fmt.Println("The offer amount is less ",offerAmount)
+		fmt.Println("The offer amount is less ", offerAmount)
 
 		if quantity <= offerCount {
 			fmt.Println("if quantity is less than 5 it have to sent back 400")
 			categoryOfferPrice = offerAmount
 		}
 
-		
-
 	}
 
 	if categoryOfferPrice == 0 && productOfferPrice == 0 {
-    return OriginalProductPrice,nil
-  }
+		return OriginalProductPrice, nil
+	}
 
-  if categoryOfferPrice == 0 || productOfferPrice < categoryOfferPrice {
-	
-		err = co.DB.Exec("update product_offer_useds set offer_count = offer_count - 1 where product_offer_id = ? and user_id = ?",pOfferID,userID).Error
+	if categoryOfferPrice == 0 || productOfferPrice < categoryOfferPrice {
+
+		err = co.DB.Exec("update product_offer_useds set offer_count = offer_count - 1 where product_offer_id = ? and user_id = ?", pOfferID, userID).Error
 		if err != nil {
-		return 0.0,err
+			return 0.0, err
 		}
 
-		err = co.DB.Exec("update product_offers set offer_used = offer_used - 1 where id = ?",pOfferID).Error
+		err = co.DB.Exec("update product_offers set offer_used = offer_used - 1 where id = ?", pOfferID).Error
 		if err != nil {
-		return 0.0,err
+			return 0.0, err
 		}
 
-    return productOfferPrice,nil
-  }
+		return productOfferPrice, nil
+	}
 
 	if productOfferPrice == 0 || categoryOfferPrice < productOfferPrice {
 
-		err = co.DB.Exec("update category_offer_useds set offer_count = offer_count - 1 where category_offer_id = ? and user_id = ?",cOfferID,userID).Error
+		err = co.DB.Exec("update category_offer_useds set offer_count = offer_count - 1 where category_offer_id = ? and user_id = ?", cOfferID, userID).Error
 		if err != nil {
-		return 0.0,err
+			return 0.0, err
 		}
 
-		err = co.DB.Exec("update category_offers set offer_used = offer_used - 1 where id = ?",cOfferID).Error
+		err = co.DB.Exec("update category_offers set offer_used = offer_used - 1 where id = ?", cOfferID).Error
 		if err != nil {
-		return 0.0,err
+			return 0.0, err
 		}
 
 		fmt.Println("this have reached")
-		return categoryOfferPrice,nil
+		return categoryOfferPrice, nil
 	}
 
-	return OriginalProductPrice,nil
-
+	return OriginalProductPrice, nil
 
 }
-
-
 
 func (co *couponRepository) GetReferralAmount(userID int) (models.ReferralAmount, error) {
 

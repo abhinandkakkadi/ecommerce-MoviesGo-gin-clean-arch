@@ -42,10 +42,10 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 	// if offer id ! =0 that means some kind of offer exist - do the complete things inside this
 	err = cr.couponRepository.OfferUpdate(offerDetails, userID)
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
-	
-	fmt.Println("if i am right this is 400",offerDetails.OfferPrice)
+
+	fmt.Println("if i am right this is 400", offerDetails.OfferPrice)
 	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID, offerDetails)
 
 	if err != nil {
@@ -80,15 +80,12 @@ func (cr *cartUseCase) RemoveFromCart(product_id int, userID int) (models.CartRe
 	}
 
 	// if offer is applied decrement offer price, else decrement actual price
-	priceDecrement,err := cr.couponRepository.GetPriceBasedOnOffer(product_id, userID)
+	priceDecrement, err := cr.couponRepository.GetPriceBasedOnOffer(product_id, userID)
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
 
-	
-
-
-	updatedCart, err := cr.cartRepository.RemoveFromCart(product_id, userID,priceDecrement)
+	updatedCart, err := cr.cartRepository.RemoveFromCart(product_id, userID, priceDecrement)
 
 	if err != nil {
 		return models.CartResponse{}, err
