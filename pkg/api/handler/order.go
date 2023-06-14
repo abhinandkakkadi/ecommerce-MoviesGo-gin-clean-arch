@@ -225,3 +225,36 @@ func (o *OrderHandler) OrderDelivered(c *gin.Context) {
 	c.JSON(http.StatusOK,successRes)
 
 }
+
+
+func (o *OrderHandler) ReturnOrder(c *gin.Context) {
+
+	orderID := c.Param("order_id")
+	fmt.Println(orderID)
+	err := o.orderUseCase.ReturnOrder(orderID)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusInternalServerError,"order could not be returned",nil,err)
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK,"successfully delivered the returned",nil,nil)
+	c.JSON(http.StatusOK,successRes)
+
+}
+
+func (o *OrderHandler) RefundUser(c *gin.Context) {
+
+	orderID := c.Param("order_id")
+	fmt.Println(orderID)
+	err := o.orderUseCase.RefundOrder(orderID)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusInternalServerError,"refund was not possible",nil,err)
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK,"Refunded the user",nil,nil)
+	c.JSON(http.StatusOK,successRes)
+
+}

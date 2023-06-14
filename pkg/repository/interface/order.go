@@ -1,6 +1,8 @@
 package interfaces
 
 import (
+	"time"
+
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
@@ -29,4 +31,8 @@ type OrderRepository interface {
 	UpdatePaymentDetails(orderID string, paymentID string) error
 
 	UpdateShipmentStatus(shipmentStatus string,orderID string) error
+	GetDeliveredTime(orderID string) (time.Time,error)
+	ReturnOrder(shipmentStatus string,orderID string) error
+	GetPaymentStatus(orderID string) (string,error)
+	RefundOrder(paymentStatus string,orderID string) error
 }

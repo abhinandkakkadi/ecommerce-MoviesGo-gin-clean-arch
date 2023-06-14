@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
@@ -401,12 +402,59 @@ func (o *orderRepository) UpdatePaymentDetails(orderID string, paymentID string)
 
 
 func (o *orderRepository) UpdateShipmentStatus(shipmentStatus string, orderID string) error {
-
-	err := o.DB.Exec("update orders set shipment_status = ?, payment_status = 'paid' where order_id = ?",shipmentStatus,orderID).Error
+	
+	currentTime := time.Now()
+	err := o.DB.Exec("update orders set shipment_status = ?, payment_status = 'paid',delivery_time = ? where order_id = ?",shipmentStatus,currentTime,orderID).Error
 		if err != nil {
 			return err
 	}
 
 	return nil
 
+}
+
+
+func (o *orderRepository) GetDeliveredTime(orderID string) (time.Time,error) {
+
+	var deliveryTime time.Time
+	err := o.DB.Raw("select delivery_time from orders where order_id = ?",orderID).Scan(&deliveryTime).Error
+		if err != nil {
+			return deliveryTime,err
+	}
+
+	return deliveryTime,nil
+
+}
+
+func (o *orderRepository) ReturnOrder(shipmentStatus string,orderID string) error {
+	
+	err := o.DB.Exec("update orders set shipment_status = ?, payment_status = 'refund-init' where order_id = ?",shipmentStatus,orderID).Error
+		if err != nil {
+			return err
+	}
+
+	return nil
+
+}
+
+func (o *orderRepository) GetPaymentStatus(orderID string) (string,error) {
+
+	var paymentStatus string
+	err := o.DB.Raw("select payment_status from orders where order_id = ?",orderID).Scan(&paymentStatus).Error
+		if err != nil {
+			return "",err
+	}
+
+	return paymentStatus,nil
+
+}
+
+func (o *orderRepository) RefundOrder(paymentStatus string,orderID string) error {
+
+	err := o.DB.Exec("update orders set payment_status = ?,shipment_status = 'returned' where order_id = ?",paymentStatus,orderID).Error
+		if err != nil {
+			return err
+	}
+
+	return nil
 }

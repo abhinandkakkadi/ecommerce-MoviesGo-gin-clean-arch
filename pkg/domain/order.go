@@ -16,6 +16,7 @@ type Order struct {
 	CreatedAt       time.Time     `json:"created_at"`
 	UpdatedAt       time.Time     `json:"updated_at"`
 	DeletedAt       *time.Time    `json:"deleted_at" gorm:"index"`
+	DeliveryTime     time.Time		`json:"delivery_time"`
 	UserID          int           `json:"user_id" gorm:"not null"`
 	AddressID       uint          `json:"address_id"`
 	Address         Address       `json:"-" gorm:"foreignkey:AddressID"`

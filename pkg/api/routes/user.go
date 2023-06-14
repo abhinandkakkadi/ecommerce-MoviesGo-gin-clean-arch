@@ -58,6 +58,7 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			users.PUT("/update-password", userHandler.UpdatePassword)
 
 			users.GET("/delivered/:order_id",orderHandler.OrderDelivered)
+			users.GET("/return/:order_id",orderHandler.ReturnOrder)
 
 		}
 

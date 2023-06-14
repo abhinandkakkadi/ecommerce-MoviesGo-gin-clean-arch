@@ -13,4 +13,6 @@ type OrderUseCase interface {
 	GetAllOrderDetailsForAdmin(page int) ([]models.CombinedOrderDetails, error)
 	ApproveOrder(orderId string) (string, error)
 	OrderDelivered(orderID string) error
+	ReturnOrder(orderID string) error
+	RefundOrder(orderID string) error
 }
