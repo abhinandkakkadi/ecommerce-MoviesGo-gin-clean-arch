@@ -208,11 +208,11 @@ func (o *orderUseCase) OrderDelivered(orderID string) error {
 		return err
 	}
 
-	fmt.Println("orderId : ",orderID)
-	fmt.Println("shipment status : ",shipmentStatus)
+	fmt.Println("orderId : ", orderID)
+	fmt.Println("shipment status : ", shipmentStatus)
 	if shipmentStatus == "order placed" {
 		shipmentStatus = "delivered"
-		return o.orderRepository.UpdateShipmentStatus(shipmentStatus,orderID)
+		return o.orderRepository.UpdateShipmentStatus(shipmentStatus, orderID)
 	}
 
 	return errors.New("order not placed or order id does not exist")
@@ -227,23 +227,22 @@ func (o *orderUseCase) ReturnOrder(orderID string) error {
 		return err
 	}
 
-	timeDelivered,err := o.orderRepository.GetDeliveredTime(orderID)
+	timeDelivered, err := o.orderRepository.GetDeliveredTime(orderID)
 	if err != nil {
 		return err
 	}
 
 	currentTime := time.Now()
-	returnPeriod := timeDelivered.Add(time.Hour*24*7)
+	returnPeriod := timeDelivered.Add(time.Hour * 24 * 7)
 
 	if shipmentStatus == "delivered" && currentTime.Before(returnPeriod) {
 		shipmentStatus = "return"
-		return o.orderRepository.ReturnOrder(shipmentStatus,orderID)
+		return o.orderRepository.ReturnOrder(shipmentStatus, orderID)
 	}
 
 	return errors.New("can't return order")
 
 }
-
 
 func (o *orderUseCase) RefundOrder(orderID string) error {
 
@@ -255,7 +254,7 @@ func (o *orderUseCase) RefundOrder(orderID string) error {
 
 	if paymentStatus == "refund-init" {
 		paymentStatus = "refunded"
-		return o.orderRepository.RefundOrder(paymentStatus,orderID)
+		return o.orderRepository.RefundOrder(paymentStatus, orderID)
 	}
 
 	return errors.New("cannot refund the order")

@@ -400,60 +400,58 @@ func (o *orderRepository) UpdatePaymentDetails(orderID string, paymentID string)
 
 }
 
-
 func (o *orderRepository) UpdateShipmentStatus(shipmentStatus string, orderID string) error {
-	
+
 	currentTime := time.Now()
-	err := o.DB.Exec("update orders set shipment_status = ?, payment_status = 'paid',delivery_time = ? where order_id = ?",shipmentStatus,currentTime,orderID).Error
-		if err != nil {
-			return err
+	err := o.DB.Exec("update orders set shipment_status = ?, payment_status = 'paid',delivery_time = ? where order_id = ?", shipmentStatus, currentTime, orderID).Error
+	if err != nil {
+		return err
 	}
 
 	return nil
 
 }
 
-
-func (o *orderRepository) GetDeliveredTime(orderID string) (time.Time,error) {
+func (o *orderRepository) GetDeliveredTime(orderID string) (time.Time, error) {
 
 	var deliveryTime time.Time
-	err := o.DB.Raw("select delivery_time from orders where order_id = ?",orderID).Scan(&deliveryTime).Error
-		if err != nil {
-			return deliveryTime,err
+	err := o.DB.Raw("select delivery_time from orders where order_id = ?", orderID).Scan(&deliveryTime).Error
+	if err != nil {
+		return deliveryTime, err
 	}
 
-	return deliveryTime,nil
+	return deliveryTime, nil
 
 }
 
-func (o *orderRepository) ReturnOrder(shipmentStatus string,orderID string) error {
-	
-	err := o.DB.Exec("update orders set shipment_status = ?, payment_status = 'refund-init' where order_id = ?",shipmentStatus,orderID).Error
-		if err != nil {
-			return err
+func (o *orderRepository) ReturnOrder(shipmentStatus string, orderID string) error {
+
+	err := o.DB.Exec("update orders set shipment_status = ?, payment_status = 'refund-init' where order_id = ?", shipmentStatus, orderID).Error
+	if err != nil {
+		return err
 	}
 
 	return nil
 
 }
 
-func (o *orderRepository) GetPaymentStatus(orderID string) (string,error) {
+func (o *orderRepository) GetPaymentStatus(orderID string) (string, error) {
 
 	var paymentStatus string
-	err := o.DB.Raw("select payment_status from orders where order_id = ?",orderID).Scan(&paymentStatus).Error
-		if err != nil {
-			return "",err
+	err := o.DB.Raw("select payment_status from orders where order_id = ?", orderID).Scan(&paymentStatus).Error
+	if err != nil {
+		return "", err
 	}
 
-	return paymentStatus,nil
+	return paymentStatus, nil
 
 }
 
-func (o *orderRepository) RefundOrder(paymentStatus string,orderID string) error {
+func (o *orderRepository) RefundOrder(paymentStatus string, orderID string) error {
 
-	err := o.DB.Exec("update orders set payment_status = ?,shipment_status = 'returned' where order_id = ?",paymentStatus,orderID).Error
-		if err != nil {
-			return err
+	err := o.DB.Exec("update orders set payment_status = ?,shipment_status = 'returned' where order_id = ?", paymentStatus, orderID).Error
+	if err != nil {
+		return err
 	}
 
 	return nil

@@ -30,9 +30,9 @@ type OrderRepository interface {
 	CheckPaymentStatus(razorID string, orderID string) error
 	UpdatePaymentDetails(orderID string, paymentID string) error
 
-	UpdateShipmentStatus(shipmentStatus string,orderID string) error
-	GetDeliveredTime(orderID string) (time.Time,error)
-	ReturnOrder(shipmentStatus string,orderID string) error
-	GetPaymentStatus(orderID string) (string,error)
-	RefundOrder(paymentStatus string,orderID string) error
+	UpdateShipmentStatus(shipmentStatus string, orderID string) error
+	GetDeliveredTime(orderID string) (time.Time, error)
+	ReturnOrder(shipmentStatus string, orderID string) error
+	GetPaymentStatus(orderID string) (string, error)
+	RefundOrder(paymentStatus string, orderID string) error
 }

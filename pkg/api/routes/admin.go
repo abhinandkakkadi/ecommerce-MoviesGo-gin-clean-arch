@@ -48,7 +48,7 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 
 			orders.GET("/approve-order/:order_id", orderHandler.ApproveOrder)
 			orders.GET("/cancel-order/:order_id", orderHandler.CancelOrderFromAdminSide)
-			orders.PUT("/refund-order/:order_id",orderHandler.RefundUser)
+			orders.PUT("/refund-order/:order_id", orderHandler.RefundUser)
 		}
 
 		offer := router.Group("/offer")
