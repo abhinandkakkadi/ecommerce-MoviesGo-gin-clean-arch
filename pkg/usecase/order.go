@@ -198,3 +198,22 @@ func (o *orderUseCase) ApproveOrder(orderID string) (string, error) {
 	return "order already approved", nil
 
 }
+
+func (o *orderUseCase) OrderDelivered(orderID string) error {
+
+	// check the shipment status - if the status cancelled, don't approve it
+	shipmentStatus, err := o.orderRepository.GetShipmentStatus(orderID)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("orderId : ",orderID)
+	fmt.Println("shipment status : ",shipmentStatus)
+	if shipmentStatus == "order placed" {
+		shipmentStatus = "delivered"
+		return o.orderRepository.UpdateShipmentStatus(shipmentStatus,orderID)
+	}
+
+	return errors.New("order not placed or order id does not exist")
+
+}

@@ -398,3 +398,15 @@ func (o *orderRepository) UpdatePaymentDetails(orderID string, paymentID string)
 	return nil
 
 }
+
+
+func (o *orderRepository) UpdateShipmentStatus(shipmentStatus string, orderID string) error {
+
+	err := o.DB.Exec("update orders set shipment_status = ?, payment_status = 'paid' where order_id = ?",shipmentStatus,orderID).Error
+		if err != nil {
+			return err
+	}
+
+	return nil
+
+}

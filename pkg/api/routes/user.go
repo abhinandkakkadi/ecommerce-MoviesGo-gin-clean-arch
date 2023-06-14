@@ -57,6 +57,8 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			users.PUT("/cancel-order/:id", orderHandler.CancelOrder)
 			users.PUT("/update-password", userHandler.UpdatePassword)
 
+			users.GET("/delivered/:order_id",orderHandler.OrderDelivered)
+
 		}
 
 		whishlist := router.Group("wishlist")

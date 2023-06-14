@@ -27,4 +27,6 @@ type OrderRepository interface {
 	AddRazorPayDetails(orderID string, razorPayOrderID string) error
 	CheckPaymentStatus(razorID string, orderID string) error
 	UpdatePaymentDetails(orderID string, paymentID string) error
+
+	UpdateShipmentStatus(shipmentStatus string,orderID string) error
 }

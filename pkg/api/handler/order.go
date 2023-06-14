@@ -208,3 +208,20 @@ func (o *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Cancel Successfull", message, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+
+func (o *OrderHandler) OrderDelivered(c *gin.Context) {
+
+	orderID := c.Param("order_id")
+	fmt.Println(orderID)
+	err := o.orderUseCase.OrderDelivered(orderID)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusInternalServerError,"order could not be delivered",nil,err)
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK,"successfully delivered the product",nil,nil)
+	c.JSON(http.StatusOK,successRes)
+
+}
