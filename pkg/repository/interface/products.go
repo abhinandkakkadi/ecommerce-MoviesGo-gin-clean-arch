@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
 
@@ -15,4 +16,5 @@ type ProductRepository interface {
 	CheckValidityOfCategory(data map[string]int) error
 	GetProductFromCategory(data map[string]int) ([]models.ProductsBrief, error)
 	SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error)
+	GetGenres() ([]domain.Genre, error)
 }

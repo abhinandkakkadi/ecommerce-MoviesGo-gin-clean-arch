@@ -188,7 +188,7 @@ func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the users", nil, nil)
+	successRes := response.ClientResponse(http.StatusOK, "Successfully updated product quantity", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
@@ -251,4 +251,25 @@ func (pr *ProductHandler) SearchProduct(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Successfully filtered the category", productDetails, nil)
 	c.JSON(http.StatusOK, successRes)
 
+}
+
+// @Summary Get genre to user side
+// @Description Display genre details on the user side
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /products/genres [get]
+func (ad *ProductHandler) GetGenresToUser(c *gin.Context) {
+
+	genres, err := ad.productUseCase.GetGenres()
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the genres", genres, nil)
+	c.JSON(http.StatusOK, successRes)
 }

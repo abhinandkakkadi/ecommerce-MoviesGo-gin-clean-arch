@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"gorm.io/gorm"
@@ -25,7 +27,7 @@ func (p *productDatabase) ShowAllProducts(page int, count int) ([]models.Product
 	offset := (page - 1) * count
 	var productsBrief []models.ProductsBrief
 	err := p.DB.Raw(`
-		SELECT products.id, products.movie_name,products.sku,genres.genre_name AS genre, products.language,products.price,products.quantity
+		SELECT products.id, products.movie_name,products.sku,products.language,genres.genre_name AS genre, products.language,products.price,products.quantity
 		FROM products
 		JOIN genres ON products.genre_id = genres.id
 		 limit ? offset ?
@@ -174,7 +176,7 @@ func (p *productDatabase) CheckValidityOfCategory(data map[string]int) error {
 			return err
 		}
 		if count < 1 {
-			return errors.New("one or some of the category does not exist")
+			return errors.New("genre does not exist")
 		}
 	}
 	return nil
@@ -186,10 +188,10 @@ func (p *productDatabase) GetProductFromCategory(data map[string]int) ([]models.
 	for _, id := range data {
 		var product models.ProductsBrief
 		err := p.DB.Raw(`
-		SELECT products.id, products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language,products.price,products.quantity
+		SELECT products.id, products.movie_name,products.sku,products.language, genres.genre_name AS genre,products.price,products.quantity
 		FROM products
 		JOIN genres ON products.genre_id = genres.id
-		JOIN movie_languages ON products.language_id = movie_languages.id where genres.id = ?
+		 where genres.id = ?
 	`, id).Scan(&product).Error
 
 		if err != nil {
@@ -224,10 +226,9 @@ func (p *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.Produ
 	lengthOfPrefix := len(prefix)
 	var productsBrief []models.ProductsBrief
 	err := p.DB.Raw(`
-		SELECT products.id, products.movie_name, genres.genre_name AS genre, movie_languages.language AS movie_language,products.price,products.quantity
+		SELECT products.id, products.movie_name,products.sku,genres.genre_name AS genre,products.language,products.price,products.quantity
 		FROM products
 		JOIN genres ON products.genre_id = genres.id
-		JOIN movie_languages ON products.language_id = movie_languages.id
 	`).Scan(&productsBrief).Error
 
 	if err != nil {
@@ -242,7 +243,7 @@ func (p *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.Produ
 			// slice the movie name to length of prefix
 			moviePrefix := p.MovieName[:lengthOfPrefix]
 			// if they are equal - append that movie to the returning slice
-			if moviePrefix == prefix {
+			if strings.ToLower(moviePrefix) == strings.ToLower(prefix) {
 				fmt.Println("got the condition right")
 				filteredProductBrief = append(filteredProductBrief, p)
 			}
@@ -250,5 +251,16 @@ func (p *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.Produ
 	}
 
 	return filteredProductBrief, nil
+
+}
+
+func (pr *productDatabase) GetGenres() ([]domain.Genre, error) {
+
+	var genres []domain.Genre
+	if err := pr.DB.Raw("select * from genres").Scan(&genres).Error; err != nil {
+		return []domain.Genre{}, err
+	}
+
+	return genres, nil
 
 }

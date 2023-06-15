@@ -477,3 +477,18 @@ func (cr *cartRepository) CouponValidity(coupon string, userID int) (bool, error
 
 	return true, nil
 }
+
+func (cr *cartRepository) DoesCartExist(userID int) (bool, error) {
+
+	count := 0
+	err := cr.DB.Raw("select count(*) from carts where user_id = ?", userID).Scan(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	if count < 1 {
+		return false, nil
+	}
+
+	return true, nil
+}

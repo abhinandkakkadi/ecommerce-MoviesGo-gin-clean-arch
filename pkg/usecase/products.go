@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
@@ -169,7 +170,27 @@ func (pr *productUseCase) FilterCategory(data map[string]int) ([]models.Products
 	return productByCategory, nil
 }
 
-func (cr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error) {
+func (pr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error) {
 
-	return cr.productRepo.SearchItemBasedOnPrefix(prefix)
+	productsBrief, err := pr.productRepo.SearchItemBasedOnPrefix(prefix)
+	if err != nil {
+		return []models.ProductsBrief{}, err
+	}
+
+	for i := range productsBrief {
+		fmt.Println("the code reached here")
+		p := &productsBrief[i]
+		if p.Quantity == 0 {
+			p.ProductStatus = "out of stock"
+		} else {
+			p.ProductStatus = "in stock"
+		}
+	}
+
+	return productsBrief, nil
+}
+
+func (pr *productUseCase) GetGenres() ([]domain.Genre, error) {
+
+	return pr.productRepo.GetGenres()
 }

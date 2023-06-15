@@ -20,8 +20,9 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 		product.GET("", productHandler.ShowAllProducts)
 		product.GET("/page/:page", productHandler.ShowAllProducts)
 		product.GET("/:id", productHandler.ShowIndividualProducts)
-		router.POST("/filter", productHandler.FilterCategory)
-		router.POST("/search", productHandler.SearchProduct)
+		product.POST("/filter", productHandler.FilterCategory)
+		product.POST("/search", productHandler.SearchProduct)
+		product.GET("/genres", productHandler.GetGenresToUser)
 	}
 
 	router.Use(middleware.AuthMiddleware())
@@ -71,7 +72,8 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 
 		coupon := router.Group("/coupon")
 		{
-			coupon.POST("/add", cartHandler.AddCoupon)
+			coupon.POST("/apply", cartHandler.ApplyCoupon)
+
 		}
 
 		router.GET("/referral/apply", userHandler.ApplyReferral)

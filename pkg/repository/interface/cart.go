@@ -12,4 +12,5 @@ type CartRepository interface {
 	CheckProduct(product_id int) (bool, string, error)
 	ProductExist(product_id int, userID int) (bool, error)
 	CouponValidity(coupon string, userID int) (bool, error)
+	DoesCartExist(userID int) (bool, error)
 }

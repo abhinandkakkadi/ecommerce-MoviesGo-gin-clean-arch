@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
 
@@ -13,4 +14,5 @@ type ProductUseCase interface {
 	UpdateProduct(productID int, quantity int) error
 	FilterCategory(data map[string]int) ([]models.ProductsBrief, error)
 	SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error)
+	GetGenres() ([]domain.Genre, error)
 }

@@ -151,7 +151,7 @@ func (cr *CartHandler) EmptyCart(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /coupon/add [post]
-func (cr *CartHandler) AddCoupon(c *gin.Context) {
+func (cr *CartHandler) ApplyCoupon(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
 	var couponDetails models.CouponAddUser
@@ -162,7 +162,7 @@ func (cr *CartHandler) AddCoupon(c *gin.Context) {
 		return
 	}
 
-	err := cr.cartUseCase.AddCoupon(couponDetails.CouponName, userID.(int))
+	err := cr.cartUseCase.ApplyCoupon(couponDetails.CouponName, userID.(int))
 	if err != nil {
 		if err != nil {
 			errorRes := response.ClientResponse(http.StatusInternalServerError, "coupon could not be added", nil, err.Error())
