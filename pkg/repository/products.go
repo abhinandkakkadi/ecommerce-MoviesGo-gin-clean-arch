@@ -25,7 +25,7 @@ func (p *productDatabase) ShowAllProducts(page int, count int) ([]models.Product
 	offset := (page - 1) * count
 	var productsBrief []models.ProductsBrief
 	err := p.DB.Raw(`
-		SELECT products.id, products.movie_name,products.sku,genres.genre_name AS genre, products.language AS movie_language,products.price,products.quantity
+		SELECT products.id, products.movie_name,products.sku,genres.genre_name AS genre, products.language,products.price,products.quantity
 		FROM products
 		JOIN genres ON products.genre_id = genres.id
 		 limit ? offset ?

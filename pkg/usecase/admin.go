@@ -68,7 +68,7 @@ func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.Tok
 }
 
 // signup handler for the admin
-func (ad *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdmin, error) {
+func (ad *adminUseCase) CreateAdmin(admin models.AdminSignUp) (domain.TokenAdmin, error) {
 
 	// validator package to check the constraints specified in the struct which is used to retrieve these details
 	if err := validator.New().Struct(admin); err != nil {
@@ -87,7 +87,7 @@ func (ad *adminUseCase) SignUpHandler(admin models.AdminSignUp) (domain.TokenAdm
 	}
 	admin.Password = string(hashedPassword)
 
-	adminDetails, err := ad.adminRepository.SignUpHandler(admin)
+	adminDetails, err := ad.adminRepository.CreateAdmin(admin)
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
@@ -123,100 +123,9 @@ func (ad *adminUseCase) GetUsers(page int, count int) ([]models.UserDetailsAtAdm
 
 }
 
-// business logic to get all the category
-// func (ad *adminUseCase) GetFullCategory() (domain.CategoryResponse, error) {
-
-// 	genres, err := ad.adminRepository.GetGenres()
-// 	if err != nil {
-// 		return domain.CategoryResponse{}, err
-// 	}
-
-// 	directors, err := ad.adminRepository.GetDirectors()
-// 	if err != nil {
-// 		return domain.CategoryResponse{}, err
-// 	}
-
-// 	formats, err := ad.adminRepository.GetMovieFormat()
-// 	if err != nil {
-// 		return domain.CategoryResponse{}, err
-// 	}
-
-// 	languages, err := ad.adminRepository.GetMovieLanguages()
-// 	if err != nil {
-// 		return domain.CategoryResponse{}, err
-// 	}
-
-// 	return domain.CategoryResponse{
-// 		Genre:          genres,
-// 		Directors:      directors,
-// 		Movie_Format:   formats,
-// 		Movie_Language: languages,
-// 	}, nil
-
-// }
-
-// add new category
-// func (ad *adminUseCase) AddCategory(category models.CategoryUpdate) (domain.CategoryManagement, error) {
-
-// 	var (
-// 		genre    domain.Genre
-// 		director domain.Directors
-// 		format   domain.Movie_Format
-// 		language domain.Movie_Language
-// 		err      error
-// 	)
-// 	var count int
-// 	// to check if a category with same name exists in the database
-// 	categoryCount, err := ad.adminRepository.CategoryCount(category)
-// 	if err != nil {
-// 		return domain.CategoryManagement{}, nil
-// 	}
-
-// 	if category.Genre != "" && categoryCount.GenreCount == 0 {
-// 		count++
-// 		genre, err = ad.adminRepository.AddGenre(category.Genre)
-// 		if err != nil {
-// 			return domain.CategoryManagement{}, err
-// 		}
-// 	}
-
-// 	if category.Director != "" && categoryCount.DirectorCount == 0 {
-// 		count++
-// 		director, err = ad.adminRepository.AddDirector(category.Director)
-// 		if err != nil {
-// 			return domain.CategoryManagement{}, err
-// 		}
-// 	}
-
-// 	if category.Format != "" && categoryCount.FormatCount == 0 {
-// 		count++
-// 		format, err = ad.adminRepository.AddFormat(category.Format)
-// 		if err != nil {
-// 			return domain.CategoryManagement{}, err
-// 		}
-// 	}
-
-// 	if category.Language != "" && categoryCount.LanguageCount == 0 {
-// 		count++
-// 		language, err = ad.adminRepository.AddLanguage(category.Language)
-// 		if err != nil {
-// 			return domain.CategoryManagement{}, err
-// 		}
-// 	}
-
-// 	// if count = 0 that means no category was added
-// 	if count == 0 {
-// 		return domain.CategoryManagement{}, errors.New("no new category added")
-// 	}
-
-// 	return domain.CategoryManagement{
-// 		Genre:    genre,
-// 		Director: director,
-// 		Format:   format,
-// 		Language: language,
-// 	}, nil
-
-// }
+func (ad *adminUseCase) AddGenres(genre models.CategoryUpdate) error {
+	return ad.adminRepository.AddGenre(genre)
+}
 
 func (ad *adminUseCase) Delete(genre_id string) error {
 
@@ -226,6 +135,11 @@ func (ad *adminUseCase) Delete(genre_id string) error {
 	}
 	return nil
 
+}
+
+func (ad *adminUseCase) GetGenres() ([]domain.Genre, error) {
+
+	return ad.adminRepository.GetGenres()
 }
 
 // block user

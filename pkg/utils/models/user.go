@@ -33,7 +33,7 @@ type UserDetailsAtAdmin struct {
 // show in users profile / also used to update user details
 type UsersProfileDetails struct {
 	Name         string `json:"name"`
-	Email        string `json:"email" validate:"email"`
+	Email        string `json:"email"`
 	Phone        string `json:"phone"`
 	ReferralCode string `json:"referral_code"`
 }

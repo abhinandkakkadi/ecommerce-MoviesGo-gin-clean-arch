@@ -62,6 +62,7 @@ func (o *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param id path string true "page number"
+// @Param count query string true "User Name"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /users/orders/{id} [get]
@@ -209,6 +210,16 @@ func (o *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Order Delivered
+// @Description Order successfully delivered to user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "Order ID"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /users/delivered/{id} [get]
 func (o *OrderHandler) OrderDelivered(c *gin.Context) {
 
 	orderID := c.Param("order_id")
@@ -225,6 +236,16 @@ func (o *OrderHandler) OrderDelivered(c *gin.Context) {
 
 }
 
+// @Summary Return Order
+// @Description Return delivered Order
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "Order ID"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /users/return/{id} [get]
 func (o *OrderHandler) ReturnOrder(c *gin.Context) {
 
 	orderID := c.Param("order_id")
@@ -236,11 +257,21 @@ func (o *OrderHandler) ReturnOrder(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "successfully delivered the returned", nil, nil)
+	successRes := response.ClientResponse(http.StatusOK, "successfully returned", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
 
+// @Summary Return Order
+// @Description Return delivered Order
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "Order ID"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/refund-order/{id} [get]
 func (o *OrderHandler) RefundUser(c *gin.Context) {
 
 	orderID := c.Param("order_id")

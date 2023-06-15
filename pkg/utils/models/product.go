@@ -42,10 +42,7 @@ type ProductsBrief struct {
 }
 
 type CategoryUpdate struct {
-	Genre    string `json:"genre"`
-	Director string `json:"director"`
-	Format   string `json:"format"`
-	Language string `json:"language"`
+	Genre string `json:"genre"`
 }
 
 type CategoryUpdateCheck struct {

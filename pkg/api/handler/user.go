@@ -410,6 +410,15 @@ func (u *UserHandler) RemoveFromWishList(c *gin.Context) {
 
 }
 
+// @Summary Apply referrals
+// @Description Apply referrals amount to order
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /referral/apply [get]
 func (u *UserHandler) ApplyReferral(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")

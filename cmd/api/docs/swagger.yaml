@@ -52,15 +52,22 @@ definitions:
       password:
         type: string
     type: object
+  models.CategoryOfferReceiver:
+    properties:
+      discount_percentage:
+        type: integer
+      genre_id:
+        type: integer
+      offer_description:
+        type: string
+      offer_limit:
+        type: integer
+      offer_name:
+        type: string
+    type: object
   models.CategoryUpdate:
     properties:
-      director:
-        type: string
-      format:
-        type: string
       genre:
-        type: string
-      language:
         type: string
     type: object
   models.CouponAddUser:
@@ -80,6 +87,19 @@ definitions:
       address_id:
         type: integer
       payment_id:
+        type: integer
+    type: object
+  models.ProductOfferReceiver:
+    properties:
+      discount_percentage:
+        type: integer
+      offer_description:
+        type: string
+      offer_limit:
+        type: integer
+      offer_name:
+        type: string
+      product_id:
         type: integer
     type: object
   models.SearchItems:
@@ -114,6 +134,8 @@ definitions:
       password:
         type: string
       phone:
+        type: string
+      referral_code:
         type: string
     type: object
   models.UserLogin:
@@ -258,82 +280,6 @@ paths:
       summary: Admin Signup
       tags:
       - Admin
-  /admin/coupon:
-    get:
-      consumes:
-      - application/json
-      description: Get Available coupon details for admin
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: Get coupon details
-      tags:
-      - Coupon
-  /admin/coupon/addcoupon:
-    post:
-      consumes:
-      - application/json
-      description: Add A new Coupon which can be used by the users
-      parameters:
-      - description: Add new Coupon
-        in: body
-        name: coupon
-        required: true
-        schema:
-          $ref: '#/definitions/models.AddCoupon'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: Add  a new coupon by Admin
-      tags:
-      - Coupon
-  /admin/coupon/expire/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Get Available coupon details for admin
-      parameters:
-      - description: Coupon id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: Get coupon details
-      tags:
-      - Coupon
   /admin/genres:
     get:
       consumes:
@@ -359,7 +305,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Add Category for existing films
+      description: Add Genres for existing films
       parameters:
       - description: Update Category
         in: body
@@ -380,7 +326,7 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Add Category
+      summary: Add Genres
       tags:
       - Admin
   /admin/genres/delete_genre/{id}:
@@ -410,6 +356,138 @@ paths:
       summary: Delete Category
       tags:
       - Admin
+  /admin/offer/category-offer:
+    post:
+      consumes:
+      - application/json
+      description: Add a new Offer for a Category
+      parameters:
+      - description: Add new Category Offer
+        in: body
+        name: coupon
+        required: true
+        schema:
+          $ref: '#/definitions/models.CategoryOfferReceiver'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add  Category Offer
+      tags:
+      - Coupon
+  /admin/offer/coupons:
+    get:
+      consumes:
+      - application/json
+      description: Get Available coupon details for admin
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get coupon details
+      tags:
+      - Coupon
+  /admin/offer/coupons/addcoupon:
+    post:
+      consumes:
+      - application/json
+      description: Add A new Coupon which can be used by the users
+      parameters:
+      - description: Add new Coupon
+        in: body
+        name: coupon
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddCoupon'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add  a new coupon by Admin
+      tags:
+      - Coupon
+  /admin/offer/coupons/expire/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Expire Coupon by admin
+      parameters:
+      - description: Coupon id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Expire Coupon
+      tags:
+      - Coupon
+  /admin/offer/product-offer:
+    post:
+      consumes:
+      - application/json
+      description: Add a new Offer for a product
+      parameters:
+      - description: Add new Product Offer
+        in: body
+        name: coupon
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductOfferReceiver'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add  Product Offer
+      tags:
+      - Coupon
   /admin/orders/{id}:
     get:
       consumes:
@@ -573,6 +651,33 @@ paths:
       summary: Update Products
       tags:
       - Admin
+  /admin/refund-order/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Return delivered Order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Return Order
+      tags:
+      - Admin
   /admin/users/{page}:
     get:
       consumes:
@@ -598,6 +703,34 @@ paths:
       security:
       - Bearer: []
       summary: Get Users
+      tags:
+      - Admin
+  /admin/users/add-users:
+    post:
+      consumes:
+      - application/json
+      description: Add a new user from admin side
+      parameters:
+      - description: Add a new user
+        in: body
+        name: userDetails
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserDetails'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Create User
       tags:
       - Admin
   /admin/users/block-users/{id}:
@@ -798,34 +931,6 @@ paths:
       summary: Add coupon to out order
       tags:
       - Cart
-  /filter:
-    post:
-      consumes:
-      - application/json
-      description: Show Products of specified category
-      parameters:
-      - description: Category IDs and quantities
-        in: body
-        name: data
-        required: true
-        schema:
-          additionalProperties:
-            type: integer
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Show Products of specified category
-      tags:
-      - Users
   /login:
     post:
       consumes:
@@ -905,6 +1010,34 @@ paths:
       summary: Get Full Product Details
       tags:
       - Users
+  /products/filter:
+    post:
+      consumes:
+      - application/json
+      description: Show Products of specified category
+      parameters:
+      - description: Category IDs and quantities
+        in: body
+        name: data
+        required: true
+        schema:
+          additionalProperties:
+            type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Show Products of specified category
+      tags:
+      - Users
   /products/page/{page}:
     get:
       consumes:
@@ -930,7 +1063,7 @@ paths:
       summary: Get Products to users
       tags:
       - Users
-  /search:
+  /products/search:
     post:
       consumes:
       - application/json
@@ -954,6 +1087,27 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Show Products of specified category
+      tags:
+      - Users
+  /referral/apply:
+    get:
+      consumes:
+      - application/json
+      description: Apply referrals amount to order
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Apply referrals
       tags:
       - Users
   /send-otp:
@@ -1077,6 +1231,33 @@ paths:
       summary: Cancel order
       tags:
       - Order
+  /users/delivered/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Order successfully delivered to user
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Order Delivered
+      tags:
+      - Users
   /users/orders/{id}:
     get:
       consumes:
@@ -1104,6 +1285,33 @@ paths:
       summary: Get Order Details to user side
       tags:
       - Order
+  /users/return/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Return delivered Order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Return Order
+      tags:
+      - Users
   /users/update-password:
     post:
       consumes:

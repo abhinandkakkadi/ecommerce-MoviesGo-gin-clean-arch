@@ -27,6 +27,7 @@ func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
 // @Accept json
 // @Produce json
 // @Param page path string true "Page number"
+// @Param count query string true "User Name"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /products/page/{page} [get]
@@ -66,6 +67,7 @@ func (pr *ProductHandler) ShowAllProducts(c *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param page path string true "Page number"
+// @Param count query string true "User Name"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/products [get]
@@ -76,7 +78,7 @@ func (pr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 	count, _ := strconv.Atoi(c.Query("count"))
 
-	products, err := pr.productUseCase.ShowAllProducts(page, count)
+	products, err := pr.productUseCase.ShowAllProductsToAdmin(page, count)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)

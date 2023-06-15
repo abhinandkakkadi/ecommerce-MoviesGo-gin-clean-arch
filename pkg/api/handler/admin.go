@@ -63,7 +63,7 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/adminsignup [post]
-func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
+func (cr *AdminHandler) CreateAdmin(c *gin.Context) {
 
 	var admin models.AdminSignUp
 	if err := c.BindJSON(&admin); err != nil {
@@ -71,7 +71,7 @@ func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 	}
 
-	adminDetails, err := cr.adminUseCase.SignUpHandler(admin)
+	adminDetails, err := cr.adminUseCase.CreateAdmin(admin)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusInternalServerError, "cannot authenticate user", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -90,6 +90,7 @@ func (cr *AdminHandler) SignUpHandler(c *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param page path string true "Page number"
+// @Param count query string true "User Name"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/users/{page} [get]
@@ -130,20 +131,20 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/genres [get]
-// func (ad *AdminHandler) GetGenres(c *gin.Context) {
+func (ad *AdminHandler) GetGenres(c *gin.Context) {
 
-// 	genres, err := ad.adminUseCase.GetFullCategory()
-// 	if err != nil {
-// 		errorRes := response.ClientResponse(http.StatusInternalServerError, "fields provided are in wrong format", nil, err.Error())
-// 		c.JSON(http.StatusInternalServerError, errorRes)
-// 		return
-// 	}
-// 	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the genres", genres, nil)
-// 	c.JSON(http.StatusOK, successRes)
-// }
+	genres, err := ad.adminUseCase.GetGenres()
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the genres", genres, nil)
+	c.JSON(http.StatusOK, successRes)
+}
 
-// @Summary Add Category
-// @Description Add Category for existing films
+// @Summary Add Genres
+// @Description Add Genres for existing films
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -152,25 +153,25 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/genres/add_genre [POST]
-// func (ad *AdminHandler) AddCategory(c *gin.Context) {
+func (ad *AdminHandler) AddGenres(c *gin.Context) {
 
-// 	var category models.CategoryUpdate
-// 	if err := c.BindJSON(&category); err != nil {
-// 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
-// 		c.JSON(http.StatusBadRequest, errorRes)
-// 		return
-// 	}
+	var category models.CategoryUpdate
+	if err := c.BindJSON(&category); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
 
-// 	addedCategory, err := ad.adminUseCase.AddCategory(category)
-// 	if err != nil {
-// 		errorRes := response.ClientResponse(http.StatusInternalServerError, "The category could not be added", nil, err.Error())
-// 		c.JSON(http.StatusInternalServerError, errorRes)
-// 		return
-// 	}
-// 	successRes := response.ClientResponse(http.StatusCreated, "Successfully added the record", addedCategory, nil)
-// 	c.JSON(http.StatusCreated, successRes)
+	err := ad.adminUseCase.AddGenres(category)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "The category could not be added", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusCreated, "Successfully added the genre", nil, nil)
+	c.JSON(http.StatusCreated, successRes)
 
-// }
+}
 
 // @Summary Delete Category
 // @Description Delete Category for existing films and films long with it
@@ -246,7 +247,16 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
-// check this before doing ny operations on this.
+// @Summary Create User
+// @Description Add a new user from admin side
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param  userDetails body models.UserDetails true "Add a new user"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/users/add-users [POST]
 func (ad *UserHandler) AddNewUsers(c *gin.Context) {
 	fmt.Println("add users")
 	var userDetails models.UserDetails

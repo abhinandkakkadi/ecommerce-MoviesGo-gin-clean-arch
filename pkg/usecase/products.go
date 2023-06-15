@@ -54,6 +54,27 @@ func (pr *productUseCase) ShowAllProducts(page int, count int) ([]models.Product
 
 }
 
+func (pr *productUseCase) ShowAllProductsToAdmin(page int, count int) ([]models.ProductsBrief, error) {
+
+	productsBrief, err := pr.productRepo.ShowAllProducts(page, count)
+	if err != nil {
+		return []models.ProductsBrief{}, err
+	}
+	fmt.Println(productsBrief)
+	// here memory address of each item in productBrief is taken so that a copy of each instance is not made while updating
+	for i := range productsBrief {
+		fmt.Println("the code reached here")
+		p := &productsBrief[i]
+		if p.Quantity == 0 {
+			p.ProductStatus = "out of stock"
+		} else {
+			p.ProductStatus = "in stock"
+		}
+	}
+
+	return productsBrief, nil
+}
+
 func (pr *productUseCase) ShowIndividualProducts(id string) (models.ProductOfferLongResponse, error) {
 
 	product, err := pr.productRepo.ShowIndividualProducts(id)

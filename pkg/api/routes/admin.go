@@ -8,17 +8,17 @@ import (
 
 func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, productHandler *handler.ProductHandler, orderHandler *handler.OrderHandler, userHandler *handler.UserHandler, couponHandler *handler.CouponHandler) {
 
-	router.POST("/adminsignup", adminHandler.SignUpHandler)
 	router.POST("/adminlogin", adminHandler.LoginHandler)
 	// api := router.Group("/admin_panel", middleware.AuthorizationMiddleware)
 	// api.GET("users", adminHandler.GetUsers)
 
 	router.Use(middleware.AuthorizationMiddleware)
 	{
+		router.POST("/createadmin", adminHandler.CreateAdmin)
 		genres := router.Group("/genres")
 		{
-			// genres.GET("", adminHandler.GetGenres) // change this to get category
-			// genres.POST("/add_genre", adminHandler.AddCategory)
+			genres.GET("", adminHandler.GetGenres) // change this to get category
+			genres.POST("/add_genre", adminHandler.AddGenres)
 			genres.GET("/delete_genre/:id", adminHandler.DeleteGenre)
 		}
 

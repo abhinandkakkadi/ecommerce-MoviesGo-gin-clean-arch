@@ -30,7 +30,7 @@ func NewCouponHandler(useCase services.CouponUseCase) *CouponHandler {
 // @Param coupon body models.AddCoupon true "Add new Coupon"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/coupon/addcoupon [post]
+// @Router /admin/offer/coupons/addcoupon [post]
 func (co *CouponHandler) AddCoupon(c *gin.Context) {
 
 	var coupon models.AddCoupon
@@ -60,7 +60,7 @@ func (co *CouponHandler) AddCoupon(c *gin.Context) {
 // @Security Bearer
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/coupon [get]
+// @Router /admin/offer/coupons [get]
 func (co *CouponHandler) GetCoupon(c *gin.Context) {
 
 	coupons, err := co.couponUseCase.GetCoupon()
@@ -75,8 +75,8 @@ func (co *CouponHandler) GetCoupon(c *gin.Context) {
 
 }
 
-// @Summary Get coupon details
-// @Description Get Available coupon details for admin
+// @Summary Expire Coupon
+// @Description Expire Coupon by admin
 // @Tags Coupon
 // @Accept json
 // @Produce json
@@ -84,7 +84,7 @@ func (co *CouponHandler) GetCoupon(c *gin.Context) {
 // @Param id path string true "Coupon id"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/coupon/expire/{id} [get]
+// @Router /admin/offer/coupons/expire/{id} [get]
 func (co *CouponHandler) ExpireCoupon(c *gin.Context) {
 
 	id := c.Param("id")
@@ -107,6 +107,16 @@ func (co *CouponHandler) ExpireCoupon(c *gin.Context) {
 
 }
 
+// @Summary Add  Product Offer
+// @Description Add a new Offer for a product
+// @Tags Coupon
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param coupon body models.ProductOfferReceiver true "Add new Product Offer"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/offer/product-offer [post]
 func (co *CouponHandler) AddProdcutOffer(c *gin.Context) {
 
 	var productOffer models.ProductOfferReceiver
@@ -128,6 +138,16 @@ func (co *CouponHandler) AddProdcutOffer(c *gin.Context) {
 
 }
 
+// @Summary Add  Category Offer
+// @Description Add a new Offer for a Category
+// @Tags Coupon
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param coupon body models.CategoryOfferReceiver true "Add new Category Offer"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/offer/category-offer [post]
 func (co *CouponHandler) AddCategoryOffer(c *gin.Context) {
 
 	var categoryOffer models.CategoryOfferReceiver
