@@ -15,13 +15,15 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "securityDefinitions": {
-        "Bearer": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
-        }
-    },
+
+"securityDefinitions": {
+    "Bearer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+    }
+},
+
     "paths": {
         "/address": {
             "post": {
@@ -688,6 +690,13 @@ const docTemplate = `{
                         "name": "page",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Name",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -992,6 +1001,13 @@ const docTemplate = `{
                         "description": "Page number",
                         "name": "page",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Name",
+                        "name": "count",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1370,6 +1386,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/products/genres": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Display genre details on the user side",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get genre to user side",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/products/page/{page}": {
             "get": {
                 "description": "Retrieve products with pagination",
@@ -1389,6 +1439,13 @@ const docTemplate = `{
                         "description": "Page number",
                         "name": "page",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Name",
+                        "name": "count",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1778,6 +1835,13 @@ const docTemplate = `{
                         "description": "page number",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Name",
+                        "name": "count",
+                        "in": "query",
                         "required": true
                     }
                 ],

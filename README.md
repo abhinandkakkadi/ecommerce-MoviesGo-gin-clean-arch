@@ -1,10 +1,72 @@
+
 # MoviesGo E-Commerce App in Golang with Gin framework
 
-## Template Structure
+This is an E-commerce web API which is built using Go programming language and gin as fraemwork. I have followed clean architecture design pattern to build this project in order to implements decoupling and seperation of concerns.
 
-- [Gin](github.com/gin-gonic/gin) is a web framework written in Go (Golang). It features a martini-like API with performance that is up to 40 times faster thanks to httprouter. If you need performance and good productivity, you will love Gin.
-- [JWT](github.com/golang-jwt/jwt) A go (or 'golang' for search engine friendliness) implementation of JSON Web Tokens.
-- [GORM](https://gorm.io/index.html) with [PostgresSQL](https://gorm.io/docs/connecting_to_the_database.html#PostgreSQL)The fantastic ORM library for Golang aims to be developer friendly.
-- [Wire](https://github.com/google/wire) is a code generation tool that automates connecting components using dependency injection.
-- [Viper](https://github.com/spf13/viper) is a complete configuration solution for Go applications including 12-Factor apps. It is designed to work within an application, and can handle all types of configuration needs and formats.
-- [swag](https://github.com/swaggo/swag) converts Go annotations to Swagger Documentation 2.0 with [gin-swagger](https://github.com/swaggo/gin-swagger) and [swaggo files](github.com/swaggo/files)
+
+
+
+
+
+## Project Overview
+
+It's an E commerce website which sell Movie CD of different genres and formats( 4k, BLURAY ). It have all basic functionalites of an E-commerce website along with some advanced features like multiple offer management. 
+
+
+## Tech Stack
+
+**Server:** Go, Gin
+
+
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone git@github.com:abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch.git
+```
+
+Go to the project directory
+
+```bash
+  cd ecommerce-MoviesGo-gin-clean-arch
+```
+
+Install dependencies
+
+```bash
+  make deps
+  
+  go mod tidy
+```
+
+Start the server
+
+```bash
+  make run
+```
+
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`DB_HOST`=`your database host name`
+
+`DB_NAME`=`your database name`
+
+`DB_USER`=`your database username`
+
+`DB_PORT`=`your database port number`
+
+`DB_PASSWORD`=`your database owner password`
+
+`DB_AUTHTOKEN`=`Twilio Authentication token`
+
+`DB_ACCOUNTSID`=`Twilio account SID`
+
+`DB_SERVICESID`=`Twilio message service SID`
+## 🔗 Reach Me
+
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/abhinand-k-r-300036129/)
+

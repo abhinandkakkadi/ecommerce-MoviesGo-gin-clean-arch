@@ -669,6 +669,13 @@
                         "name": "page",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Name",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -973,6 +980,13 @@
                         "description": "Page number",
                         "name": "page",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Name",
+                        "name": "count",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1351,6 +1365,40 @@
                 }
             }
         },
+        "/products/genres": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Display genre details on the user side",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get genre to user side",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/products/page/{page}": {
             "get": {
                 "description": "Retrieve products with pagination",
@@ -1370,6 +1418,13 @@
                         "description": "Page number",
                         "name": "page",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Name",
+                        "name": "count",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1759,6 +1814,13 @@
                         "description": "page number",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Name",
+                        "name": "count",
+                        "in": "query",
                         "required": true
                     }
                 ],

@@ -580,6 +580,11 @@ paths:
         name: page
         required: true
         type: string
+      - description: User Name
+        in: query
+        name: count
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -687,6 +692,11 @@ paths:
       - description: Page number
         in: path
         name: page
+        required: true
+        type: string
+      - description: User Name
+        in: query
+        name: count
         required: true
         type: string
       produces:
@@ -1038,6 +1048,27 @@ paths:
       summary: Show Products of specified category
       tags:
       - Users
+  /products/genres:
+    get:
+      consumes:
+      - application/json
+      description: Display genre details on the user side
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get genre to user side
+      tags:
+      - Users
   /products/page/{page}:
     get:
       consumes:
@@ -1047,6 +1078,11 @@ paths:
       - description: Page number
         in: path
         name: page
+        required: true
+        type: string
+      - description: User Name
+        in: query
+        name: count
         required: true
         type: string
       produces:
@@ -1267,6 +1303,11 @@ paths:
       - description: page number
         in: path
         name: id
+        required: true
+        type: string
+      - description: User Name
+        in: query
+        name: count
         required: true
         type: string
       produces:

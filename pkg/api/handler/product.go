@@ -258,7 +258,6 @@ func (pr *ProductHandler) SearchProduct(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Security Bearer
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /products/genres [get]
