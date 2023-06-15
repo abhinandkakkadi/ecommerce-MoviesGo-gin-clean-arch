@@ -200,8 +200,9 @@ func (o *orderRepository) CancelOrder(orderID string) (string, error) {
 		return "Item already delivered, cannot cancel", nil
 	}
 
-	if shipmentStatus == "pending" {
-		return "", errors.New("the order is in pending state , so no point in cancelling")
+	if shipmentStatus == "pending" || shipmentStatus == "returned" || shipmentStatus == "return" {
+		message := fmt.Sprint(shipmentStatus)
+		return "", errors.New("the order is in" + message + ", so no point in cancelling")
 	}
 
 	if shipmentStatus == "cancelled" {

@@ -114,13 +114,18 @@ func (o *orderUseCase) CancelOrderFromAdminSide(orderID string) (string, error) 
 		return "", err
 	}
 
-	// update the quantity to products since th order is cancelled
+	message, err := o.orderRepository.CancelOrder(orderID)
+	if err != nil {
+		return "", err
+	}
+
+	// update the quantity to products since the order is cancelled
 	err = o.orderRepository.UpdateQuantityOfProduct(orderProducts)
 	if err != nil {
 		return "", err
 	}
 
-	return o.orderRepository.CancelOrder(orderID)
+	return message, nil
 
 }
 
