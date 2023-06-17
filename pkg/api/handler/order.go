@@ -22,7 +22,7 @@ func NewOrderHandler(useCase services.OrderUseCase) *OrderHandler {
 }
 
 // @Summary Order Items from cart
-// @Description Order all products inside the cart
+// @Description Order all products which is currently present inside  the cart
 // @Tags Order
 // @Accept json
 // @Produce json
@@ -56,7 +56,7 @@ func (o *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 }
 
 // @Summary Get Order Details to user side
-// @Description Order all order details done by user
+// @Description Get all order details done by user to user side
 // @Tags Order
 // @Accept json
 // @Produce json
@@ -160,7 +160,7 @@ func (o *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 }
 
 // @Summary Approve Order
-// @Description Approve Order from admin side
+// @Description Approve Order from admin side which is in processing state
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -211,7 +211,7 @@ func (o *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 }
 
 // @Summary Order Delivered
-// @Description Order successfully delivered to user
+// @Description Order successfully delivered to user which should be confirmed by user
 // @Tags Users
 // @Accept json
 // @Produce json
@@ -237,7 +237,7 @@ func (o *OrderHandler) OrderDelivered(c *gin.Context) {
 }
 
 // @Summary Return Order
-// @Description Return delivered Order
+// @Description Return delivered Order by the user by specifying the OrderID
 // @Tags Users
 // @Accept json
 // @Produce json
@@ -262,8 +262,8 @@ func (o *OrderHandler) ReturnOrder(c *gin.Context) {
 
 }
 
-// @Summary Return Order
-// @Description Return delivered Order
+// @Summary Refund Order
+// @Description Refund an offer by admin 
 // @Tags Admin
 // @Accept json
 // @Produce json

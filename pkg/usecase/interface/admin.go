@@ -15,4 +15,7 @@ type AdminUseCase interface {
 	Delete(genre_id string) error
 	BlockUser(id string) error
 	UnBlockUser(id string) error
+
+	// OverView() error
+	FilteredSalesReport(timePeriod string) (models.SalesReport,error)
 }

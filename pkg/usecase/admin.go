@@ -187,3 +187,21 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 	return nil
 
 }
+
+
+// func (ad *adminUseCase) OverView() error {
+
+// 	todayOrder,err := ad.adminRepository.TodayOrder()
+// }
+
+func (ad *adminUseCase) FilteredSalesReport(timePeriod string) (models.SalesReport,error) {
+
+	startTime,endTime := helper.GetTimeFromPeriod(timePeriod)
+	
+	salesReport,err := ad.adminRepository.FilteredSalesReport(startTime,endTime)
+	if err != nil {
+		return models.SalesReport{},err
+	}
+
+	return salesReport,nil
+}

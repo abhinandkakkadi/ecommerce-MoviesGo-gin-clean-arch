@@ -338,3 +338,24 @@ func (u *userUseCase) ApplyReferral(userID int) (string, error) {
 	return u.userRepo.ApplyReferral(userID)
 
 }
+
+func (u *userUseCase) ResetPassword(userID int,pass models.ResetPassword) error {
+
+	if pass.Password != pass.CPassword {
+		return errors.New("password does not match")
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass.Password), 10)
+	if err != nil {
+		return errors.New("internal server error")
+	}
+
+
+	err = u.userRepo.ResetPassword(userID,string(hashedPassword))
+	if err != nil {
+		return err
+	}
+
+	return nil
+	
+}

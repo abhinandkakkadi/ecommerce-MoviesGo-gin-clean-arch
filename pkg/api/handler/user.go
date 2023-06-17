@@ -439,3 +439,27 @@ func (u *UserHandler) ApplyReferral(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 
 }
+
+
+func (u *UserHandler) ResetPassword(c *gin.Context) {
+
+	userID, _ := c.Get("user_id")
+
+	var pass models.ResetPassword
+	fmt.Println(pass)
+	if err := c.BindJSON(&pass); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	err := u.userUseCase.ResetPassword(userID.(int),pass)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusOK, "could not update the user", nil, err.Error())
+		c.JSON(http.StatusOK, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully updated the password", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}

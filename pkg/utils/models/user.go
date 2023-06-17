@@ -92,3 +92,8 @@ type UpdatePassword struct {
 	NewPassword        string `json:"newpassword"`
 	ConfirmNewPassword string `json:"confirm-newpassword"`
 }
+
+type ResetPassword struct {
+	Password string `json:"password" validate:"required"`
+	CPassword string `json:"cpassword" validate:"required"`
+}

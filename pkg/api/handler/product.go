@@ -21,8 +21,8 @@ func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
 	}
 }
 
-// @Summary Get Products to users
-// @Description Retrieve products with pagination
+// @Summary Get Products Details to users
+// @Description Retrieve all product Details with pagination to users
 // @Tags Users
 // @Accept json
 // @Produce json
@@ -60,8 +60,8 @@ func (pr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 }
 
-// @Summary Get Products To Admin
-// @Description Retrieve products with pagination to Admin side
+// @Summary Get Product Details To Admin
+// @Description Retrieve product Details with pagination to Admin side
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -90,8 +90,8 @@ func (pr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 }
 
-// @Summary Get Full Product Details
-// @Description Retrieve Complete products details at user side
+// @Summary Get Individual Product Details
+// @Description Get Individual Detailed product details to user side
 // @Tags Users
 // @Accept json
 // @Produce json
@@ -136,8 +136,8 @@ func (pr *ProductHandler) AddProduct(c *gin.Context) {
 
 }
 
-// @Summary Add Products
-// @Description Add a new product from the admin side
+// @Summary Delete product
+// @Description Delete a product from the admin side
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -161,7 +161,7 @@ func (pr *ProductHandler) DeleteProduct(c *gin.Context) {
 
 }
 
-// @Summary Update Products
+// @Summary Update Products quantity
 // @Description Update quantity of already existing product
 // @Tags Admin
 // @Accept json
@@ -194,7 +194,7 @@ func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 }
 
 // @Summary Show Products of specified category
-// @Description Show Products of specified category
+// @Description Show all the Products belonging to a specified category
 // @Tags Users
 // @Accept json
 // @Produce json

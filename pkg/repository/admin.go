@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
@@ -160,4 +161,54 @@ func (ad *adminRepository) UpdateBlockUserByID(user domain.Users) error {
 
 	return nil
 
+}
+
+func (ad *adminRepository) FilteredSalesReport(startTime time.Time,endTime time.Time) (models.SalesReport,error) {
+	
+	fmt.Println("start :",startTime,"end time : ",endTime)
+	var salesReport models.SalesReport
+	
+	result := ad.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status = 'paid' and approval = true and created_at >= ? and created_at <= ?",startTime,endTime).Scan(&salesReport.TotalSales)
+	if result.Error != nil {
+		return models.SalesReport{},result.Error
+	}
+	fmt.Println("total sales: ",salesReport.TotalSales)
+
+	result = ad.DB.Raw("select count(*) from orders").Scan(&salesReport.TotalOrders)
+	if result.Error != nil {
+		return models.SalesReport{},result.Error
+	}
+	fmt.Println("total orders ",salesReport.TotalOrders)
+
+	result = ad.DB.Raw("select count(*) from orders where payment_status = 'paid' and approval = true and  created_at >= ? and created_at <= ?",startTime,endTime).Scan(&salesReport.CompletedOrders)
+	if result.Error != nil {
+		return models.SalesReport{},result.Error
+	}
+
+	fmt.Println("Completed Order ",salesReport.CompletedOrders)
+
+	result = ad.DB.Raw("select count(*) from orders where shipment_status = 'processing' and approval = false and  created_at >= ? and created_at <= ?",startTime,endTime).Scan(&salesReport.PendingOrders)
+	if result.Error != nil {
+		return models.SalesReport{},result.Error
+	}
+
+	// get most popular product
+	fmt.Println("Completed Order ",salesReport.CompletedOrders)
+	var productID int
+	result = ad.DB.Raw("select product_id from order_items group by product_id order by sum(quantity) desc limit 1").Scan(&productID)
+	if result.Error != nil {
+		return models.SalesReport{},result.Error
+	}
+
+	fmt.Println(productID)
+
+	result = ad.DB.Raw("select movie_name from products where id = ?",productID).Scan(&salesReport.TrendingProduct)
+	if result.Error != nil {
+		return models.SalesReport{},result.Error
+	}
+	fmt.Println(salesReport.TrendingProduct)
+
+
+
+	return salesReport,nil
 }

@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"gorm.io/gorm"
@@ -27,6 +29,17 @@ func (ot *otpRepository) FindUserByMobileNumber(phone string) bool {
 
 }
 
+
+func (ot *otpRepository) FindUserByEmail(email string) (bool,error) {
+
+	var count int
+	if err := ot.DB.Raw("select count(*) from users where email = ?", email).Scan(&count).Error; err != nil {
+		return false,err
+	}
+
+	return count > 0,nil
+}
+
 func (ot *otpRepository) UserDetailsUsingPhone(phone string) (models.UserDetailsResponse, error) {
 
 	var usersDetails models.UserDetailsResponse
@@ -35,5 +48,16 @@ func (ot *otpRepository) UserDetailsUsingPhone(phone string) (models.UserDetails
 	}
 
 	return usersDetails, nil
+
+}
+
+func (ot *otpRepository) GetUserPhoneByEmail(email string) (string,error) {
+	fmt.Println(email)
+	var phone string
+	if err := ot.DB.Raw("select phone from users where email = ?", email).Scan(&phone).Error; err != nil {
+		return "", err
+	}
+
+	return phone,nil
 
 }

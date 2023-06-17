@@ -210,7 +210,7 @@ func (o *orderRepository) CancelOrder(orderID string) (string, error) {
 	}
 
 	shipmentStatus = "cancelled"
-	err = o.DB.Exec("update orders set shipment_status = ?  where order_id = ?", shipmentStatus, orderID).Error
+	err = o.DB.Exec("update orders set shipment_status = ? where order_id = ?", shipmentStatus, orderID).Error
 	if err != nil {
 		return "", err
 	}
@@ -222,6 +222,12 @@ func (o *orderRepository) CancelOrder(orderID string) (string, error) {
 	}
 
 	if paymentMethod == 3 || paymentMethod == 2 {
+
+		err = o.DB.Exec("update orders set payment_status = 'refunded'  where order_id = ?",orderID).Error
+		if err != nil {
+		return "", err
+		}
+
 		fmt.Println("the code reached here since this order is done by wallet")
 		type AmountDetails struct {
 			FinalPrice float64
@@ -232,10 +238,19 @@ func (o *orderRepository) CancelOrder(orderID string) (string, error) {
 		if err != nil {
 			return "", err
 		}
+		// check if a user have a uer have a wallet record if not create on
 		fmt.Println("amount details = ", amountDetails)
-		err = o.DB.Exec("update wallets set wallet_amount = wallet_amount + ? where user_id = ?", amountDetails.FinalPrice, amountDetails.UserID).Error
-		if err != nil {
+		result := o.DB.Exec("update wallets set wallet_amount = wallet_amount + ? where user_id = ?", amountDetails.FinalPrice, amountDetails.UserID)
+		if result.Error != nil {
 			return "", err
+		}
+
+		// if update didn't effect any row that means the record is not present
+		if result.RowsAffected == 0 {
+			result := o.DB.Exec("insert into wallets (user_id,wallet_amount) values(?,?)", amountDetails.UserID, amountDetails.FinalPrice)
+			if result.Error != nil {
+			return "", err
+			}
 		}
 
 	}

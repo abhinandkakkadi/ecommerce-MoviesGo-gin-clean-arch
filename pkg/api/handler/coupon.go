@@ -22,7 +22,7 @@ func NewCouponHandler(useCase services.CouponUseCase) *CouponHandler {
 }
 
 // @Summary Add  a new coupon by Admin
-// @Description Add A new Coupon which can be used by the users
+// @Description Add A new Coupon which can be used by the users from the checkout section
 // @Tags Coupon
 // @Accept json
 // @Produce json
@@ -53,7 +53,7 @@ func (co *CouponHandler) AddCoupon(c *gin.Context) {
 }
 
 // @Summary Get coupon details
-// @Description Get Available coupon details for admin
+// @Description Get Available coupon details for admin side
 // @Tags Coupon
 // @Accept json
 // @Produce json
@@ -76,7 +76,7 @@ func (co *CouponHandler) GetCoupon(c *gin.Context) {
 }
 
 // @Summary Expire Coupon
-// @Description Expire Coupon by admin
+// @Description Expire Coupon by admin which are already present by passing coupon id
 // @Tags Coupon
 // @Accept json
 // @Produce json
@@ -108,7 +108,7 @@ func (co *CouponHandler) ExpireCoupon(c *gin.Context) {
 }
 
 // @Summary Add  Product Offer
-// @Description Add a new Offer for a product
+// @Description Add a new Offer for a product by specifying a limit
 // @Tags Coupon
 // @Accept json
 // @Produce json
@@ -139,7 +139,7 @@ func (co *CouponHandler) AddProdcutOffer(c *gin.Context) {
 }
 
 // @Summary Add  Category Offer
-// @Description Add a new Offer for a Category
+// @Description Add a new Offer for a Category by specifying a limit
 // @Tags Coupon
 // @Accept json
 // @Produce json

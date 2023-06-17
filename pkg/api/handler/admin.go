@@ -83,8 +83,8 @@ func (cr *AdminHandler) CreateAdmin(c *gin.Context) {
 
 }
 
-// @Summary Get Users
-// @Description Retrieve users with pagination
+// @Summary Get Users Details To Admin
+// @Description Retrieve users with pagination to admin side
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -122,8 +122,8 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 
 }
 
-// @Summary Get genre to admin side
-// @Description Display genre details on the admin side
+// @Summary Get Genre Details to admin side
+// @Description Display Genre details on the admin side
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -143,8 +143,8 @@ func (ad *AdminHandler) GetGenres(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
-// @Summary Add Genres
-// @Description Add Genres for existing films
+// @Summary Add a new Genres ( Category )
+// @Description Add a new Genre So that movie of that genre can be added
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -173,8 +173,8 @@ func (ad *AdminHandler) AddGenres(c *gin.Context) {
 
 }
 
-// @Summary Delete Category
-// @Description Delete Category for existing films and films long with it
+// @Summary Delete Genre ( Category )
+// @Description Delete Genre for existing films and delete the films along with it
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -197,8 +197,8 @@ func (ad *AdminHandler) DeleteGenre(c *gin.Context) {
 
 }
 
-// @Summary Block an existing user
-// @Description Block user
+// @Summary Block  user
+// @Description Block an existing user using user id
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -222,8 +222,8 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 
 }
 
-// @Summary UnBlock an existing user
-// @Description UnBlock user
+// @Summary Unblock  User
+// @Description Unblock an already blocked user using user id
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -247,8 +247,8 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
-// @Summary Create User
-// @Description Add a new user from admin side
+// @Summary Create User By Admin
+// @Description Create a new user from admin side
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -285,5 +285,28 @@ func (ad *UserHandler) AddNewUsers(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusCreated, "User successfully created", userCreated, nil)
 	c.JSON(http.StatusCreated, successRes)
+
+}
+
+
+
+func (ad *AdminHandler) OverView(c *gin.Context) {
+
+	// overview, err := ad.adminUseCase.OverView()
+}
+
+
+func (ad *AdminHandler) FilteredSalesReport(c *gin.Context) {
+
+	timePeriod := c.Param("period")
+	salesReport,err := ad.adminUseCase.FilteredSalesReport(timePeriod)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "sales report could not be retrieved", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "sales report retrieved successfully", salesReport, nil)
+	c.JSON(http.StatusOK, successRes)
 
 }

@@ -15,6 +15,18 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 	router.POST("/send-otp", otpHandler.SendOTP)
 	router.POST("/verify-otp", otpHandler.VerifyOTP)
 
+	forgotPassword := router.Group("/forgot-password")
+	{
+		forgotPassword.POST("", otpHandler.SendOTPtoReset)
+		forgotPassword.POST("/verify-otp", otpHandler.VerifyOTPToReset)
+
+		forgotPassword.Use(middleware.AuthMiddlewareReset())
+		forgotPassword.PUT("/reset",userHandler.ResetPassword)
+
+
+	}
+	
+
 	product := router.Group("/products")
 	{
 		product.GET("", productHandler.ShowAllProducts)

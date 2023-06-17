@@ -31,4 +31,5 @@ type UserRepository interface {
 
 	CreateReferralEntry(users models.UserDetailsResponse, userReferral string, referralCode string) error
 	ApplyReferral(userID int) (string, error)
+	ResetPassword(userID int,password string) error
 }

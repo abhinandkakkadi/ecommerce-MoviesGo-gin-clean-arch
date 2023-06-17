@@ -14,6 +14,9 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 
 	router.Use(middleware.AuthorizationMiddleware)
 	{
+		router.GET("/overview",adminHandler.OverView)
+		router.GET("/sales-report/:period",adminHandler.FilteredSalesReport)
+
 		router.POST("/createadmin", adminHandler.CreateAdmin)
 		genres := router.Group("/genres")
 		{

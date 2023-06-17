@@ -30,3 +30,4 @@ type Wallet struct {
 	Users        Users   `json:"-" gorm:"foreignkey:UserID"`
 	WalletAmount float64 `json:"wallet_amount"`
 }
+

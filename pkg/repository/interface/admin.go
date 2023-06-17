@@ -1,6 +1,8 @@
 package interfaces
 
 import (
+	"time"
+
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
@@ -21,5 +23,7 @@ type AdminRepository interface {
 	Delete(genre_id string) error
 	GetUserByID(id string) (domain.Users, error)
 	UpdateBlockUserByID(user domain.Users) error
+
+	FilteredSalesReport(startTime time.Time,endTime time.Time) (models.SalesReport,error)
 	// CategoryCount(category models.CategoryUpdate) (models.CategoryUpdateCheck, error)
 }
