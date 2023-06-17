@@ -223,9 +223,9 @@ func (o *orderRepository) CancelOrder(orderID string) (string, error) {
 
 	if paymentMethod == 3 || paymentMethod == 2 {
 
-		err = o.DB.Exec("update orders set payment_status = 'refunded'  where order_id = ?",orderID).Error
+		err = o.DB.Exec("update orders set payment_status = 'refunded'  where order_id = ?", orderID).Error
 		if err != nil {
-		return "", err
+			return "", err
 		}
 
 		fmt.Println("the code reached here since this order is done by wallet")
@@ -249,7 +249,7 @@ func (o *orderRepository) CancelOrder(orderID string) (string, error) {
 		if result.RowsAffected == 0 {
 			result := o.DB.Exec("insert into wallets (user_id,wallet_amount) values(?,?)", amountDetails.UserID, amountDetails.FinalPrice)
 			if result.Error != nil {
-			return "", err
+				return "", err
 			}
 		}
 

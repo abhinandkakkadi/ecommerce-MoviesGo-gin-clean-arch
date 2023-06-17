@@ -39,15 +39,14 @@ func GenerateTokenUsers(user models.UserDetailsResponse) (string, error) {
 
 }
 
-
-func GenerateTokenToResetPassword(user models.UserDetailsResponse) (string,error) {
+func GenerateTokenToResetPassword(user models.UserDetailsResponse) (string, error) {
 
 	claims := &authCustomClaimsUsers{
-		Id: user.Id,
+		Id:    user.Id,
 		Email: user.Email,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
-			IssuedAt: time.Now().Unix(),
+			IssuedAt:  time.Now().Unix(),
 		},
 	}
 

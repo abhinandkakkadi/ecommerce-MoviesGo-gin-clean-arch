@@ -17,5 +17,5 @@ type AdminUseCase interface {
 	UnBlockUser(id string) error
 
 	// OverView() error
-	FilteredSalesReport(timePeriod string) (models.SalesReport,error)
+	FilteredSalesReport(timePeriod string) (models.SalesReport, error)
 }

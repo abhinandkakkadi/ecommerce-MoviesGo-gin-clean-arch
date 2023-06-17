@@ -440,7 +440,6 @@ func (u *UserHandler) ApplyReferral(c *gin.Context) {
 
 }
 
-
 func (u *UserHandler) ResetPassword(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
@@ -453,7 +452,7 @@ func (u *UserHandler) ResetPassword(c *gin.Context) {
 		return
 	}
 
-	err := u.userUseCase.ResetPassword(userID.(int),pass)
+	err := u.userUseCase.ResetPassword(userID.(int), pass)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusOK, "could not update the user", nil, err.Error())
 		c.JSON(http.StatusOK, errRes)

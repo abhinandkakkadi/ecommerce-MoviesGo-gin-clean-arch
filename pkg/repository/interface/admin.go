@@ -24,6 +24,6 @@ type AdminRepository interface {
 	GetUserByID(id string) (domain.Users, error)
 	UpdateBlockUserByID(user domain.Users) error
 
-	FilteredSalesReport(startTime time.Time,endTime time.Time) (models.SalesReport,error)
+	FilteredSalesReport(startTime time.Time, endTime time.Time) (models.SalesReport, error)
 	// CategoryCount(category models.CategoryUpdate) (models.CategoryUpdateCheck, error)
 }

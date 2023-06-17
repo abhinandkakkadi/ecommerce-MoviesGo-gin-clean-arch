@@ -6,7 +6,6 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-
 func ExtractUserIDFromTokenForgotPassword(tokenString string) (int, string, error) {
 
 	token, err := jwt.ParseWithClaims(tokenString, &authCustomClaimsUsers{}, func(token *jwt.Token) (interface{}, error) {

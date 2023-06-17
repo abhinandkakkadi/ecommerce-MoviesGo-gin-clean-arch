@@ -263,7 +263,7 @@ func (o *OrderHandler) ReturnOrder(c *gin.Context) {
 }
 
 // @Summary Refund Order
-// @Description Refund an offer by admin 
+// @Description Refund an offer by admin
 // @Tags Admin
 // @Accept json
 // @Produce json

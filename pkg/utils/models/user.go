@@ -94,6 +94,6 @@ type UpdatePassword struct {
 }
 
 type ResetPassword struct {
-	Password string `json:"password" validate:"required"`
+	Password  string `json:"password" validate:"required"`
 	CPassword string `json:"cpassword" validate:"required"`
 }

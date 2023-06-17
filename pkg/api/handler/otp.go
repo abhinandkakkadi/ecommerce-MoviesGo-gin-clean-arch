@@ -78,7 +78,6 @@ func (ot *OtpHandler) VerifyOTP(c *gin.Context) {
 
 }
 
-
 func (ot *OtpHandler) SendOTPtoReset(c *gin.Context) {
 
 	var email models.Email
@@ -88,15 +87,15 @@ func (ot *OtpHandler) SendOTPtoReset(c *gin.Context) {
 		return
 	}
 
-	phone,err := ot.otpUseCase.SendOTPtoReset(email.Email)
+	phone, err := ot.otpUseCase.SendOTPtoReset(email.Email)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not send OTP", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK,"send OTP to your number ending in ********"+phone[len(phone)-2:], nil, nil)
-		c.JSON(http.StatusInternalServerError, successRes)
+	successRes := response.ClientResponse(http.StatusOK, "send OTP to your number ending in ********"+phone[len(phone)-2:], nil, nil)
+	c.JSON(http.StatusInternalServerError, successRes)
 
 }
 

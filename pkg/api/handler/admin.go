@@ -288,18 +288,15 @@ func (ad *UserHandler) AddNewUsers(c *gin.Context) {
 
 }
 
-
-
 func (ad *AdminHandler) OverView(c *gin.Context) {
 
 	// overview, err := ad.adminUseCase.OverView()
 }
 
-
 func (ad *AdminHandler) FilteredSalesReport(c *gin.Context) {
 
 	timePeriod := c.Param("period")
-	salesReport,err := ad.adminUseCase.FilteredSalesReport(timePeriod)
+	salesReport, err := ad.adminUseCase.FilteredSalesReport(timePeriod)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "sales report could not be retrieved", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)

@@ -380,10 +380,9 @@ func (cr *userDatabase) ApplyReferral(userID int) (string, error) {
 	return "", nil
 }
 
+func (cr *userDatabase) ResetPassword(userID int, password string) error {
 
-func (cr *userDatabase) ResetPassword(userID int,password string) error {
-
-	err := cr.DB.Exec("update users set password = ? where id = ?",password,userID).Error
+	err := cr.DB.Exec("update users set password = ? where id = ?", password, userID).Error
 	if err != nil {
 		return err
 	}

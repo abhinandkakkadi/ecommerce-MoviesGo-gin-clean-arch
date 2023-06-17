@@ -24,16 +24,12 @@ type AdminDetailsResponse struct {
 	Email string `json:"email" `
 }
 
-
 // ADMIN DASHBOARD OVERVIEW
 
 type SalesReport struct {
-	
-	TotalSales float64
-	TotalOrders int
+	TotalSales      float64
+	TotalOrders     int
 	CompletedOrders int
-	PendingOrders int
+	PendingOrders   int
 	TrendingProduct string
-	
 }
-

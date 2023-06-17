@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 func AuthMiddlewareReset() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Retrieve the JWT token from the Authorization header

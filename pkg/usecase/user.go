@@ -339,7 +339,7 @@ func (u *userUseCase) ApplyReferral(userID int) (string, error) {
 
 }
 
-func (u *userUseCase) ResetPassword(userID int,pass models.ResetPassword) error {
+func (u *userUseCase) ResetPassword(userID int, pass models.ResetPassword) error {
 
 	if pass.Password != pass.CPassword {
 		return errors.New("password does not match")
@@ -350,12 +350,11 @@ func (u *userUseCase) ResetPassword(userID int,pass models.ResetPassword) error 
 		return errors.New("internal server error")
 	}
 
-
-	err = u.userRepo.ResetPassword(userID,string(hashedPassword))
+	err = u.userRepo.ResetPassword(userID, string(hashedPassword))
 	if err != nil {
 		return err
 	}
 
 	return nil
-	
+
 }
