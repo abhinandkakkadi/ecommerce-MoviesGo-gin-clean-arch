@@ -26,4 +26,10 @@ type AdminRepository interface {
 
 	FilteredSalesReport(startTime time.Time, endTime time.Time) (models.SalesReport, error)
 	// CategoryCount(category models.CategoryUpdate) (models.CategoryUpdateCheck, error)
+
+	TotalRevenue() (models.DashboardRevenue, error)
+	DashBoardOrder() (models.DashboardOrder, error)
+	AmountDetails() (models.DashboardAmount, error)
+	DashboardUserDetails() (models.DashboardUser, error)
+	DashBoardProductDetails() (models.DashBoardProduct, error)
 }

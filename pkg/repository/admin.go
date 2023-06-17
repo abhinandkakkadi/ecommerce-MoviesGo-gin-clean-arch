@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 	"gorm.io/gorm"
@@ -209,4 +210,130 @@ func (ad *adminRepository) FilteredSalesReport(startTime time.Time, endTime time
 	fmt.Println(salesReport.TrendingProduct)
 
 	return salesReport, nil
+}
+
+func (ad *adminRepository) TotalRevenue() (models.DashboardRevenue, error) {
+
+	var revenueDetails models.DashboardRevenue
+	startTime := time.Now().AddDate(0, 0, -1)
+	endTime := time.Now()
+	err := ad.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status = 'paid' and approval = true and created_at >= ? and created_at <= ?", startTime, endTime).Scan(&revenueDetails.TodayRevenue).Error
+	if err != nil {
+		return models.DashboardRevenue{}, nil
+	}
+
+	startTime, endTime = helper.GetTimeFromPeriod("month")
+	err = ad.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status = 'paid' and approval = true and created_at >= ? and created_at <= ?", startTime, endTime).Scan(&revenueDetails.MonthRevenue).Error
+	if err != nil {
+		return models.DashboardRevenue{}, nil
+	}
+
+	startTime, endTime = helper.GetTimeFromPeriod("year")
+	err = ad.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status = 'paid' and approval = true and created_at >= ? and created_at <= ?", startTime, endTime).Scan(&revenueDetails.YearRevenue).Error
+	if err != nil {
+		return models.DashboardRevenue{}, nil
+	}
+
+	fmt.Println(revenueDetails)
+
+	return revenueDetails, nil
+}
+
+func (ad *adminRepository) DashBoardOrder() (models.DashboardOrder, error) {
+
+	var orderDetails models.DashboardOrder
+	err := ad.DB.Raw("select count(*) from orders where payment_status = 'paid' and approval = true ").Scan(&orderDetails.CompletedOrder).Error
+	if err != nil {
+		return models.DashboardOrder{}, nil
+	}
+
+	err = ad.DB.Raw("select count(*) from orders where shipment_status = 'pending' or shipment_status = 'processing'").Scan(&orderDetails.PendingOrder).Error
+	if err != nil {
+		return models.DashboardOrder{}, nil
+	}
+
+	err = ad.DB.Raw("select count(*) from orders where shipment_status = 'cancelled'").Scan(&orderDetails.CancelledOrder).Error
+	if err != nil {
+		return models.DashboardOrder{}, nil
+	}
+
+	err = ad.DB.Raw("select count(*) from orders").Scan(&orderDetails.TotalOrder).Error
+	if err != nil {
+		return models.DashboardOrder{}, nil
+	}
+
+	err = ad.DB.Raw("select sum(quantity) from order_items").Scan(&orderDetails.TotalOrderItem).Error
+	if err != nil {
+		return models.DashboardOrder{}, nil
+	}
+
+	fmt.Println(orderDetails)
+
+	return orderDetails, nil
+
+}
+
+func (ad *adminRepository) AmountDetails() (models.DashboardAmount, error) {
+
+	var amountDetails models.DashboardAmount
+	err := ad.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status = 'paid' and approval = true ").Scan(&amountDetails.CreditedAmount).Error
+	if err != nil {
+		return models.DashboardAmount{}, nil
+	}
+
+	err = ad.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status = 'not paid' and shipment_status = 'processing' or shipment_status = 'pending' or shipment_status = 'order placed' ").Scan(&amountDetails.PendingAmount).Error
+	if err != nil {
+		return models.DashboardAmount{}, nil
+	}
+
+	return amountDetails, nil
+
+}
+
+func (ad *adminRepository) DashboardUserDetails() (models.DashboardUser, error) {
+
+	var userDetails models.DashboardUser
+	err := ad.DB.Raw("select count(*) from users").Scan(&userDetails.TotalUsers).Error
+	if err != nil {
+		return models.DashboardUser{}, nil
+	}
+
+	err = ad.DB.Raw("select count(distinct user_id) from orders").Scan(&userDetails.OrderedUsers).Error
+	if err != nil {
+		return models.DashboardUser{}, nil
+	}
+
+	err = ad.DB.Raw("select count(*) from users where blocked = true").Scan(&userDetails.BlockedUser).Error
+	if err != nil {
+		return models.DashboardUser{}, nil
+	}
+
+	return userDetails, nil
+}
+
+func (ad *adminRepository) DashBoardProductDetails() (models.DashBoardProduct, error) {
+
+	var productDetails models.DashBoardProduct
+	err := ad.DB.Raw("select count(*) from products").Scan(&productDetails.TotalProducts).Error
+	if err != nil {
+		return models.DashBoardProduct{}, nil
+	}
+
+	err = ad.DB.Raw("select count(*) from products where quantity = 0").Scan(&productDetails.OutOfStockProduct).Error
+	if err != nil {
+		return models.DashBoardProduct{}, nil
+	}
+
+	var productID int
+	err = ad.DB.Raw("select product_id from order_items group by product_id order by sum(quantity) desc limit 1").Scan(&productID).Error
+	if err != nil {
+		return models.DashBoardProduct{}, nil
+	}
+
+	err = ad.DB.Raw("select movie_name from products where id = ?", productID).Scan(&productDetails.TopSellingProduct).Error
+	if err != nil {
+		return models.DashBoardProduct{}, nil
+	}
+
+	return productDetails, nil
 }

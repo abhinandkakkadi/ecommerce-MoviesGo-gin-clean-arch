@@ -85,6 +85,7 @@ type CheckoutDetails struct {
 	Cart                []Cart
 	Grand_Total         float64
 	Total_Price         float64
+	DiscountReason      string
 }
 
 type UpdatePassword struct {

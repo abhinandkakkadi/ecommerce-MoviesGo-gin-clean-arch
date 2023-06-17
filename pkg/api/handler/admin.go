@@ -288,9 +288,18 @@ func (ad *UserHandler) AddNewUsers(c *gin.Context) {
 
 }
 
-func (ad *AdminHandler) OverView(c *gin.Context) {
+func (ad *AdminHandler) DashBoard(c *gin.Context) {
 
-	// overview, err := ad.adminUseCase.OverView()
+	adminDashBoard, err := ad.adminUseCase.DashBoard()
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "dashboard could not be displayed", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "admin dashboard displayed successfully", adminDashBoard, nil)
+	c.JSON(http.StatusOK, successRes)
+
 }
 
 func (ad *AdminHandler) FilteredSalesReport(c *gin.Context) {

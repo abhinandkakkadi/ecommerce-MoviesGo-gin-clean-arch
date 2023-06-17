@@ -18,4 +18,6 @@ type AdminUseCase interface {
 
 	// OverView() error
 	FilteredSalesReport(timePeriod string) (models.SalesReport, error)
+
+	DashBoard() (models.CompleteAdminDashboard, error)
 }
