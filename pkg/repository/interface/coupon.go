@@ -16,4 +16,6 @@ type CouponRepository interface {
 	OfferUpdate(offerDetails models.OfferResponse, userID int) error
 	GetReferralAmount(userID int) (models.ReferralAmount, error)
 	GetPriceBasedOnOffer(product_id int, userID int) (float64, error)
+
+	DiscountReason(userID int) ([]string, error)
 }

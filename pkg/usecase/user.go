@@ -186,6 +186,12 @@ func (u *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		return models.CheckoutDetails{}, err
 	}
 
+	// discount reason - offer - coupon - wallet
+	discountReason, err := u.couponRepo.DiscountReason(userID)
+	if err != nil {
+		return models.CheckoutDetails{}, err
+	}
+
 	return models.CheckoutDetails{
 		AddressInfoResponse: allUserAddress,
 		Payment_Method:      paymentDetails,
@@ -194,6 +200,7 @@ func (u *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		ReferralAmount:      referralAmount,
 		Grand_Total:         grandTotal.TotalPrice,
 		Total_Price:         grandTotal.FinalPrice,
+		DiscountReason:      discountReason,
 	}, nil
 }
 

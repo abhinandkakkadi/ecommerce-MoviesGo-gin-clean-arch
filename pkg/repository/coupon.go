@@ -582,3 +582,40 @@ func (co *couponRepository) GetReferralAmount(userID int) (models.ReferralAmount
 	fmt.Println("this is the referral amount : ", referralAmount)
 	return referralAmount, nil
 }
+
+func (co *couponRepository) DiscountReason(userID int) ([]string, error) {
+
+	var discountApplied []string
+	var count int
+	err := co.DB.Raw("select count(*) from used_coupons where used = false and user_id = ?", userID).Scan(&count).Error
+	if err != nil {
+		return []string{}, err
+	}
+
+	if count != 0 {
+		discountApplied = append(discountApplied, "COUPON APPLIED")
+		count = 0
+	}
+
+	err = co.DB.Raw("select count(*) from product_offer_useds where used = false and user_id = ?", userID).Scan(&count).Error
+	if err != nil {
+		return []string{}, err
+	}
+
+	if count != 0 {
+		discountApplied = append(discountApplied, "PRODUCT OFFER APPLIED")
+		count = 0
+	}
+
+	err = co.DB.Raw("select count(*) from category_offer_useds where used = false and user_id = ?", userID).Scan(&count).Error
+	if err != nil {
+		return []string{}, err
+	}
+
+	if count != 0 {
+		discountApplied = append(discountApplied, "CATEGORY OFFER APPLIED")
+		count = 0
+	}
+
+	return discountApplied, nil
+}
