@@ -91,6 +91,7 @@ To run this project, you will need to add the following environment variables to
 - User Referral
 - Cancel, Return Order
 - Order Control on admin side including refund initiation
+- Admin Dashboard and Filtered Sales Report
 
 
 
