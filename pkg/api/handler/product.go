@@ -23,7 +23,7 @@ func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
 
 // @Summary Get Products Details to users
 // @Description Retrieve all product Details with pagination to users
-// @Tags Users
+// @Tags User Product
 // @Accept json
 // @Produce json
 // @Param page path string true "Page number"
@@ -62,7 +62,7 @@ func (pr *ProductHandler) ShowAllProducts(c *gin.Context) {
 
 // @Summary Get Product Details To Admin
 // @Description Retrieve product Details with pagination to Admin side
-// @Tags Admin
+// @Tags Admin Product Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -92,7 +92,7 @@ func (pr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 
 // @Summary Get Individual Product Details
 // @Description Get Individual Detailed product details to user side
-// @Tags Users
+// @Tags User Product
 // @Accept json
 // @Produce json
 // @Param id path string true "product id"
@@ -138,7 +138,7 @@ func (pr *ProductHandler) AddProduct(c *gin.Context) {
 
 // @Summary Delete product
 // @Description Delete a product from the admin side
-// @Tags Admin
+// @Tags Admin Product Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -163,7 +163,7 @@ func (pr *ProductHandler) DeleteProduct(c *gin.Context) {
 
 // @Summary Update Products quantity
 // @Description Update quantity of already existing product
-// @Tags Admin
+// @Tags Admin Product Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -195,7 +195,7 @@ func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 
 // @Summary Show Products of specified category
 // @Description Show all the Products belonging to a specified category
-// @Tags Users
+// @Tags User Product
 // @Accept json
 // @Produce json
 // @Param data body map[string]int true "Category IDs and quantities"
@@ -225,7 +225,7 @@ func (pr *ProductHandler) FilterCategory(c *gin.Context) {
 
 // @Summary Show Products of specified category
 // @Description Show Products of specified category
-// @Tags Users
+// @Tags User Product
 // @Accept json
 // @Produce json
 // @Param prefix body models.SearchItems true "Name prefix to search"
@@ -255,7 +255,7 @@ func (pr *ProductHandler) SearchProduct(c *gin.Context) {
 
 // @Summary Get genre to user side
 // @Description Display genre details on the user side
-// @Tags Users
+// @Tags User Product
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response{}

@@ -21,7 +21,7 @@ func NewOtpHandler(useCase services.OtpUseCase) *OtpHandler {
 
 // @Summary  OTP login
 // @Description Send OTP to Authenticate user
-// @Tags User
+// @Tags User OTP Login
 // @Accept json
 // @Produce json
 // @Param phone body models.OTPData true "phone number details"
@@ -50,7 +50,7 @@ func (ot *OtpHandler) SendOTP(c *gin.Context) {
 
 // @Summary Verify OTP
 // @Description Verify OTP by passing the OTP in order to authenticate user
-// @Tags User
+// @Tags User OTP Login
 // @Accept json
 // @Produce json
 // @Param phone body models.VerifyData true "Verify OTP Details"
@@ -78,6 +78,16 @@ func (ot *OtpHandler) VerifyOTP(c *gin.Context) {
 
 }
 
+
+// @Summary Send OTP to Reset Password
+// @Description Send OTP to number corresponding to the given username
+// @Tags User Authentication
+// @Accept json
+// @Produce json
+// @Param email body models.Email true "send OTP Details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /forgot-password [post]
 func (ot *OtpHandler) SendOTPtoReset(c *gin.Context) {
 
 	var email models.Email
@@ -99,6 +109,15 @@ func (ot *OtpHandler) SendOTPtoReset(c *gin.Context) {
 
 }
 
+// @Summary Verify OTP To Reset Password
+// @Description Verify OTP to get a JWT token which can be used to change password
+// @Tags User Authentication
+// @Accept json
+// @Produce json
+// @Param phone body models.VerifyData true "Verify OTP Details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /forgot-password/verify-otp [post]
 func (ot *OtpHandler) VerifyOTPToReset(c *gin.Context) {
 
 	var code models.VerifyData

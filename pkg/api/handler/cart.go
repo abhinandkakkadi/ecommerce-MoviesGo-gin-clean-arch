@@ -25,7 +25,7 @@ func NewCartHandler(usecase services.CartUseCase) *CartHandler {
 
 // @Summary Add to Cart
 // @Description Add product to the cart using product id
-// @Tags Users
+// @Tags User Cart
 // @Accept json
 // @Produce json
 // @Param id path string true "product-id"
@@ -61,7 +61,7 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 
 // @Summary Remove product from cart
 // @Description Remove specified product of quantity 1 from cart using product id
-// @Tags Cart
+// @Tags User Cart
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -95,7 +95,7 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 
 // @Summary Display Cart
 // @Description Display all products of the cart along with price of the product and grand total
-// @Tags Cart
+// @Tags User Cart
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -119,7 +119,7 @@ func (cr *CartHandler) DisplayCart(c *gin.Context) {
 
 // @Summary Delete all Items Present inside the Cart
 // @Description Remove all product from cart
-// @Tags Cart
+// @Tags User Cart
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -143,7 +143,7 @@ func (cr *CartHandler) EmptyCart(c *gin.Context) {
 
 // @Summary Apply coupon on Checkout Section
 // @Description Add coupon to get discount on Checkout section
-// @Tags Cart
+// @Tags User Checkout
 // @Accept json
 // @Produce json
 // @Security Bearer

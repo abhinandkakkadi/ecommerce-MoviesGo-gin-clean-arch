@@ -26,7 +26,7 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 
 // @Summary SignUp functionality for user
 // @Description SignUp functionality at the user side
-// @Tags Users
+// @Tags User Authentication
 // @Accept json
 // @Produce json
 // @Param user body models.UserDetails true "User Details Input"
@@ -67,7 +67,7 @@ func (u *UserHandler) UserSignUp(c *gin.Context) {
 
 // @Summary LogIn functionality for user
 // @Description LogIn functionality at the user side
-// @Tags Users
+// @Tags User Authentication
 // @Accept json
 // @Produce json
 // @Param user body models.UserLogin true "User Details Input"
@@ -105,7 +105,7 @@ func (u *UserHandler) LoginHandler(c *gin.Context) {
 
 // @Summary AddAddress functionality for user
 // @Description AddAddress functionality at the user side
-// @Tags Users
+// @Tags User Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -146,7 +146,7 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 
 // @Summary Update User Address
 // @Description Update User address by sending in address id
-// @Tags Users
+// @Tags User Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -188,7 +188,7 @@ func (u *UserHandler) UpdateAddress(c *gin.Context) {
 
 // @Summary Checkout Order
 // @Description Checkout at the user side
-// @Tags Users
+// @Tags User Checkout
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -212,7 +212,7 @@ func (u *UserHandler) CheckOut(c *gin.Context) {
 
 // @Summary User Details
 // @Description User Details from User Profile
-// @Tags Users
+// @Tags User Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -237,7 +237,7 @@ func (u *UserHandler) UserDetails(c *gin.Context) {
 
 // @Summary Get all address for the user
 // @Description Display all the added user addresses
-// @Tags Users
+// @Tags User Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -286,7 +286,7 @@ func (u *UserHandler) UpdateUserDetails(c *gin.Context) {
 
 // @Summary Update User Password
 // @Description Update User Password
-// @Tags Users
+// @Tags User Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -322,7 +322,7 @@ func (u *UserHandler) UpdatePassword(c *gin.Context) {
 
 // @Summary Add to Wishlist
 // @Description Add To wish List
-// @Tags Users
+// @Tags User Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -355,7 +355,7 @@ func (u *UserHandler) AddToWishList(c *gin.Context) {
 
 // @Summary Display Wishlist
 // @Description Display wish List
-// @Tags Users
+// @Tags User Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -379,7 +379,7 @@ func (u *UserHandler) GetWishList(c *gin.Context) {
 
 // @Summary Add to Wishlist
 // @Description Add To wish List
-// @Tags Users
+// @Tags User Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -412,7 +412,7 @@ func (u *UserHandler) RemoveFromWishList(c *gin.Context) {
 
 // @Summary Apply referrals
 // @Description Apply referrals amount to order
-// @Tags Users
+// @Tags User Checkout
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -440,6 +440,16 @@ func (u *UserHandler) ApplyReferral(c *gin.Context) {
 
 }
 
+// @Summary Reset Password Using OTP
+// @Description Reset Password using token Received from confirming OTP
+// @Tags User Authentication
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param body body models.ResetPassword true "User Password Reset"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /forgot-password/reset [put]
 func (u *UserHandler) ResetPassword(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")

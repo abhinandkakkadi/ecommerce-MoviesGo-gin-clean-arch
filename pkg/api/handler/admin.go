@@ -24,7 +24,7 @@ func NewAdminHandler(usecase services.AdminUseCase) *AdminHandler {
 
 // @Summary Admin Login
 // @Description Login handler for admin
-// @Tags Admin
+// @Tags Admin Authentication
 // @Accept json
 // @Produce json
 // @Param  admin body models.AdminLogin true "Admin login details"
@@ -56,7 +56,7 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 
 // @Summary Admin Signup
 // @Description Signup handler for admin
-// @Tags Admin
+// @Tags Admin Authentication
 // @Accept json
 // @Produce json
 // @Param  admin body models.AdminSignUp true "Admin login details"
@@ -85,7 +85,7 @@ func (cr *AdminHandler) CreateAdmin(c *gin.Context) {
 
 // @Summary Get Users Details To Admin
 // @Description Retrieve users with pagination to admin side
-// @Tags Admin
+// @Tags Admin User Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -124,7 +124,7 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 
 // @Summary Get Genre Details to admin side
 // @Description Display Genre details on the admin side
-// @Tags Admin
+// @Tags Admin Category Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -145,7 +145,7 @@ func (ad *AdminHandler) GetGenres(c *gin.Context) {
 
 // @Summary Add a new Genres ( Category )
 // @Description Add a new Genre So that movie of that genre can be added
-// @Tags Admin
+// @Tags Admin Category Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -175,7 +175,7 @@ func (ad *AdminHandler) AddGenres(c *gin.Context) {
 
 // @Summary Delete Genre ( Category )
 // @Description Delete Genre for existing films and delete the films along with it
-// @Tags Admin
+// @Tags Admin Category Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -199,7 +199,7 @@ func (ad *AdminHandler) DeleteGenre(c *gin.Context) {
 
 // @Summary Block  user
 // @Description Block an existing user using user id
-// @Tags Admin
+// @Tags Admin User Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -224,7 +224,7 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 
 // @Summary Unblock  User
 // @Description Unblock an already blocked user using user id
-// @Tags Admin
+// @Tags Admin User Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -249,7 +249,7 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 
 // @Summary Create User By Admin
 // @Description Create a new user from admin side
-// @Tags Admin
+// @Tags Admin User Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -288,6 +288,15 @@ func (ad *UserHandler) AddNewUsers(c *gin.Context) {
 
 }
 
+// @Summary Admin Dashboard 
+// @Description Get Amin Home Page with Complete Details 
+// @Tags Admin Dash Board
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/dashboard [GET]
 func (ad *AdminHandler) DashBoard(c *gin.Context) {
 
 	adminDashBoard, err := ad.adminUseCase.DashBoard()
@@ -302,6 +311,17 @@ func (ad *AdminHandler) DashBoard(c *gin.Context) {
 
 }
 
+
+// @Summary Filtered Sales Report 
+// @Description Get Filtered sales report by week, month and year 
+// @Tags Admin Dash Board
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param period path string true "sales report"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/sales-report/{period} [GET]
 func (ad *AdminHandler) FilteredSalesReport(c *gin.Context) {
 
 	timePeriod := c.Param("period")

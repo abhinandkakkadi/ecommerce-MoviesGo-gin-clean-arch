@@ -15,15 +15,13 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-
-"securityDefinitions": {
-    "Bearer": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header"
-    }
-},
-
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
     "paths": {
         "/address": {
             "post": {
@@ -40,7 +38,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Profile"
                 ],
                 "summary": "AddAddress functionality for user",
                 "parameters": [
@@ -85,7 +83,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Profile"
                 ],
                 "summary": "Update User Address",
                 "parameters": [
@@ -132,7 +130,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Authentication"
                 ],
                 "summary": "Admin Login",
                 "parameters": [
@@ -172,7 +170,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Authentication"
                 ],
                 "summary": "Admin Signup",
                 "parameters": [
@@ -202,14 +200,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/genres": {
+        "/admin/dashboard": {
             "get": {
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "description": "Display genre details on the admin side",
+                "description": "Get Amin Home Page with Complete Details",
                 "consumes": [
                     "application/json"
                 ],
@@ -217,9 +215,43 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Dash Board"
                 ],
-                "summary": "Get genre to admin side",
+                "summary": "Admin Dashboard",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/genres": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Display Genre details on the admin side",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Category Management"
+                ],
+                "summary": "Get Genre Details to admin side",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -243,7 +275,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Add Genres for existing films",
+                "description": "Add a new Genre So that movie of that genre can be added",
                 "consumes": [
                     "application/json"
                 ],
@@ -251,9 +283,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Category Management"
                 ],
-                "summary": "Add Genres",
+                "summary": "Add a new Genres ( Category )",
                 "parameters": [
                     {
                         "description": "Update Category",
@@ -288,7 +320,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Delete Category for existing films and films long with it",
+                "description": "Delete Genre for existing films and delete the films along with it",
                 "consumes": [
                     "application/json"
                 ],
@@ -296,9 +328,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Category Management"
                 ],
-                "summary": "Delete Category",
+                "summary": "Delete Genre ( Category )",
                 "parameters": [
                     {
                         "type": "string",
@@ -331,7 +363,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Add a new Offer for a Category",
+                "description": "Add a new Offer for a Category by specifying a limit",
                 "consumes": [
                     "application/json"
                 ],
@@ -339,7 +371,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Coupon"
+                    "Admin Offer Management"
                 ],
                 "summary": "Add  Category Offer",
                 "parameters": [
@@ -376,7 +408,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Get Available coupon details for admin",
+                "description": "Get Available coupon details for admin side",
                 "consumes": [
                     "application/json"
                 ],
@@ -384,7 +416,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Coupon"
+                    "Admin Offer Management"
                 ],
                 "summary": "Get coupon details",
                 "responses": {
@@ -410,7 +442,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Add A new Coupon which can be used by the users",
+                "description": "Add A new Coupon which can be used by the users from the checkout section",
                 "consumes": [
                     "application/json"
                 ],
@@ -418,7 +450,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Coupon"
+                    "Admin Offer Management"
                 ],
                 "summary": "Add  a new coupon by Admin",
                 "parameters": [
@@ -455,7 +487,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Expire Coupon by admin",
+                "description": "Expire Coupon by admin which are already present by passing coupon id",
                 "consumes": [
                     "application/json"
                 ],
@@ -463,7 +495,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Coupon"
+                    "Admin Offer Management"
                 ],
                 "summary": "Expire Coupon",
                 "parameters": [
@@ -498,7 +530,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Add a new Offer for a product",
+                "description": "Add a new Offer for a product by specifying a limit",
                 "consumes": [
                     "application/json"
                 ],
@@ -506,7 +538,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Coupon"
+                    "Admin Offer Management"
                 ],
                 "summary": "Add  Product Offer",
                 "parameters": [
@@ -543,7 +575,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Approve Order from admin side",
+                "description": "Approve Order from admin side which is in processing state",
                 "consumes": [
                     "application/json"
                 ],
@@ -551,7 +583,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Order Management"
                 ],
                 "summary": "Approve Order",
                 "parameters": [
@@ -594,7 +626,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Order Management"
                 ],
                 "summary": "Cancel Order Admin",
                 "parameters": [
@@ -637,7 +669,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "Admin Order Management"
                 ],
                 "summary": "Get All order details for admin",
                 "parameters": [
@@ -672,7 +704,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Retrieve products with pagination to Admin side",
+                "description": "Retrieve product Details with pagination to Admin side",
                 "consumes": [
                     "application/json"
                 ],
@@ -680,9 +712,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Product Management"
                 ],
-                "summary": "Get Products To Admin",
+                "summary": "Get Product Details To Admin",
                 "parameters": [
                     {
                         "type": "string",
@@ -722,7 +754,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Add a new product from the admin side",
+                "description": "Delete a product from the admin side",
                 "consumes": [
                     "application/json"
                 ],
@@ -730,9 +762,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Product Management"
                 ],
-                "summary": "Add Products",
+                "summary": "Delete product",
                 "parameters": [
                     {
                         "type": "string",
@@ -773,9 +805,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Product Management"
                 ],
-                "summary": "Update Products",
+                "summary": "Update Products quantity",
                 "parameters": [
                     {
                         "description": "Product details",
@@ -810,7 +842,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Return delivered Order",
+                "description": "Refund an offer by admin",
                 "consumes": [
                     "application/json"
                 ],
@@ -818,14 +850,57 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Order Management"
                 ],
-                "summary": "Return Order",
+                "summary": "Refund Order",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Order ID",
                         "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/sales-report/{period}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get Filtered sales report by week, month and year",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Dash Board"
+                ],
+                "summary": "Filtered Sales Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "sales report",
+                        "name": "period",
                         "in": "path",
                         "required": true
                     }
@@ -853,7 +928,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Add a new user from admin side",
+                "description": "Create a new user from admin side",
                 "consumes": [
                     "application/json"
                 ],
@@ -861,9 +936,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin User Management"
                 ],
-                "summary": "Create User",
+                "summary": "Create User By Admin",
                 "parameters": [
                     {
                         "description": "Add a new user",
@@ -898,7 +973,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Block user",
+                "description": "Block an existing user using user id",
                 "consumes": [
                     "application/json"
                 ],
@@ -906,9 +981,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin User Management"
                 ],
-                "summary": "Block an existing user",
+                "summary": "Block  user",
                 "parameters": [
                     {
                         "type": "string",
@@ -941,7 +1016,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "UnBlock user",
+                "description": "Unblock an already blocked user using user id",
                 "consumes": [
                     "application/json"
                 ],
@@ -949,9 +1024,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin User Management"
                 ],
-                "summary": "UnBlock an existing user",
+                "summary": "Unblock  User",
                 "parameters": [
                     {
                         "type": "string",
@@ -984,7 +1059,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Retrieve users with pagination",
+                "description": "Retrieve users with pagination to admin side",
                 "consumes": [
                     "application/json"
                 ],
@@ -992,9 +1067,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin User Management"
                 ],
-                "summary": "Get Users",
+                "summary": "Get Users Details To Admin",
                 "parameters": [
                     {
                         "type": "string",
@@ -1034,7 +1109,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Display all items of the cart",
+                "description": "Display all products of the cart along with price of the product and grand total",
                 "consumes": [
                     "application/json"
                 ],
@@ -1042,7 +1117,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart"
                 ],
                 "summary": "Display Cart",
                 "responses": {
@@ -1074,9 +1149,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart"
                 ],
-                "summary": "Empty Items from cart",
+                "summary": "Delete all Items Present inside the Cart",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1100,7 +1175,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Add items to the cart",
+                "description": "Add product to the cart using product id",
                 "consumes": [
                     "application/json"
                 ],
@@ -1108,7 +1183,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Cart"
                 ],
                 "summary": "Add to Cart",
                 "parameters": [
@@ -1143,7 +1218,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Remove specified product of quantity 1 from cart",
+                "description": "Remove specified product of quantity 1 from cart using product id",
                 "consumes": [
                     "application/json"
                 ],
@@ -1151,9 +1226,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart"
                 ],
-                "summary": "Remove Items from cart",
+                "summary": "Remove product from cart",
                 "parameters": [
                     {
                         "type": "string",
@@ -1194,7 +1269,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Checkout"
                 ],
                 "summary": "Checkout Order",
                 "responses": {
@@ -1220,7 +1295,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Add Coupon to get discount",
+                "description": "Add coupon to get discount on Checkout section",
                 "consumes": [
                     "application/json"
                 ],
@@ -1228,9 +1303,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Checkout"
                 ],
-                "summary": "Add coupon to out order",
+                "summary": "Apply coupon on Checkout Section",
                 "parameters": [
                     {
                         "description": "Add coupon to order",
@@ -1239,6 +1314,131 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/models.CouponAddUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "description": "Send OTP to number corresponding to the given username",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Authentication"
+                ],
+                "summary": "Send OTP to Reset Password",
+                "parameters": [
+                    {
+                        "description": "send OTP Details",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Email"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/forgot-password/reset": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Reset Password using token Received from confirming OTP",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Authentication"
+                ],
+                "summary": "Reset Password Using OTP",
+                "parameters": [
+                    {
+                        "description": "User Password Reset",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ResetPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/forgot-password/verify-otp": {
+            "post": {
+                "description": "Verify OTP to get a JWT token which can be used to change password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Authentication"
+                ],
+                "summary": "Verify OTP To Reset Password",
+                "parameters": [
+                    {
+                        "description": "Verify OTP Details",
+                        "name": "phone",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.VerifyData"
                         }
                     }
                 ],
@@ -1268,7 +1468,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Authentication"
                 ],
                 "summary": "LogIn functionality for user",
                 "parameters": [
@@ -1305,7 +1505,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Order all products inside the cart",
+                "description": "Order all products which is currently present inside  the cart",
                 "consumes": [
                     "application/json"
                 ],
@@ -1313,7 +1513,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "User Order"
                 ],
                 "summary": "Order Items from cart",
                 "parameters": [
@@ -1345,7 +1545,7 @@ const docTemplate = `{
         },
         "/products/filter": {
             "post": {
-                "description": "Show Products of specified category",
+                "description": "Show all the Products belonging to a specified category",
                 "consumes": [
                     "application/json"
                 ],
@@ -1353,7 +1553,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Product"
                 ],
                 "summary": "Show Products of specified category",
                 "parameters": [
@@ -1388,11 +1588,6 @@ const docTemplate = `{
         },
         "/products/genres": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "Display genre details on the user side",
                 "consumes": [
                     "application/json"
@@ -1401,7 +1596,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Product"
                 ],
                 "summary": "Get genre to user side",
                 "responses": {
@@ -1422,7 +1617,7 @@ const docTemplate = `{
         },
         "/products/page/{page}": {
             "get": {
-                "description": "Retrieve products with pagination",
+                "description": "Retrieve all product Details with pagination to users",
                 "consumes": [
                     "application/json"
                 ],
@@ -1430,9 +1625,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Product"
                 ],
-                "summary": "Get Products to users",
+                "summary": "Get Products Details to users",
                 "parameters": [
                     {
                         "type": "string",
@@ -1475,7 +1670,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Product"
                 ],
                 "summary": "Show Products of specified category",
                 "parameters": [
@@ -1507,7 +1702,7 @@ const docTemplate = `{
         },
         "/products/{id}": {
             "get": {
-                "description": "Retrieve Complete products details at user side",
+                "description": "Get Individual Detailed product details to user side",
                 "consumes": [
                     "application/json"
                 ],
@@ -1515,9 +1710,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Product"
                 ],
-                "summary": "Get Full Product Details",
+                "summary": "Get Individual Product Details",
                 "parameters": [
                     {
                         "type": "string",
@@ -1558,7 +1753,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Checkout"
                 ],
                 "summary": "Apply referrals",
                 "responses": {
@@ -1579,7 +1774,7 @@ const docTemplate = `{
         },
         "/send-otp": {
             "post": {
-                "description": "Send OTP to Authorize user",
+                "description": "Send OTP to Authenticate user",
                 "consumes": [
                     "application/json"
                 ],
@@ -1587,9 +1782,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "User OTP Login"
                 ],
-                "summary": "Send OTP",
+                "summary": "OTP login",
                 "parameters": [
                     {
                         "description": "phone number details",
@@ -1627,7 +1822,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Authentication"
                 ],
                 "summary": "SignUp functionality for user",
                 "parameters": [
@@ -1672,7 +1867,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Profile"
                 ],
                 "summary": "User Details",
                 "responses": {
@@ -1706,7 +1901,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Profile"
                 ],
                 "summary": "Get all address for the user",
                 "responses": {
@@ -1740,7 +1935,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "User Order"
                 ],
                 "summary": "Cancel order",
                 "parameters": [
@@ -1775,7 +1970,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Order successfully delivered to user",
+                "description": "Order successfully delivered to user which should be confirmed by user",
                 "consumes": [
                     "application/json"
                 ],
@@ -1783,7 +1978,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Order"
                 ],
                 "summary": "Order Delivered",
                 "parameters": [
@@ -1818,7 +2013,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Order all order details done by user",
+                "description": "Get all order details done by user to user side",
                 "consumes": [
                     "application/json"
                 ],
@@ -1826,7 +2021,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "User Order"
                 ],
                 "summary": "Get Order Details to user side",
                 "parameters": [
@@ -1868,7 +2063,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Return delivered Order",
+                "description": "Return delivered Order by the user by specifying the OrderID",
                 "consumes": [
                     "application/json"
                 ],
@@ -1876,7 +2071,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Order"
                 ],
                 "summary": "Return Order",
                 "parameters": [
@@ -1919,7 +2114,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Profile"
                 ],
                 "summary": "Update User Password",
                 "parameters": [
@@ -1951,7 +2146,7 @@ const docTemplate = `{
         },
         "/verify-otp": {
             "post": {
-                "description": "Verify OTP by passing the OTP",
+                "description": "Verify OTP by passing the OTP in order to authenticate user",
                 "consumes": [
                     "application/json"
                 ],
@@ -1959,7 +2154,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "User OTP Login"
                 ],
                 "summary": "Verify OTP",
                 "parameters": [
@@ -2004,7 +2199,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Profile"
                 ],
                 "summary": "Display Wishlist",
                 "responses": {
@@ -2038,7 +2233,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Profile"
                 ],
                 "summary": "Add to Wishlist",
                 "parameters": [
@@ -2081,7 +2276,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User Profile"
                 ],
                 "summary": "Add to Wishlist",
                 "parameters": [
@@ -2226,6 +2421,17 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Email": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
         "models.OTPData": {
             "type": "object",
             "required": [
@@ -2265,6 +2471,21 @@ const docTemplate = `{
                 },
                 "product_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.ResetPassword": {
+            "type": "object",
+            "required": [
+                "cpassword",
+                "password"
+            ],
+            "properties": {
+                "cpassword": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         },

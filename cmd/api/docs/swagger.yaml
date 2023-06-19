@@ -75,6 +75,13 @@ definitions:
       coupon_name:
         type: string
     type: object
+  models.Email:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
   models.OTPData:
     properties:
       phone:
@@ -101,6 +108,16 @@ definitions:
         type: string
       product_id:
         type: integer
+    type: object
+  models.ResetPassword:
+    properties:
+      cpassword:
+        type: string
+      password:
+        type: string
+    required:
+    - cpassword
+    - password
     type: object
   models.SearchItems:
     properties:
@@ -194,7 +211,7 @@ paths:
       - Bearer: []
       summary: AddAddress functionality for user
       tags:
-      - Users
+      - User Profile
   /address/{id}:
     put:
       consumes:
@@ -227,7 +244,7 @@ paths:
       - Bearer: []
       summary: Update User Address
       tags:
-      - Users
+      - User Profile
   /admin/adminlogin:
     post:
       consumes:
@@ -253,7 +270,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admin Login
       tags:
-      - Admin
+      - Admin Authentication
   /admin/adminsignup:
     post:
       consumes:
@@ -279,12 +296,12 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admin Signup
       tags:
-      - Admin
-  /admin/genres:
+      - Admin Authentication
+  /admin/dashboard:
     get:
       consumes:
       - application/json
-      description: Display genre details on the admin side
+      description: Get Amin Home Page with Complete Details
       produces:
       - application/json
       responses:
@@ -298,14 +315,35 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Get genre to admin side
+      summary: Admin Dashboard
       tags:
-      - Admin
+      - Admin Dash Board
+  /admin/genres:
+    get:
+      consumes:
+      - application/json
+      description: Display Genre details on the admin side
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Genre Details to admin side
+      tags:
+      - Admin Category Management
   /admin/genres/add_genre:
     post:
       consumes:
       - application/json
-      description: Add Genres for existing films
+      description: Add a new Genre So that movie of that genre can be added
       parameters:
       - description: Update Category
         in: body
@@ -326,14 +364,15 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Add Genres
+      summary: Add a new Genres ( Category )
       tags:
-      - Admin
+      - Admin Category Management
   /admin/genres/delete_genre/{id}:
     post:
       consumes:
       - application/json
-      description: Delete Category for existing films and films long with it
+      description: Delete Genre for existing films and delete the films along with
+        it
       parameters:
       - description: genre-id
         in: path
@@ -353,14 +392,14 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Delete Category
+      summary: Delete Genre ( Category )
       tags:
-      - Admin
+      - Admin Category Management
   /admin/offer/category-offer:
     post:
       consumes:
       - application/json
-      description: Add a new Offer for a Category
+      description: Add a new Offer for a Category by specifying a limit
       parameters:
       - description: Add new Category Offer
         in: body
@@ -383,12 +422,12 @@ paths:
       - Bearer: []
       summary: Add  Category Offer
       tags:
-      - Coupon
+      - Admin Offer Management
   /admin/offer/coupons:
     get:
       consumes:
       - application/json
-      description: Get Available coupon details for admin
+      description: Get Available coupon details for admin side
       produces:
       - application/json
       responses:
@@ -404,12 +443,13 @@ paths:
       - Bearer: []
       summary: Get coupon details
       tags:
-      - Coupon
+      - Admin Offer Management
   /admin/offer/coupons/addcoupon:
     post:
       consumes:
       - application/json
-      description: Add A new Coupon which can be used by the users
+      description: Add A new Coupon which can be used by the users from the checkout
+        section
       parameters:
       - description: Add new Coupon
         in: body
@@ -432,12 +472,13 @@ paths:
       - Bearer: []
       summary: Add  a new coupon by Admin
       tags:
-      - Coupon
+      - Admin Offer Management
   /admin/offer/coupons/expire/{id}:
     get:
       consumes:
       - application/json
-      description: Expire Coupon by admin
+      description: Expire Coupon by admin which are already present by passing coupon
+        id
       parameters:
       - description: Coupon id
         in: path
@@ -459,12 +500,12 @@ paths:
       - Bearer: []
       summary: Expire Coupon
       tags:
-      - Coupon
+      - Admin Offer Management
   /admin/offer/product-offer:
     post:
       consumes:
       - application/json
-      description: Add a new Offer for a product
+      description: Add a new Offer for a product by specifying a limit
       parameters:
       - description: Add new Product Offer
         in: body
@@ -487,7 +528,7 @@ paths:
       - Bearer: []
       summary: Add  Product Offer
       tags:
-      - Coupon
+      - Admin Offer Management
   /admin/orders/{id}:
     get:
       consumes:
@@ -514,12 +555,12 @@ paths:
       - Bearer: []
       summary: Get All order details for admin
       tags:
-      - Order
+      - Admin Order Management
   /admin/orders/approve-order/{id}:
     get:
       consumes:
       - application/json
-      description: Approve Order from admin side
+      description: Approve Order from admin side which is in processing state
       parameters:
       - description: Order ID
         in: path
@@ -541,7 +582,7 @@ paths:
       - Bearer: []
       summary: Approve Order
       tags:
-      - Admin
+      - Admin Order Management
   /admin/orders/cancel-order/{id}:
     get:
       consumes:
@@ -568,12 +609,12 @@ paths:
       - Bearer: []
       summary: Cancel Order Admin
       tags:
-      - Admin
+      - Admin Order Management
   /admin/products:
     get:
       consumes:
       - application/json
-      description: Retrieve products with pagination to Admin side
+      description: Retrieve product Details with pagination to Admin side
       parameters:
       - description: Page number
         in: path
@@ -598,14 +639,14 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Get Products To Admin
+      summary: Get Product Details To Admin
       tags:
-      - Admin
+      - Admin Product Management
   /admin/products/delete-product/{id}:
     delete:
       consumes:
       - application/json
-      description: Add a new product from the admin side
+      description: Delete a product from the admin side
       parameters:
       - description: product id
         in: path
@@ -625,9 +666,9 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Add Products
+      summary: Delete product
       tags:
-      - Admin
+      - Admin Product Management
   /admin/products/update-product/:
     post:
       consumes:
@@ -653,14 +694,14 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Update Products
+      summary: Update Products quantity
       tags:
-      - Admin
+      - Admin Product Management
   /admin/refund-order/{id}:
     get:
       consumes:
       - application/json
-      description: Return delivered Order
+      description: Refund an offer by admin
       parameters:
       - description: Order ID
         in: path
@@ -680,14 +721,41 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Return Order
+      summary: Refund Order
       tags:
-      - Admin
+      - Admin Order Management
+  /admin/sales-report/{period}:
+    get:
+      consumes:
+      - application/json
+      description: Get Filtered sales report by week, month and year
+      parameters:
+      - description: sales report
+        in: path
+        name: period
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Filtered Sales Report
+      tags:
+      - Admin Dash Board
   /admin/users/{page}:
     get:
       consumes:
       - application/json
-      description: Retrieve users with pagination
+      description: Retrieve users with pagination to admin side
       parameters:
       - description: Page number
         in: path
@@ -712,14 +780,14 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Get Users
+      summary: Get Users Details To Admin
       tags:
-      - Admin
+      - Admin User Management
   /admin/users/add-users:
     post:
       consumes:
       - application/json
-      description: Add a new user from admin side
+      description: Create a new user from admin side
       parameters:
       - description: Add a new user
         in: body
@@ -740,14 +808,14 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Create User
+      summary: Create User By Admin
       tags:
-      - Admin
+      - Admin User Management
   /admin/users/block-users/{id}:
     post:
       consumes:
       - application/json
-      description: Block user
+      description: Block an existing user using user id
       parameters:
       - description: user-id
         in: path
@@ -767,14 +835,14 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Block an existing user
+      summary: Block  user
       tags:
-      - Admin
+      - Admin User Management
   /admin/users/unblock-users/{id}:
     post:
       consumes:
       - application/json
-      description: UnBlock user
+      description: Unblock an already blocked user using user id
       parameters:
       - description: user-id
         in: path
@@ -794,9 +862,9 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: UnBlock an existing user
+      summary: Unblock  User
       tags:
-      - Admin
+      - Admin User Management
   /cart:
     delete:
       consumes:
@@ -815,13 +883,14 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Empty Items from cart
+      summary: Delete all Items Present inside the Cart
       tags:
-      - Cart
+      - User Cart
     get:
       consumes:
       - application/json
-      description: Display all items of the cart
+      description: Display all products of the cart along with price of the product
+        and grand total
       produces:
       - application/json
       responses:
@@ -837,12 +906,12 @@ paths:
       - Bearer: []
       summary: Display Cart
       tags:
-      - Cart
+      - User Cart
   /cart/addtocart/{id}:
     post:
       consumes:
       - application/json
-      description: Add items to the cart
+      description: Add product to the cart using product id
       parameters:
       - description: product-id
         in: path
@@ -864,12 +933,13 @@ paths:
       - Bearer: []
       summary: Add to Cart
       tags:
-      - Users
+      - User Cart
   /cart/removefromcart/{id}:
     delete:
       consumes:
       - application/json
-      description: Remove specified product of quantity 1 from cart
+      description: Remove specified product of quantity 1 from cart using product
+        id
       parameters:
       - description: Product id
         in: path
@@ -889,9 +959,9 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Remove Items from cart
+      summary: Remove product from cart
       tags:
-      - Cart
+      - User Cart
   /checkout:
     get:
       consumes:
@@ -912,12 +982,12 @@ paths:
       - Bearer: []
       summary: Checkout Order
       tags:
-      - Users
+      - User Checkout
   /coupon/add:
     post:
       consumes:
       - application/json
-      description: Add Coupon to get discount
+      description: Add coupon to get discount on Checkout section
       parameters:
       - description: Add coupon to order
         in: body
@@ -938,9 +1008,89 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Add coupon to out order
+      summary: Apply coupon on Checkout Section
       tags:
-      - Cart
+      - User Checkout
+  /forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Send OTP to number corresponding to the given username
+      parameters:
+      - description: send OTP Details
+        in: body
+        name: email
+        required: true
+        schema:
+          $ref: '#/definitions/models.Email'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Send OTP to Reset Password
+      tags:
+      - User Authentication
+  /forgot-password/reset:
+    put:
+      consumes:
+      - application/json
+      description: Reset Password using token Received from confirming OTP
+      parameters:
+      - description: User Password Reset
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.ResetPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Reset Password Using OTP
+      tags:
+      - User Authentication
+  /forgot-password/verify-otp:
+    post:
+      consumes:
+      - application/json
+      description: Verify OTP to get a JWT token which can be used to change password
+      parameters:
+      - description: Verify OTP Details
+        in: body
+        name: phone
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Verify OTP To Reset Password
+      tags:
+      - User Authentication
   /login:
     post:
       consumes:
@@ -966,12 +1116,12 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: LogIn functionality for user
       tags:
-      - Users
+      - User Authentication
   /order:
     post:
       consumes:
       - application/json
-      description: Order all products inside the cart
+      description: Order all products which is currently present inside  the cart
       parameters:
       - description: Order details
         in: body
@@ -994,12 +1144,12 @@ paths:
       - Bearer: []
       summary: Order Items from cart
       tags:
-      - Order
+      - User Order
   /products/{id}:
     get:
       consumes:
       - application/json
-      description: Retrieve Complete products details at user side
+      description: Get Individual Detailed product details to user side
       parameters:
       - description: product id
         in: path
@@ -1017,14 +1167,14 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
-      summary: Get Full Product Details
+      summary: Get Individual Product Details
       tags:
-      - Users
+      - User Product
   /products/filter:
     post:
       consumes:
       - application/json
-      description: Show Products of specified category
+      description: Show all the Products belonging to a specified category
       parameters:
       - description: Category IDs and quantities
         in: body
@@ -1047,7 +1197,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Show Products of specified category
       tags:
-      - Users
+      - User Product
   /products/genres:
     get:
       consumes:
@@ -1064,16 +1214,14 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
       summary: Get genre to user side
       tags:
-      - Users
+      - User Product
   /products/page/{page}:
     get:
       consumes:
       - application/json
-      description: Retrieve products with pagination
+      description: Retrieve all product Details with pagination to users
       parameters:
       - description: Page number
         in: path
@@ -1096,9 +1244,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
-      summary: Get Products to users
+      summary: Get Products Details to users
       tags:
-      - Users
+      - User Product
   /products/search:
     post:
       consumes:
@@ -1124,7 +1272,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Show Products of specified category
       tags:
-      - Users
+      - User Product
   /referral/apply:
     get:
       consumes:
@@ -1145,12 +1293,12 @@ paths:
       - Bearer: []
       summary: Apply referrals
       tags:
-      - Users
+      - User Checkout
   /send-otp:
     post:
       consumes:
       - application/json
-      description: Send OTP to Authorize user
+      description: Send OTP to Authenticate user
       parameters:
       - description: phone number details
         in: body
@@ -1169,9 +1317,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
-      summary: Send OTP
+      summary: OTP login
       tags:
-      - User
+      - User OTP Login
   /signup:
     post:
       consumes:
@@ -1197,7 +1345,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: SignUp functionality for user
       tags:
-      - Users
+      - User Authentication
   /users:
     get:
       consumes:
@@ -1218,7 +1366,7 @@ paths:
       - Bearer: []
       summary: User Details
       tags:
-      - Users
+      - User Profile
   /users/address:
     get:
       consumes:
@@ -1239,7 +1387,7 @@ paths:
       - Bearer: []
       summary: Get all address for the user
       tags:
-      - Users
+      - User Profile
   /users/cancel-order/{id}:
     put:
       consumes:
@@ -1266,12 +1414,13 @@ paths:
       - Bearer: []
       summary: Cancel order
       tags:
-      - Order
+      - User Order
   /users/delivered/{id}:
     get:
       consumes:
       - application/json
-      description: Order successfully delivered to user
+      description: Order successfully delivered to user which should be confirmed
+        by user
       parameters:
       - description: Order ID
         in: path
@@ -1293,12 +1442,12 @@ paths:
       - Bearer: []
       summary: Order Delivered
       tags:
-      - Users
+      - User Order
   /users/orders/{id}:
     get:
       consumes:
       - application/json
-      description: Order all order details done by user
+      description: Get all order details done by user to user side
       parameters:
       - description: page number
         in: path
@@ -1325,12 +1474,12 @@ paths:
       - Bearer: []
       summary: Get Order Details to user side
       tags:
-      - Order
+      - User Order
   /users/return/{id}:
     get:
       consumes:
       - application/json
-      description: Return delivered Order
+      description: Return delivered Order by the user by specifying the OrderID
       parameters:
       - description: Order ID
         in: path
@@ -1352,7 +1501,7 @@ paths:
       - Bearer: []
       summary: Return Order
       tags:
-      - Users
+      - User Order
   /users/update-password:
     post:
       consumes:
@@ -1380,12 +1529,12 @@ paths:
       - Bearer: []
       summary: Update User Password
       tags:
-      - Users
+      - User Profile
   /verify-otp:
     post:
       consumes:
       - application/json
-      description: Verify OTP by passing the OTP
+      description: Verify OTP by passing the OTP in order to authenticate user
       parameters:
       - description: Verify OTP Details
         in: body
@@ -1406,7 +1555,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Verify OTP
       tags:
-      - User
+      - User OTP Login
   /wishlist:
     get:
       consumes:
@@ -1427,7 +1576,7 @@ paths:
       - Bearer: []
       summary: Display Wishlist
       tags:
-      - Users
+      - User Profile
   /wishlist/add/{id}:
     get:
       consumes:
@@ -1454,7 +1603,7 @@ paths:
       - Bearer: []
       summary: Add to Wishlist
       tags:
-      - Users
+      - User Profile
   /wishlist/remove/{id}:
     get:
       consumes:
@@ -1481,5 +1630,5 @@ paths:
       - Bearer: []
       summary: Add to Wishlist
       tags:
-      - Users
+      - User Profile
 swagger: "2.0"

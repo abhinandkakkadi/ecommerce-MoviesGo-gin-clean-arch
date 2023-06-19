@@ -23,7 +23,7 @@ func NewOrderHandler(useCase services.OrderUseCase) *OrderHandler {
 
 // @Summary Order Items from cart
 // @Description Order all products which is currently present inside  the cart
-// @Tags Order
+// @Tags User Order
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -57,7 +57,7 @@ func (o *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
 // @Summary Get Order Details to user side
 // @Description Get all order details done by user to user side
-// @Tags Order
+// @Tags User Order
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -100,7 +100,7 @@ func (o *OrderHandler) GetOrderDetails(c *gin.Context) {
 
 // @Summary Cancel order
 // @Description Cancel order by the user using order ID
-// @Tags Order
+// @Tags User Order
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -129,7 +129,7 @@ func (o *OrderHandler) CancelOrder(c *gin.Context) {
 
 // @Summary Get All order details for admin
 // @Description Get all order details to the admin side
-// @Tags Order
+// @Tags Admin Order Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -161,7 +161,7 @@ func (o *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 
 // @Summary Approve Order
 // @Description Approve Order from admin side which is in processing state
-// @Tags Admin
+// @Tags Admin Order Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -186,7 +186,7 @@ func (o *OrderHandler) ApproveOrder(c *gin.Context) {
 
 // @Summary Cancel Order Admin
 // @Description Cancel Order from admin side
-// @Tags Admin
+// @Tags Admin Order Management
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -212,7 +212,7 @@ func (o *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 
 // @Summary Order Delivered
 // @Description Order successfully delivered to user which should be confirmed by user
-// @Tags Users
+// @Tags User Order
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -238,7 +238,7 @@ func (o *OrderHandler) OrderDelivered(c *gin.Context) {
 
 // @Summary Return Order
 // @Description Return delivered Order by the user by specifying the OrderID
-// @Tags Users
+// @Tags User Order
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -264,7 +264,7 @@ func (o *OrderHandler) ReturnOrder(c *gin.Context) {
 
 // @Summary Refund Order
 // @Description Refund an offer by admin
-// @Tags Admin
+// @Tags Admin Order Management
 // @Accept json
 // @Produce json
 // @Security Bearer
