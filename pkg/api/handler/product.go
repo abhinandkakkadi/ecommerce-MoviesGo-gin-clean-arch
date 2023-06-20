@@ -173,15 +173,15 @@ func (pr *ProductHandler) DeleteProduct(c *gin.Context) {
 // @Router /admin/products/update-product/ [post]
 func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 
-	var p models.UpdateProduct
+	var productUpdate models.UpdateProduct
 
-	if err := c.BindJSON(&p); err != nil {
+	if err := c.BindJSON(&productUpdate); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	err := pr.productUseCase.UpdateProduct(p.ProductID, p.Quantity)
+	err := pr.productUseCase.UpdateProduct(productUpdate.ProductID, productUpdate.Quantity)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not update the product", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
