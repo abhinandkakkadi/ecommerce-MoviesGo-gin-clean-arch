@@ -13,7 +13,7 @@ const docTemplate = `{
         "contact": {},
         "version": "{{.Version}}"
     },
-    "host": "abhinandkakkadi.com:3000",
+    "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "securityDefinitions": {
         "Bearer": {
