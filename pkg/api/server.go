@@ -27,5 +27,5 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 }
 
 func (sh *ServerHTTP) Start() {
-	sh.engine.Run(":3000")
+	sh.engine.Run(":80")
 }
