@@ -23,7 +23,6 @@ const docTemplate = `{
         }
     },
 	
-
     "paths": {
         "/address": {
             "post": {
