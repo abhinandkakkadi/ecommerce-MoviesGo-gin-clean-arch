@@ -22,7 +22,7 @@ const docTemplate = `{
             "in": "header"
         }
     },
-
+	
     "paths": {
         "/address": {
             "post": {
