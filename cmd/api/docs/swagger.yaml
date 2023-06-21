@@ -268,10 +268,12 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: Admin Login
       tags:
       - Admin Authentication
-  /admin/adminsignup:
+  /admin/createadmin:
     post:
       consumes:
       - application/json
@@ -294,6 +296,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
       summary: Admin Signup
       tags:
       - Admin Authentication

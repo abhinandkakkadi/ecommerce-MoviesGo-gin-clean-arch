@@ -103,6 +103,11 @@
         },
         "/admin/adminlogin": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Login handler for admin",
                 "consumes": [
                     "application/json"
@@ -141,8 +146,13 @@
                 }
             }
         },
-        "/admin/adminsignup": {
+        "/admin/createadmin": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Signup handler for admin",
                 "consumes": [
                     "application/json"

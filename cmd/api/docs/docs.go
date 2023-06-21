@@ -122,6 +122,11 @@ const docTemplate = `{
         },
         "/admin/adminlogin": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Login handler for admin",
                 "consumes": [
                     "application/json"
@@ -160,8 +165,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/adminsignup": {
+        "/admin/createadmin": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Signup handler for admin",
                 "consumes": [
                     "application/json"

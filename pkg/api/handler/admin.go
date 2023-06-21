@@ -27,6 +27,7 @@ func NewAdminHandler(usecase services.AdminUseCase) *AdminHandler {
 // @Tags Admin Authentication
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Param  admin body models.AdminLogin true "Admin login details"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
@@ -59,10 +60,11 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 // @Tags Admin Authentication
 // @Accept json
 // @Produce json
+// @Security Bearer
 // @Param  admin body models.AdminSignUp true "Admin login details"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/adminsignup [post]
+// @Router /admin/createadmin [post]
 func (cr *AdminHandler) CreateAdmin(c *gin.Context) {
 
 	var admin models.AdminSignUp
