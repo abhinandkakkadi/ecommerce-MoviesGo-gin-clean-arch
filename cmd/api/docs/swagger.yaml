@@ -109,6 +109,31 @@ definitions:
       product_id:
         type: integer
     type: object
+  models.ProductsReceiver:
+    properties:
+      director:
+        type: string
+      format:
+        type: string
+      genre_id:
+        type: integer
+      language:
+        type: string
+      movie_name:
+        type: string
+      price:
+        type: number
+      products_description:
+        type: string
+      quantity:
+        type: integer
+      release_year:
+        type: string
+      run_time:
+        type: number
+      studio_id:
+        type: integer
+    type: object
   models.ResetPassword:
     properties:
       cpassword:
@@ -268,8 +293,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
       summary: Admin Login
       tags:
       - Admin Authentication
@@ -646,6 +669,34 @@ paths:
       summary: Get Product Details To Admin
       tags:
       - Admin Product Management
+  /admin/products/add-product/:
+    post:
+      consumes:
+      - application/json
+      description: Add product from admin side
+      parameters:
+      - description: Product details
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductsReceiver'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add Products
+      tags:
+      - Admin Product Management
   /admin/products/delete-product/{id}:
     delete:
       consumes:
@@ -681,7 +732,7 @@ paths:
       parameters:
       - description: Product details
         in: body
-        name: p
+        name: productUpdate
         required: true
         schema:
           $ref: '#/definitions/models.UpdateProduct'

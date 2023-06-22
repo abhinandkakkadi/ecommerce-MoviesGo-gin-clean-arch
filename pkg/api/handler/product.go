@@ -115,6 +115,16 @@ func (pr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 
 }
 
+// @Summary Add Products 
+// @Description Add product from admin side
+// @Tags Admin Product Management
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param product body models.ProductsReceiver true "Product details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/products/add-product/ [post]
 func (pr *ProductHandler) AddProduct(c *gin.Context) {
 
 	var product models.ProductsReceiver
@@ -167,7 +177,7 @@ func (pr *ProductHandler) DeleteProduct(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Param p body models.UpdateProduct true "Product details"
+// @Param productUpdate body models.UpdateProduct true "Product details"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/products/update-product/ [post]

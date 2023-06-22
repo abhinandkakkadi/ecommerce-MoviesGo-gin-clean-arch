@@ -27,7 +27,6 @@ func NewAdminHandler(usecase services.AdminUseCase) *AdminHandler {
 // @Tags Admin Authentication
 // @Accept json
 // @Produce json
-// @Security Bearer
 // @Param  admin body models.AdminLogin true "Admin login details"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}

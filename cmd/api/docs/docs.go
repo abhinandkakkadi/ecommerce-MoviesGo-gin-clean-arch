@@ -22,6 +22,7 @@ const docTemplate = `{
             "in": "header"
         }
     },
+	
     "paths": {
         "/address": {
             "post": {
@@ -122,11 +123,6 @@ const docTemplate = `{
         },
         "/admin/adminlogin": {
             "post": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "Login handler for admin",
                 "consumes": [
                     "application/json"
@@ -757,6 +753,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/products/add-product/": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Add product from admin side",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Product Management"
+                ],
+                "summary": "Add Products",
+                "parameters": [
+                    {
+                        "description": "Product details",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ProductsReceiver"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/products/delete-product/{id}": {
             "delete": {
                 "security": [
@@ -821,7 +862,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Product details",
-                        "name": "p",
+                        "name": "productUpdate",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -2480,6 +2521,44 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "product_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.ProductsReceiver": {
+            "type": "object",
+            "properties": {
+                "director": {
+                    "type": "string"
+                },
+                "format": {
+                    "type": "string"
+                },
+                "genre_id": {
+                    "type": "integer"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "movie_name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "products_description": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "release_year": {
+                    "type": "string"
+                },
+                "run_time": {
+                    "type": "number"
+                },
+                "studio_id": {
                     "type": "integer"
                 }
             }
