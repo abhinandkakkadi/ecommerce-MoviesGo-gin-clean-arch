@@ -293,7 +293,7 @@ func (u *UserHandler) UpdateUserDetails(c *gin.Context) {
 // @Param body body models.UpdatePassword true "User Password update"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /users/update-password [post]
+// @Router /users/update-password [put]
 func (u *UserHandler) UpdatePassword(c *gin.Context) {
 
 	user_id, _ := c.Get("user_id")
@@ -386,7 +386,7 @@ func (u *UserHandler) GetWishList(c *gin.Context) {
 // @Param id path string true "product id"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /wishlist/remove/{id} [get]
+// @Router /wishlist/remove/{id} [delete]
 func (u *UserHandler) RemoveFromWishList(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")

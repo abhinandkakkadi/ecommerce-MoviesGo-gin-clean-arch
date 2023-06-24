@@ -62,7 +62,7 @@ func (o *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param id path string true "page number"
-// @Param count query string true "User Name"
+// @Param count query string true "page count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /users/orders/{id} [get]
@@ -134,6 +134,7 @@ func (o *OrderHandler) CancelOrder(c *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param page path string true "Page number"
+// @Param count query string true "page count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/orders/{id} [get]
@@ -172,14 +173,14 @@ func (o *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 func (o *OrderHandler) ApproveOrder(c *gin.Context) {
 
 	orderId := c.Param("order_id")
-	message, err := o.orderUseCase.ApproveOrder(orderId)
+	 err := o.orderUseCase.ApproveOrder(orderId)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not approve the order", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Order approved successfully", message, nil)
+	successRes := response.ClientResponse(http.StatusOK, "Order approved successfully", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }

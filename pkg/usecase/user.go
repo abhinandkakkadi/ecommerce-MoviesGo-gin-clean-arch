@@ -301,7 +301,7 @@ func (u *userUseCase) AddToWishList(productID int, userID int) error {
 		return err
 	}
 	if productExistInWishList {
-		return errors.New("product already exist in database")
+		return errors.New("product already exist in wishlist")
 	}
 
 	err = u.userRepo.AddToWishList(userID, productID)

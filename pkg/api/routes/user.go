@@ -78,6 +78,7 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			whishlist.GET("", userHandler.GetWishList)
 			whishlist.GET("/add/:id", userHandler.AddToWishList)
 			whishlist.DELETE("/remove/:id", userHandler.RemoveFromWishList)
+			
 		}
 
 		coupon := router.Group("/coupon")

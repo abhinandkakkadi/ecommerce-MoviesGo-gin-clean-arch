@@ -75,57 +75,57 @@ func (o *orderUseCase) GetOrderDetails(userID int, page int, count int) ([]model
 
 }
 
-func (o *orderUseCase) CancelOrder(orderID string, userID int) (string, error) {
+func (o *orderUseCase) CancelOrder(orderID string, userID int) error {
 
 	// check whether the orderID corresponds to the given user (other user with token may try to send orderID as path variables) (have to add this logic to so many places)
 	userTest, err := o.orderRepository.UserOrderRelationship(orderID, userID)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	if userTest != userID {
-		return "", errors.New("the order is not done by this user")
+		return errors.New("the order is not done by this user")
 	}
 
 	orderProducts, err := o.orderRepository.GetProductDetailsFromOrders(orderID)
 	if err != nil {
-		return "", err
+		return  err
 	}
 
-	successMessage, err := o.orderRepository.CancelOrder(orderID)
+	 err = o.orderRepository.CancelOrder(orderID)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	// update the quantity to products since the order is cancelled
 	err = o.orderRepository.UpdateQuantityOfProduct(orderProducts)
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	return successMessage, nil
+	return  nil
 
 }
 
-func (o *orderUseCase) CancelOrderFromAdminSide(orderID string) (string, error) {
+func (o *orderUseCase) CancelOrderFromAdminSide(orderID string)  error {
 
 	orderProducts, err := o.orderRepository.GetProductDetailsFromOrders(orderID)
 	if err != nil {
-		return "", err
+		return  err
 	}
 
-	message, err := o.orderRepository.CancelOrder(orderID)
+  err = o.orderRepository.CancelOrder(orderID)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	// update the quantity to products since the order is cancelled
 	err = o.orderRepository.UpdateQuantityOfProduct(orderProducts)
 	if err != nil {
-		return "", err
+		return  err
 	}
 
-	return message, nil
+	return nil
 
 }
 
@@ -164,29 +164,29 @@ func (o *orderUseCase) GetAllOrderDetailsForAdmin(page int) ([]models.CombinedOr
 	return allCombinedOrderDetails, nil
 }
 
-func (o *orderUseCase) ApproveOrder(orderID string) (string, error) {
+func (o *orderUseCase) ApproveOrder(orderID string) error {
 
 	// check whether the specified orderID exist
 	ok, err := o.orderRepository.CheckOrderID(orderID)
 	fmt.Println(ok)
 	if !ok {
-		return "Order ID does not exist", err
+		return err
 	}
 
 	// check the shipment status - if the status cancelled, don't approve it
 	shipmentStatus, err := o.orderRepository.GetShipmentStatus(orderID)
 	if err != nil {
-		return "", err
+		return  err
 	}
 	fmt.Println(shipmentStatus)
 	if shipmentStatus == "cancelled" {
 
-		return "The order is cancelled, cannot approve it", nil
+		return errors.New("the order is cancelled, cannot approve it")
 	}
 
 	if shipmentStatus == "pending" {
 
-		return "The order is pending, cannot approve it", nil
+		return errors.New("the order is pending, cannot approve it")
 	}
 
 	if shipmentStatus == "processing" {
@@ -194,14 +194,14 @@ func (o *orderUseCase) ApproveOrder(orderID string) (string, error) {
 		err := o.orderRepository.ApproveOrder(orderID)
 
 		if err != nil {
-			return "", err
+			return  err
 		}
 
-		return "order approved successfully", nil
+		return  nil
 	}
 
 	// if the shipment status is not processing or cancelled. Then it is defenetely cancelled
-	return "order already approved", nil
+	return  nil
 
 }
 

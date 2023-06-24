@@ -11,7 +11,7 @@ type OrderRepository interface {
 	OrderItemsFromCart(orderBody models.OrderIncoming, cartItems []models.Cart) (domain.OrderSuccessResponse, error)
 	AddressExist(orderBody models.OrderIncoming) (bool, error)
 	GetOrderDetails(userID int, page int, count int) ([]models.FullOrderDetails, error)
-	CancelOrder(orderID string) (string, error)
+	CancelOrder(orderID string) (error)
 	GetProductDetailsFromOrders(orderID string) ([]models.OrderProducts, error)
 	UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error
 	UserOrderRelationship(orderID string, userID int) (int, error)
