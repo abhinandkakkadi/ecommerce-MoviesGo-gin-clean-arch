@@ -24,16 +24,15 @@ func NewOrderRepository(DB *gorm.DB) interfaces.OrderRepository {
 	}
 }
 
-
-func (o *orderRepository) DoesCartExist(userID int) (bool,error) {
+func (o *orderRepository) DoesCartExist(userID int) (bool, error) {
 
 	var exist bool
-	err := o.DB.Raw("select exists(select 1 from carts where user_id = ?)",userID).Scan(&exist).Error
+	err := o.DB.Raw("select exists(select 1 from carts where user_id = ?)", userID).Scan(&exist).Error
 	if err != nil {
-		return false,err
+		return false, err
 	}
 
-	return exist,nil
+	return exist, nil
 }
 
 func (o *orderRepository) AddressExist(orderBody models.OrderIncoming) (bool, error) {
@@ -197,7 +196,7 @@ func (o *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderPr
 
 }
 
-func (o *orderRepository) CancelOrder(orderID string)  error {
+func (o *orderRepository) CancelOrder(orderID string) error {
 
 	var shipmentStatus string
 	fmt.Println(orderID)
@@ -218,7 +217,7 @@ func (o *orderRepository) CancelOrder(orderID string)  error {
 	}
 
 	if shipmentStatus == "cancelled" {
-		return  errors.New("the order is already cancelled, so no point in cancelling")
+		return errors.New("the order is already cancelled, so no point in cancelling")
 	}
 
 	shipmentStatus = "cancelled"
@@ -248,7 +247,7 @@ func (o *orderRepository) CancelOrder(orderID string)  error {
 		var amountDetails AmountDetails
 		err = o.DB.Raw("select final_price,user_id from orders where order_id = ?", orderID).Scan(&amountDetails).Error
 		if err != nil {
-			return  err
+			return err
 		}
 		// check if a user have a uer have a wallet record if not create on
 		fmt.Println("amount details = ", amountDetails)
@@ -261,13 +260,13 @@ func (o *orderRepository) CancelOrder(orderID string)  error {
 		if result.RowsAffected == 0 {
 			result := o.DB.Exec("insert into wallets (user_id,wallet_amount) values(?,?)", amountDetails.UserID, amountDetails.FinalPrice)
 			if result.Error != nil {
-				return  err
+				return err
 			}
 		}
 
 	}
 
-	return  nil
+	return nil
 }
 
 func (o *orderRepository) GetOrderDetailsBrief(page int) ([]models.OrderDetails, error) {

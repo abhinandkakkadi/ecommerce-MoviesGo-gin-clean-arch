@@ -11,13 +11,13 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 	router.POST("/adminlogin", adminHandler.LoginHandler)
 	// api := router.Group("/admin_panel", middleware.AuthorizationMiddleware)
 	// api.GET("users", adminHandler.GetUsers)
-	
+
 	router.Use(middleware.AuthorizationMiddleware)
-	{	
+	{
 		router.GET("/dashboard", adminHandler.DashBoard)
 		router.GET("/sales-report/:period", adminHandler.FilteredSalesReport)
 		router.POST("/createadmin", adminHandler.CreateAdmin)
-		
+
 		genres := router.Group("/genres")
 		{
 			genres.GET("", adminHandler.GetGenres) // change this to get category

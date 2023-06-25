@@ -289,8 +289,8 @@ func (ad *UserHandler) AddNewUsers(c *gin.Context) {
 
 }
 
-// @Summary Admin Dashboard 
-// @Description Get Amin Home Page with Complete Details 
+// @Summary Admin Dashboard
+// @Description Get Amin Home Page with Complete Details
 // @Tags Admin Dash Board
 // @Accept json
 // @Produce json
@@ -312,9 +312,8 @@ func (ad *AdminHandler) DashBoard(c *gin.Context) {
 
 }
 
-
-// @Summary Filtered Sales Report 
-// @Description Get Filtered sales report by week, month and year 
+// @Summary Filtered Sales Report
+// @Description Get Filtered sales report by week, month and year
 // @Tags Admin Dash Board
 // @Accept json
 // @Produce json

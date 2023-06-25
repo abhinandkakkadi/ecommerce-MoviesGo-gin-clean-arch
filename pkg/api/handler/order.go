@@ -173,7 +173,7 @@ func (o *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 func (o *OrderHandler) ApproveOrder(c *gin.Context) {
 
 	orderId := c.Param("order_id")
-	 err := o.orderUseCase.ApproveOrder(orderId)
+	err := o.orderUseCase.ApproveOrder(orderId)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not approve the order", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)

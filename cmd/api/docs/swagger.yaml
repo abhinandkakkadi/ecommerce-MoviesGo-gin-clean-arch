@@ -501,7 +501,7 @@ paths:
       tags:
       - Admin Offer Management
   /admin/offer/coupons/expire/{id}:
-    get:
+    patch:
       consumes:
       - application/json
       description: Expire Coupon by admin which are already present by passing coupon
@@ -565,6 +565,11 @@ paths:
       - description: Page number
         in: path
         name: page
+        required: true
+        type: string
+      - description: page count
+        in: query
+        name: count
         required: true
         type: string
       produces:
@@ -648,7 +653,7 @@ paths:
         name: page
         required: true
         type: string
-      - description: User Name
+      - description: Products Count Per Page
         in: query
         name: count
         required: true
@@ -817,7 +822,7 @@ paths:
         name: page
         required: true
         type: string
-      - description: User Name
+      - description: User Count Per Page
         in: query
         name: count
         required: true
@@ -1038,7 +1043,7 @@ paths:
       summary: Checkout Order
       tags:
       - User Checkout
-  /coupon/add:
+  /coupon/apply:
     post:
       consumes:
       - application/json
@@ -1206,7 +1211,7 @@ paths:
       - application/json
       description: Get Individual Detailed product details to user side
       parameters:
-      - description: product id
+      - description: sku
         in: path
         name: id
         required: true
@@ -1283,7 +1288,7 @@ paths:
         name: page
         required: true
         type: string
-      - description: User Name
+      - description: Page Count
         in: query
         name: count
         required: true
@@ -1306,7 +1311,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Show Products of specified category
+      description: Show Products by it's prefix (case insensitive)
       parameters:
       - description: Name prefix to search
         in: body
@@ -1325,7 +1330,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
-      summary: Show Products of specified category
+      summary: Search Products
       tags:
       - User Product
   /referral/apply:
@@ -1509,7 +1514,7 @@ paths:
         name: id
         required: true
         type: string
-      - description: User Name
+      - description: page count
         in: query
         name: count
         required: true
@@ -1558,7 +1563,7 @@ paths:
       tags:
       - User Order
   /users/update-password:
-    post:
+    put:
       consumes:
       - application/json
       description: Update User Password
@@ -1660,7 +1665,7 @@ paths:
       tags:
       - User Profile
   /wishlist/remove/{id}:
-    get:
+    delete:
       consumes:
       - application/json
       description: Add To wish List

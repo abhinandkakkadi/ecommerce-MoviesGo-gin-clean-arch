@@ -39,7 +39,7 @@ func (cr *cartRepository) AddToCart(product_id int, userID int, offerDetails mod
 		return []models.Cart{}, err
 	}
 
-	fmt.Println("if this is zero i got it : ",productQuantity)
+	fmt.Println("if this is zero i got it : ", productQuantity)
 
 	var cartsQuantity int
 	if err := tx.Raw("select quantity from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&cartsQuantity).Error; err != nil {

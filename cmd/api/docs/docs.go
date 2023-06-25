@@ -487,7 +487,7 @@ const docTemplate = `{
             }
         },
         "/admin/offer/coupons/expire/{id}": {
-            "get": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
@@ -685,6 +685,13 @@ const docTemplate = `{
                         "name": "page",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "page count",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -731,7 +738,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "User Name",
+                        "description": "Products Count Per Page",
                         "name": "count",
                         "in": "query",
                         "required": true
@@ -1131,7 +1138,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "User Name",
+                        "description": "User Count Per Page",
                         "name": "count",
                         "in": "query",
                         "required": true
@@ -1339,7 +1346,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/coupon/add": {
+        "/coupon/apply": {
             "post": {
                 "security": [
                     {
@@ -1689,7 +1696,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "User Name",
+                        "description": "Page Count",
                         "name": "count",
                         "in": "query",
                         "required": true
@@ -1713,7 +1720,7 @@ const docTemplate = `{
         },
         "/products/search": {
             "post": {
-                "description": "Show Products of specified category",
+                "description": "Show Products by it's prefix (case insensitive)",
                 "consumes": [
                     "application/json"
                 ],
@@ -1723,7 +1730,7 @@ const docTemplate = `{
                 "tags": [
                     "User Product"
                 ],
-                "summary": "Show Products of specified category",
+                "summary": "Search Products",
                 "parameters": [
                     {
                         "description": "Name prefix to search",
@@ -1767,7 +1774,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "product id",
+                        "description": "sku",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -2085,7 +2092,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "User Name",
+                        "description": "page count",
                         "name": "count",
                         "in": "query",
                         "required": true
@@ -2151,7 +2158,7 @@ const docTemplate = `{
             }
         },
         "/users/update-password": {
-            "post": {
+            "put": {
                 "security": [
                     {
                         "Bearer": []
@@ -2313,7 +2320,7 @@ const docTemplate = `{
             }
         },
         "/wishlist/remove/{id}": {
-            "get": {
+            "delete": {
                 "security": [
                     {
                         "Bearer": []

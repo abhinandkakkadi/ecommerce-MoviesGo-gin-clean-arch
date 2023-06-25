@@ -115,7 +115,7 @@ func (pr *ProductHandler) ShowIndividualProducts(c *gin.Context) {
 
 }
 
-// @Summary Add Products 
+// @Summary Add Products
 // @Description Add product from admin side
 // @Tags Admin Product Management
 // @Accept json

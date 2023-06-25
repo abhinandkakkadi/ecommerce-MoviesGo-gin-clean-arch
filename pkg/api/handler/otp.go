@@ -78,7 +78,6 @@ func (ot *OtpHandler) VerifyOTP(c *gin.Context) {
 
 }
 
-
 // @Summary Send OTP to Reset Password
 // @Description Send OTP to number corresponding to the given username
 // @Tags User Authentication

@@ -37,13 +37,13 @@ func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, us
 
 	orderBody.UserID = uint(userID)
 
-	cartExist,err := o.orderRepository.DoesCartExist(userID)
+	cartExist, err := o.orderRepository.DoesCartExist(userID)
 	if err != nil {
-		return domain.OrderSuccessResponse{},err
+		return domain.OrderSuccessResponse{}, err
 	}
-	
+
 	if !cartExist {
-		return domain.OrderSuccessResponse{},errors.New("cart empty can't order")
+		return domain.OrderSuccessResponse{}, errors.New("cart empty can't order")
 	}
 
 	addressExist, err := o.orderRepository.AddressExist(orderBody)
@@ -98,10 +98,10 @@ func (o *orderUseCase) CancelOrder(orderID string, userID int) error {
 
 	orderProducts, err := o.orderRepository.GetProductDetailsFromOrders(orderID)
 	if err != nil {
-		return  err
+		return err
 	}
 
-	 err = o.orderRepository.CancelOrder(orderID)
+	err = o.orderRepository.CancelOrder(orderID)
 	if err != nil {
 		return err
 	}
@@ -112,18 +112,18 @@ func (o *orderUseCase) CancelOrder(orderID string, userID int) error {
 		return err
 	}
 
-	return  nil
+	return nil
 
 }
 
-func (o *orderUseCase) CancelOrderFromAdminSide(orderID string)  error {
+func (o *orderUseCase) CancelOrderFromAdminSide(orderID string) error {
 
 	orderProducts, err := o.orderRepository.GetProductDetailsFromOrders(orderID)
 	if err != nil {
-		return  err
+		return err
 	}
 
-  err = o.orderRepository.CancelOrder(orderID)
+	err = o.orderRepository.CancelOrder(orderID)
 	if err != nil {
 		return err
 	}
@@ -131,7 +131,7 @@ func (o *orderUseCase) CancelOrderFromAdminSide(orderID string)  error {
 	// update the quantity to products since the order is cancelled
 	err = o.orderRepository.UpdateQuantityOfProduct(orderProducts)
 	if err != nil {
-		return  err
+		return err
 	}
 
 	return nil
@@ -185,7 +185,7 @@ func (o *orderUseCase) ApproveOrder(orderID string) error {
 	// check the shipment status - if the status cancelled, don't approve it
 	shipmentStatus, err := o.orderRepository.GetShipmentStatus(orderID)
 	if err != nil {
-		return  err
+		return err
 	}
 	fmt.Println(shipmentStatus)
 	if shipmentStatus == "cancelled" {
@@ -203,14 +203,14 @@ func (o *orderUseCase) ApproveOrder(orderID string) error {
 		err := o.orderRepository.ApproveOrder(orderID)
 
 		if err != nil {
-			return  err
+			return err
 		}
 
-		return  nil
+		return nil
 	}
 
 	// if the shipment status is not processing or cancelled. Then it is defenetely cancelled
-	return  nil
+	return nil
 
 }
 
