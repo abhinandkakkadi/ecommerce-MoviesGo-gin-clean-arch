@@ -150,7 +150,7 @@ func (cr *CartHandler) EmptyCart(c *gin.Context) {
 // @Param couponDetails body models.CouponAddUser true "Add coupon to order"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /coupon/add [post]
+// @Router /coupon/apply [post]
 func (cr *CartHandler) ApplyCoupon(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")

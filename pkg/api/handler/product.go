@@ -67,7 +67,7 @@ func (pr *ProductHandler) ShowAllProducts(c *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param page path string true "Page number"
-// @Param count query string true "User Name"
+// @Param count query string true "Products Count Per Page"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/products [get]

@@ -18,6 +18,7 @@ type Products struct {
 	MovieStudio         MovieStudio `json:"-" gorm:"foreignkey:StudioID;constraint:OnDelete:CASCADE"`
 	Quantity            int         `json:"quantity"`
 	Price               float64     `json:"price"`
+	Delete              bool        `json:"delete" gorm:"default:false"`
 }
 
 type Genre struct {
