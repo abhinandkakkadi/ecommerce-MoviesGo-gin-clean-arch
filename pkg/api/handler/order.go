@@ -115,14 +115,14 @@ func (o *OrderHandler) CancelOrder(c *gin.Context) {
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
-	message, err := o.orderUseCase.CancelOrder(orderID, userID)
+	err := o.orderUseCase.CancelOrder(orderID, userID)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not cancel the order", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Cancel Successfull", message, nil)
+	successRes := response.ClientResponse(http.StatusOK, "Cancel Successfull", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
@@ -200,14 +200,14 @@ func (o *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 	orderID := c.Param("order_id")
 	fmt.Println(orderID)
 
-	message, err := o.orderUseCase.CancelOrderFromAdminSide(orderID)
+	err := o.orderUseCase.CancelOrderFromAdminSide(orderID)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not cancel the order", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Cancel Successfull", message, nil)
+	successRes := response.ClientResponse(http.StatusOK, "Cancel Successfull", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
 

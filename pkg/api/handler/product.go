@@ -27,7 +27,7 @@ func NewProductHandler(useCase services.ProductUseCase) *ProductHandler {
 // @Accept json
 // @Produce json
 // @Param page path string true "Page number"
-// @Param count query string true "User Name"
+// @Param count query string true "Page Count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /products/page/{page} [get]
@@ -95,7 +95,7 @@ func (pr *ProductHandler) SeeAllProductToAdmin(c *gin.Context) {
 // @Tags User Product
 // @Accept json
 // @Produce json
-// @Param id path string true "product id"
+// @Param id path string true "sku"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /products/{id} [get]
@@ -233,8 +233,8 @@ func (pr *ProductHandler) FilterCategory(c *gin.Context) {
 
 }
 
-// @Summary Show Products of specified category
-// @Description Show Products of specified category
+// @Summary Search Products
+// @Description Show Products by it's prefix (case insensitive)
 // @Tags User Product
 // @Accept json
 // @Produce json

@@ -37,6 +37,15 @@ func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, us
 
 	orderBody.UserID = uint(userID)
 
+	cartExist,err := o.orderRepository.DoesCartExist(userID)
+	if err != nil {
+		return domain.OrderSuccessResponse{},err
+	}
+	
+	if !cartExist {
+		return domain.OrderSuccessResponse{},errors.New("cart empty can't order")
+	}
+
 	addressExist, err := o.orderRepository.AddressExist(orderBody)
 	if err != nil {
 		return domain.OrderSuccessResponse{}, err

@@ -24,6 +24,18 @@ func NewOrderRepository(DB *gorm.DB) interfaces.OrderRepository {
 	}
 }
 
+
+func (o *orderRepository) DoesCartExist(userID int) (bool,error) {
+
+	var exist bool
+	err := o.DB.Raw("select exists(select 1 from carts where user_id = ?)",userID).Scan(&exist).Error
+	if err != nil {
+		return false,err
+	}
+
+	return exist,nil
+}
+
 func (o *orderRepository) AddressExist(orderBody models.OrderIncoming) (bool, error) {
 	fmt.Println("user id = ", orderBody.UserID, "address id = ", orderBody.AddressID)
 	var count int
