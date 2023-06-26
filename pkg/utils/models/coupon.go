@@ -9,30 +9,30 @@ type Coupon struct {
 }
 
 type AddCoupon struct {
-	Coupon             string  `json:"coupon"`
-	DiscountPercentage int     `json:"discount_percentage"`
-	MinimumPrice       float64 `json:"minimum_price"`
-	Validity           bool    `json:"validity"`
+	Coupon             string  `json:"coupon binding:required"`
+	DiscountPercentage int     `json:"discount_percentage binding:required"`
+	MinimumPrice       float64 `json:"minimum_price binding:required"`
+	Validity           bool    `json:"validity binding:required"`
 }
 
 type CouponAddUser struct {
-	CouponName string `json:"coupon_name"`
+	CouponName string `json:"coupon_name binding:required"`
 }
 
 type ProductOfferReceiver struct {
-	ProductID          uint   `json:"product_id"`
-	OfferName          string `json:"offer_name"`
-	OfferDescription   string `json:"offer_description"`
-	DiscountPercentage int    `json:"discount_percentage"`
-	OfferLimit         int    `json:"offer_limit"`
+	ProductID          uint   `json:"product_id binding:required"`
+	OfferName          string `json:"offer_name binding:required"`
+	OfferDescription   string `json:"offer_description binding:required"`
+	DiscountPercentage int    `json:"discount_percentage binding:required"`
+	OfferLimit         int    `json:"offer_limit binding:required"`
 }
 
 type CategoryOfferReceiver struct {
-	GenreID            uint   `json:"genre_id"`
-	OfferName          string `json:"offer_name"`
-	OfferDescription   string `json:"offer_description"`
-	DiscountPercentage int    `json:"discount_percentage"`
-	OfferLimit         int    `json:"offer_limit"`
+	GenreID            uint   `json:"genre_id binding:required"`
+	OfferName          string `json:"offer_name binding:required"`
+	OfferDescription   string `json:"offer_description binding:required"`
+	DiscountPercentage int    `json:"discount_percentage binding:required"`
+	OfferLimit         int    `json:"offer_limit binding:required"`
 }
 
 type OfferResponse struct {

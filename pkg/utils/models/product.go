@@ -17,17 +17,17 @@ type ProductResponse struct {
 }
 
 type ProductsReceiver struct {
-	MovieName           string  `json:"movie_name"`
-	GenreID             uint    `json:"genre_id"`
-	ReleaseYear         string  `json:"release_year"`
-	Format              string  `json:"format"`
-	Director            string  `json:"director"`
-	ProductsDescription string  `json:"products_description"`
-	Runtime             float64 `json:"run_time"`
-	Language            string  `json:"language"`
-	StudioID            uint    `json:"studio_id"`
-	Quantity            int     `json:"quantity"`
-	Price               float64 `json:"price"`
+	MovieName           string  `json:"movie_name binding:required"`
+	GenreID             uint    `json:"genre_id binding:required"`
+	ReleaseYear         string  `json:"release_year binding:required"`
+	Format              string  `json:"format binding:required"`
+	Director            string  `json:"director binding:required"`
+	ProductsDescription string  `json:"products_description binding:required"`
+	Runtime             float64 `json:"run_time binding:required"`
+	Language            string  `json:"language binding:required"`
+	StudioID            uint    `json:"studio_id binding:required"`
+	Quantity            int     `json:"quantity binding:required"`
+	Price               float64 `json:"price binding:required"`
 }
 
 type ProductsBrief struct {
@@ -42,7 +42,7 @@ type ProductsBrief struct {
 }
 
 type CategoryUpdate struct {
-	Genre string `json:"genre"`
+	Genre string `json:"genre binding:required"`
 }
 
 type CategoryUpdateCheck struct {
@@ -53,10 +53,10 @@ type CategoryUpdateCheck struct {
 }
 
 type UpdateProduct struct {
-	Quantity  int `json:"quantity"`
-	ProductID int `json:"product-id"`
+	Quantity  int `json:"quantity binding:required"`
+	ProductID int `json:"product-id binding:required"`
 }
 
 type SearchItems struct {
-	Name string `json:"name"`
+	Name string `json:"name binding:required"`
 }

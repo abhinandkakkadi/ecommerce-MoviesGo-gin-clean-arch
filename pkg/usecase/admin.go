@@ -34,7 +34,6 @@ func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.Tok
 
 	// compare password from database and that provided from admins
 	err = bcrypt.CompareHashAndPassword([]byte(adminCompareDetails.Password), []byte(adminDetails.Password))
-	fmt.Println(err)
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
@@ -53,13 +52,6 @@ func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.Tok
 		return domain.TokenAdmin{}, err
 	}
 
-	// var admin models.AdminDetails
-
-	// err = copier.Copy(&admin, &adminCompareDetails)
-	// if err != nil {
-	// 	return domain.TokenAdmin{}, err
-	// }
-
 	return domain.TokenAdmin{
 		Admin: adminDetailsResponse,
 		Token: tokenString,
@@ -67,7 +59,7 @@ func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.Tok
 
 }
 
-// signup handler for the admin
+// sign up handler for the admin
 func (ad *adminUseCase) CreateAdmin(admin models.AdminSignUp) (domain.TokenAdmin, error) {
 
 	// validator package to check the constraints specified in the struct which is used to retrieve these details
@@ -83,7 +75,7 @@ func (ad *adminUseCase) CreateAdmin(admin models.AdminSignUp) (domain.TokenAdmin
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(admin.Password), 10)
 	if err != nil {
-		return domain.TokenAdmin{}, errors.New("Internal server error")
+		return domain.TokenAdmin{}, errors.New("internal server error")
 	}
 	admin.Password = string(hashedPassword)
 
@@ -97,13 +89,6 @@ func (ad *adminUseCase) CreateAdmin(admin models.AdminSignUp) (domain.TokenAdmin
 	if err != nil {
 		return domain.TokenAdmin{}, err
 	}
-
-	// var adminDetails models.AdminDetails
-
-	// err = copier.Copy(&adminDetails, &adminToken)
-	// if err != nil {
-	// 	return domain.TokenAdmin{}, err
-	// }
 
 	return domain.TokenAdmin{
 		Admin: adminDetails,
@@ -124,7 +109,9 @@ func (ad *adminUseCase) GetUsers(page int, count int) ([]models.UserDetailsAtAdm
 }
 
 func (ad *adminUseCase) AddGenres(genre models.CategoryUpdate) error {
+
 	return ad.adminRepository.AddGenre(genre)
+
 }
 
 func (ad *adminUseCase) Delete(genre_id string) error {
@@ -140,6 +127,7 @@ func (ad *adminUseCase) Delete(genre_id string) error {
 func (ad *adminUseCase) GetGenres() ([]domain.Genre, error) {
 
 	return ad.adminRepository.GetGenres()
+
 }
 
 // block user
@@ -203,40 +191,37 @@ func (ad *adminUseCase) FilteredSalesReport(timePeriod string) (models.SalesRepo
 	}
 
 	return salesReport, nil
+
 }
 
 func (ad *adminUseCase) DashBoard() (models.CompleteAdminDashboard, error) {
 
 	totalRevenue, err := ad.adminRepository.TotalRevenue()
 	if err != nil {
-		fmt.Println(err)
+		return models.CompleteAdminDashboard{},err
 	}
 	fmt.Println(totalRevenue)
 
 	orderDetails, err := ad.adminRepository.DashBoardOrder()
 	if err != nil {
-		fmt.Println(err)
+		return models.CompleteAdminDashboard{},err
 	}
-	fmt.Printf("%+v", orderDetails)
 
 	amountDetails, err := ad.adminRepository.AmountDetails()
 	if err != nil {
-		fmt.Println(err)
+		return models.CompleteAdminDashboard{},err
 	}
-	fmt.Printf("%+v", amountDetails)
 
 	userDetails, err := ad.adminRepository.DashboardUserDetails()
 	if err != nil {
-		fmt.Println(err)
+		return models.CompleteAdminDashboard{},err
 	}
-	fmt.Printf("%+v", userDetails)
 
 	productDetails, err := ad.adminRepository.DashBoardProductDetails()
 	if err != nil {
-		fmt.Println(productDetails)
+		return models.CompleteAdminDashboard{},err
 	}
 
-	fmt.Printf("%+v", productDetails)
 
 	return models.CompleteAdminDashboard{
 		DashboardRevenue: totalRevenue,

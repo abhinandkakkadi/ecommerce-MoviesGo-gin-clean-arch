@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -35,8 +34,7 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 
 	// var adminDetails models.AdminLogin
 	var adminDetails models.AdminLogin
-	fmt.Println("it is here")
-	if err := c.BindJSON(&adminDetails); err != nil {
+	if err := c.ShouldBindJSON(&adminDetails); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
@@ -67,7 +65,7 @@ func (cr *AdminHandler) LoginHandler(c *gin.Context) { // login handler for the 
 func (cr *AdminHandler) CreateAdmin(c *gin.Context) {
 
 	var admin models.AdminSignUp
-	if err := c.BindJSON(&admin); err != nil {
+	if err := c.ShouldBindJSON(&admin); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are wrong", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 	}
@@ -99,12 +97,12 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 
 	pageStr := c.Param("page")
 	page, err := strconv.Atoi(pageStr)
-
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
+
 	count, err := strconv.Atoi(c.Query("count"))
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "user count in a page not in right format", nil, err.Error())
@@ -118,6 +116,7 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
+
 	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the users", users, nil)
 	c.JSON(http.StatusOK, successRes)
 
@@ -140,8 +139,10 @@ func (ad *AdminHandler) GetGenres(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
+
 	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the genres", genres, nil)
 	c.JSON(http.StatusOK, successRes)
+
 }
 
 // @Summary Add a new Genres ( Category )
@@ -157,7 +158,7 @@ func (ad *AdminHandler) GetGenres(c *gin.Context) {
 func (ad *AdminHandler) AddGenres(c *gin.Context) {
 
 	var category models.CategoryUpdate
-	if err := c.BindJSON(&category); err != nil {
+	if err := c.ShouldBindJSON(&category); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
@@ -169,6 +170,7 @@ func (ad *AdminHandler) AddGenres(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
+
 	successRes := response.ClientResponse(http.StatusCreated, "Successfully added the genre", nil, nil)
 	c.JSON(http.StatusCreated, successRes)
 
@@ -237,7 +239,6 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 
 	id := c.Param("id")
 	err := ad.adminUseCase.UnBlockUser(id)
-
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -246,6 +247,7 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "Successfully unblocked the user", nil, nil)
 	c.JSON(http.StatusOK, successRes)
+
 }
 
 // @Summary Create User By Admin
@@ -259,9 +261,9 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 // @Failure 500 {object} response.Response{}
 // @Router /admin/users/add-users [POST]
 func (ad *UserHandler) AddNewUsers(c *gin.Context) {
-	fmt.Println("add users")
+
 	var userDetails models.UserDetails
-	if err := c.BindJSON(&userDetails); err != nil {
+	if err := c.ShouldBindJSON(&userDetails); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not bind the user details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return

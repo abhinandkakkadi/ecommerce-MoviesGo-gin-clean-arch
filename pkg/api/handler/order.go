@@ -37,7 +37,7 @@ func (o *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 	userID := id.(int)
 
 	var orderFromCart models.OrderFromCart
-	if err := c.BindJSON(&orderFromCart); err != nil {
+	if err := c.ShouldBindJSON(&orderFromCart); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "bad request", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
@@ -70,6 +70,7 @@ func (o *OrderHandler) GetOrderDetails(c *gin.Context) {
 
 	pageStr := c.Param("page")
 	page, err := strconv.Atoi(pageStr)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -77,6 +78,7 @@ func (o *OrderHandler) GetOrderDetails(c *gin.Context) {
 	}
 
 	count, err := strconv.Atoi(c.Query("count"))
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "page count not in right format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -87,6 +89,7 @@ func (o *OrderHandler) GetOrderDetails(c *gin.Context) {
 	userID := id.(int)
 
 	fullOrderDetails, err := o.orderUseCase.GetOrderDetails(userID, page, count)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not do the order", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -112,10 +115,12 @@ func (o *OrderHandler) CancelOrder(c *gin.Context) {
 
 	orderID := c.Param("id")
 	fmt.Println(orderID)
+
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
 	err := o.orderUseCase.CancelOrder(orderID, userID)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not cancel the order", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -142,6 +147,7 @@ func (o *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 
 	pageStr := c.Param("page")
 	page, err := strconv.Atoi(pageStr)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -149,6 +155,7 @@ func (o *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 	}
 
 	allOrderDetails, err := o.orderUseCase.GetAllOrderDetailsForAdmin(page)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not retrieve order details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -173,7 +180,9 @@ func (o *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 func (o *OrderHandler) ApproveOrder(c *gin.Context) {
 
 	orderId := c.Param("order_id")
+
 	err := o.orderUseCase.ApproveOrder(orderId)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not approve the order", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -198,9 +207,9 @@ func (o *OrderHandler) ApproveOrder(c *gin.Context) {
 func (o *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 
 	orderID := c.Param("order_id")
-	fmt.Println(orderID)
 
 	err := o.orderUseCase.CancelOrderFromAdminSide(orderID)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not cancel the order", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -209,6 +218,7 @@ func (o *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "Cancel Successfull", nil, nil)
 	c.JSON(http.StatusOK, successRes)
+
 }
 
 // @Summary Order Delivered
@@ -224,8 +234,8 @@ func (o *OrderHandler) CancelOrderFromAdminSide(c *gin.Context) {
 func (o *OrderHandler) OrderDelivered(c *gin.Context) {
 
 	orderID := c.Param("order_id")
-	fmt.Println(orderID)
 	err := o.orderUseCase.OrderDelivered(orderID)
+
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusInternalServerError, "order could not be delivered", nil, err)
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -250,8 +260,9 @@ func (o *OrderHandler) OrderDelivered(c *gin.Context) {
 func (o *OrderHandler) ReturnOrder(c *gin.Context) {
 
 	orderID := c.Param("order_id")
-	fmt.Println(orderID)
+
 	err := o.orderUseCase.ReturnOrder(orderID)
+
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusInternalServerError, "order could not be returned", nil, err)
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -276,8 +287,9 @@ func (o *OrderHandler) ReturnOrder(c *gin.Context) {
 func (o *OrderHandler) RefundUser(c *gin.Context) {
 
 	orderID := c.Param("order_id")
-	fmt.Println(orderID)
+
 	err := o.orderUseCase.RefundOrder(orderID)
+	
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusInternalServerError, "refund was not possible", nil, err)
 		c.JSON(http.StatusInternalServerError, errRes)

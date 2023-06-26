@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -37,6 +36,7 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 
 	id := c.Param("id")
 	product_id, err := strconv.Atoi(id)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "product id not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -44,8 +44,6 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 	}
 
 	userID, _ := c.Get("user_id")
-	fmt.Println(product_id, userID)
-
 	cartResponse, err := cr.cartUseCase.AddToCart(product_id, userID.(int))
 
 	if err != nil {
@@ -73,6 +71,7 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 
 	id := c.Param("id")
 	product_id, err := strconv.Atoi(id)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "product not in right format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -80,7 +79,6 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 	}
 
 	userID, _ := c.Get("user_id")
-
 	updatedCart, err := cr.cartUseCase.RemoveFromCart(product_id, userID.(int))
 
 	if err != nil {
@@ -91,6 +89,7 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "Cart item deleted", updatedCart, nil)
 	c.JSON(http.StatusOK, successRes)
+
 }
 
 // @Summary Display Cart
@@ -115,6 +114,7 @@ func (cr *CartHandler) DisplayCart(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "Cart items displayed successfully", cart, nil)
 	c.JSON(http.StatusOK, successRes)
+
 }
 
 // @Summary Delete all Items Present inside the Cart
@@ -156,20 +156,21 @@ func (cr *CartHandler) ApplyCoupon(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	var couponDetails models.CouponAddUser
 
-	if err := c.BindJSON(&couponDetails); err != nil {
+	if err := c.ShouldBindJSON(&couponDetails); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not bind the coupon", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	err := cr.cartUseCase.ApplyCoupon(couponDetails.CouponName, userID.(int))
+
+
 	if err != nil {
-		if err != nil {
 			errorRes := response.ClientResponse(http.StatusInternalServerError, "coupon could not be added", nil, err.Error())
 			c.JSON(http.StatusInternalServerError, errorRes)
 			return
-		}
 	}
+	
 
 	successRes := response.ClientResponse(http.StatusCreated, "Coupon added successfully", nil, nil)
 	c.JSON(http.StatusCreated, successRes)

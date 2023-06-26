@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
@@ -25,6 +24,7 @@ func (p *PaymentHandler) MakePaymentRazorPay(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 
 	orderDetail, razorID, err := p.paymentUseCase.MakePaymentRazorPay(orderID, userID.(int))
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not generate order details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -39,17 +39,17 @@ func (p *PaymentHandler) MakePaymentRazorPay(c *gin.Context) {
 		"user_name":   orderDetail.Name,
 		"total":       int(orderDetail.FinalPrice),
 	})
+
 }
 
 func (p *PaymentHandler) VerifyPayment(c *gin.Context) {
 
 	orderID := c.Query("order_id")
-	fmt.Println("this is the order id : ", orderID)
 	paymentID := c.Query("payment_id")
 	razorID := c.Query("order_id")
 
-	fmt.Println("paymentID := ", paymentID, " razorID := ", razorID)
 	err := p.paymentUseCase.SavePaymentDetails(paymentID, razorID, orderID)
+	
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not update payment details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)

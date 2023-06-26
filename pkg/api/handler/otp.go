@@ -31,12 +31,14 @@ func NewOtpHandler(useCase services.OtpUseCase) *OtpHandler {
 func (ot *OtpHandler) SendOTP(c *gin.Context) {
 
 	var phone models.OTPData
-	if err := c.BindJSON(&phone); err != nil {
+
+	if err := c.ShouldBindJSON(&phone); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 	}
 
 	err := ot.otpUseCase.SendOTP(phone.PhoneNumber)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not send OTP", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -60,13 +62,15 @@ func (ot *OtpHandler) SendOTP(c *gin.Context) {
 func (ot *OtpHandler) VerifyOTP(c *gin.Context) {
 
 	var code models.VerifyData
-	if err := c.BindJSON(&code); err != nil {
+
+	if err := c.ShouldBindJSON(&code); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	users, err := ot.otpUseCase.VerifyOTP(code)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not verify OTP", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -90,13 +94,15 @@ func (ot *OtpHandler) VerifyOTP(c *gin.Context) {
 func (ot *OtpHandler) SendOTPtoReset(c *gin.Context) {
 
 	var email models.Email
-	if err := c.BindJSON(&email); err != nil {
+
+	if err := c.ShouldBindJSON(&email); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	phone, err := ot.otpUseCase.SendOTPtoReset(email.Email)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not send OTP", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -120,13 +126,15 @@ func (ot *OtpHandler) SendOTPtoReset(c *gin.Context) {
 func (ot *OtpHandler) VerifyOTPToReset(c *gin.Context) {
 
 	var code models.VerifyData
-	if err := c.BindJSON(&code); err != nil {
+
+	if err := c.ShouldBindJSON(&code); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	signedToken, err := ot.otpUseCase.VerifyOTPtoReset(code)
+	
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not verify OTP", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)

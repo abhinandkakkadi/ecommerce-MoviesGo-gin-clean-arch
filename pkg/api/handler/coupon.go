@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -34,13 +33,15 @@ func NewCouponHandler(useCase services.CouponUseCase) *CouponHandler {
 func (co *CouponHandler) AddCoupon(c *gin.Context) {
 
 	var coupon models.AddCoupon
-	if err := c.BindJSON(&coupon); err != nil {
+
+	if err := c.ShouldBindJSON(&coupon); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not bind the coupon details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	fmt.Println(coupon)
+
 	message, err := co.couponUseCase.AddCoupon(coupon)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not add coupon", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -64,6 +65,7 @@ func (co *CouponHandler) AddCoupon(c *gin.Context) {
 func (co *CouponHandler) GetCoupon(c *gin.Context) {
 
 	coupons, err := co.couponUseCase.GetCoupon()
+	
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not get coupon details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -89,6 +91,7 @@ func (co *CouponHandler) ExpireCoupon(c *gin.Context) {
 
 	id := c.Param("id")
 	couponID, err := strconv.Atoi(id)
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "coupon id not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -120,13 +123,15 @@ func (co *CouponHandler) ExpireCoupon(c *gin.Context) {
 func (co *CouponHandler) AddProdcutOffer(c *gin.Context) {
 
 	var productOffer models.ProductOfferReceiver
-	if err := c.BindJSON(&productOffer); err != nil {
+
+	if err := c.ShouldBindJSON(&productOffer); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "request fields in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
 	err := co.couponUseCase.AddProductOffer(productOffer)
+
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusInternalServerError, "could not add offer", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -151,13 +156,15 @@ func (co *CouponHandler) AddProdcutOffer(c *gin.Context) {
 func (co *CouponHandler) AddCategoryOffer(c *gin.Context) {
 
 	var categoryOffer models.CategoryOfferReceiver
-	if err := c.BindJSON(&categoryOffer); err != nil {
+
+	if err := c.ShouldBindJSON(&categoryOffer); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "request fields in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
 	err := co.couponUseCase.AddCategoryOffer(categoryOffer)
+	
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusInternalServerError, "could not add offer", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
