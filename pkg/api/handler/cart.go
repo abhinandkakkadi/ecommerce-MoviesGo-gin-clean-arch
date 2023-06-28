@@ -164,13 +164,11 @@ func (cr *CartHandler) ApplyCoupon(c *gin.Context) {
 
 	err := cr.cartUseCase.ApplyCoupon(couponDetails.CouponName, userID.(int))
 
-
 	if err != nil {
-			errorRes := response.ClientResponse(http.StatusInternalServerError, "coupon could not be added", nil, err.Error())
-			c.JSON(http.StatusInternalServerError, errorRes)
-			return
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "coupon could not be added", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
+		return
 	}
-	
 
 	successRes := response.ClientResponse(http.StatusCreated, "Coupon added successfully", nil, nil)
 	c.JSON(http.StatusCreated, successRes)

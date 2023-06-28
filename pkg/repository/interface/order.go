@@ -8,8 +8,15 @@ import (
 )
 
 type OrderRepository interface {
-	OrderItemsFromCart(orderBody models.OrderIncoming, cartItems []models.Cart) (domain.OrderSuccessResponse, error)
+	GetBriefOrderDetails(orderDetails string) (domain.OrderSuccessResponse, error)
 	DoesCartExist(userID int) (bool, error)
+	UpdateCouponDetails(discount_price float64, UserID int) error
+	GetWalletAmount(UserID uint) (float64, error)
+	UpdateWalletAmount(walletAmount float64, UserID uint) error
+	CreateOrder(orderDetails domain.Order) error
+	UpdateUsedOfferDetails(userID uint) error
+	GetCouponDiscountPrice(UserID int, GrandTotal float64) (float64, error)
+	AddOrderItems(orderItemDetails domain.OrderItem, UserID int, ProductID uint, Quantity float64) error
 	AddressExist(orderBody models.OrderIncoming) (bool, error)
 	GetOrderDetails(userID int, page int, count int) ([]models.FullOrderDetails, error)
 	CancelOrder(orderID string) error

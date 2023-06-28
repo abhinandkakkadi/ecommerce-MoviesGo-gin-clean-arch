@@ -1,17 +1,17 @@
 package models
 
 type UserDetails struct {
-	Name            string `json:"name binding:required"`
-	Email           string `json:"email binding:required" validate:"email"`
-	Phone           string `json:"phone binding:required"`
-	Password        string `json:"password binding:required"`
-	ConfirmPassword string `json:"confirmpassword binding:required"`
+	Name            string `json:"name" binding:"required"`
+	Email           string `json:"email" binding:"required" validate:"email"`
+	Phone           string `json:"phone" binding:"required"`
+	Password        string `json:"password" binding:"required"`
+	ConfirmPassword string `json:"confirmpassword" binding:"required"`
 	ReferralCode    string `json:"referral_code"`
 }
 
 type UserLogin struct {
-	Email    string `json:"email binding:required" validate:"email"`
-	Password string `json:"password binding:required"`
+	Email    string `json:"email" binding:"required" validate:"email"`
+	Password string `json:"password" binding:"required"`
 }
 
 // user details shown after logging in
@@ -54,12 +54,12 @@ type UserSignInResponse struct {
 }
 
 type AddressInfo struct {
-	Name      string `json:"name binding:required" validate:"required"`
-	HouseName string `json:"house_name binding:required" validate:"required"`
-	State     string `json:"state binding:required" validate:"required"`
-	Pin       string `json:"pin binding:required" validate:"required"`
-	Street    string `json:"street binding:required"`
-	City      string `json:"city binding:required"`
+	Name      string `json:"name" binding:"required" validate:"required"`
+	HouseName string `json:"house_name" binding:"required" validate:"required"`
+	State     string `json:"state" binding:"required" validate:"required"`
+	Pin       string `json:"pin" binding:"required" validate:"required"`
+	Street    string `json:"street" binding:"required"`
+	City      string `json:"city" binding:"required"`
 }
 
 type AddressInfoResponse struct {

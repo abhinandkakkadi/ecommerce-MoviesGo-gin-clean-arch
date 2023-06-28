@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
@@ -10,6 +11,7 @@ import (
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
+	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
@@ -54,20 +56,94 @@ func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, us
 	if !addressExist {
 		return domain.OrderSuccessResponse{}, errors.New("address does not exist")
 	}
+
+
 	// get all items a slice of carts
 	cartItems, err := o.cartRepository.GetAllItemsFromCart(int(orderBody.UserID))
-
 	if err != nil {
 		return domain.OrderSuccessResponse{}, err
 	}
 
-	orderSuccessResponse, err := o.orderRepository.OrderItemsFromCart(orderBody, cartItems)
+	var orderDetails domain.Order
+	var orderItemDetails domain.OrderItem
+
+	// add general order details - that is to be added to orders table
+	id := uuid.New().ID()
+	str := strconv.Itoa(int(id))
+	orderDetails.OrderId = str[:8]
+	// details being added to the orders table
+	orderDetails.AddressID = orderBody.AddressID
+	orderDetails.PaymentMethodID = orderBody.PaymentID
+	orderDetails.UserID = int(orderBody.UserID)
+	orderDetails.Approval = false
+	orderDetails.ShipmentStatus = "processing"
+	orderDetails.PaymentStatus = "not paid"
+
+	// get grand total iterating through each products in carts
+	for _, c := range cartItems {
+		orderDetails.GrandTotal += c.TotalPrice
+	}
+
+	discount_price, err := o.orderRepository.GetCouponDiscountPrice(int(orderBody.UserID), orderDetails.GrandTotal)
 	if err != nil {
 		return domain.OrderSuccessResponse{}, err
 	}
-	fmt.Println("order id ", orderSuccessResponse.OrderID)
 
-	fmt.Println("order id ", orderSuccessResponse.OrderID)
+	err = o.orderRepository.UpdateCouponDetails(discount_price, orderDetails.UserID)
+	if err != nil {
+		return domain.OrderSuccessResponse{}, err
+	}
+
+	orderDetails.FinalPrice = orderDetails.GrandTotal - discount_price
+	if orderBody.PaymentID == 2 {
+		orderDetails.PaymentStatus = "not paid"
+		orderDetails.ShipmentStatus = "pending"
+	}
+
+	// if the payment method is wallet
+	if orderBody.PaymentID == 3 {
+
+		walletAvailable, err := o.orderRepository.GetWalletAmount(orderBody.UserID)
+		if err != nil {
+			return domain.OrderSuccessResponse{}, err
+		}
+
+		// if wallet amount is less than final amount - make payment status - not paid and shipment status pending
+		if walletAvailable < orderDetails.FinalPrice {
+			orderDetails.PaymentStatus = "not paid"
+			orderDetails.ShipmentStatus = "pending"
+			return domain.OrderSuccessResponse{}, errors.New("wallet amount is less than total amount")
+		} else {
+			o.orderRepository.UpdateWalletAmount(walletAvailable-orderDetails.FinalPrice, orderBody.UserID)
+			orderDetails.PaymentStatus = "paid"
+		}
+
+	}
+
+	err = o.orderRepository.CreateOrder(orderDetails)
+	if err != nil {
+		return domain.OrderSuccessResponse{}, err
+	}
+
+	for _, c := range cartItems {
+		// for each order save details of products and associated details and use order_id as foreign key ( for each order multiple product will be there)
+		fmt.Println(c)
+		orderItemDetails.OrderID = orderDetails.OrderId
+		orderItemDetails.ProductID = c.ProductID
+		orderItemDetails.Quantity = int(c.Quantity)
+		orderItemDetails.TotalPrice = c.TotalPrice
+
+		o.orderRepository.AddOrderItems(orderItemDetails, orderDetails.UserID, c.ProductID, c.Quantity)
+
+	}
+
+	o.orderRepository.UpdateUsedOfferDetails(orderBody.UserID)
+
+	orderSuccessResponse, err := o.orderRepository.GetBriefOrderDetails(orderDetails.OrderId)
+	if err != nil {
+		return domain.OrderSuccessResponse{}, err
+	}
+
 	return orderSuccessResponse, nil
 
 }

@@ -3,14 +3,12 @@ package repository
 import (
 	"errors"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -46,84 +44,93 @@ func (o *orderRepository) AddressExist(orderBody models.OrderIncoming) (bool, er
 
 }
 
-func (o *orderRepository) OrderItemsFromCart(orderBody models.OrderIncoming, cartItems []models.Cart) (domain.OrderSuccessResponse, error) {
-
-	var orderDetails domain.Order
-	var orderItemDetails domain.OrderItem
-
-	// add general order details - that is to be added to orders table
-	id := uuid.New().ID()
-	str := strconv.Itoa(int(id))
-	orderDetails.OrderId = str[:8]
-	// details being added to the orders table
-	orderDetails.AddressID = orderBody.AddressID
-	orderDetails.PaymentMethodID = orderBody.PaymentID
-	orderDetails.UserID = int(orderBody.UserID)
-	orderDetails.Approval = false
-	orderDetails.ShipmentStatus = "processing"
-	orderDetails.PaymentStatus = "not paid"
-
-	// get grand total iterating through each products in carts
-	for _, c := range cartItems {
-		orderDetails.GrandTotal += c.TotalPrice
-	}
-
-	discount_price, err := helper.GetCouponDiscountPrice(int(orderBody.UserID), orderDetails.GrandTotal, o.DB)
-	if err != nil {
-		return domain.OrderSuccessResponse{}, err
-	}
+func (o *orderRepository) UpdateCouponDetails(discount_price float64, UserID int) error {
 
 	if discount_price != 0.0 {
-		o.DB.Exec("update used_coupons set used = true where user_id = ?", orderDetails.UserID)
-	}
-	orderDetails.FinalPrice = orderDetails.GrandTotal - discount_price
-	fmt.Println("payment ID = ", orderBody.PaymentID)
-	if orderBody.PaymentID == 2 {
-		orderDetails.PaymentStatus = "not paid"
-		orderDetails.ShipmentStatus = "pending"
-	}
-	// if the payment method is wallet
-	if orderBody.PaymentID == 3 {
-
-		var walletAvailable float64
-		o.DB.Raw("select wallet_amount from wallets where user_id = ?", orderBody.UserID).Scan(&walletAvailable)
-
-		// if wallet amount is less than finalamount - make paymentstatus - not paid and shipment status pending
-		if walletAvailable < orderDetails.FinalPrice {
-			orderDetails.PaymentStatus = "not paid"
-			orderDetails.ShipmentStatus = "pending"
-			return domain.OrderSuccessResponse{}, errors.New("wallet amount is less than total amount")
-		} else {
-			o.DB.Exec("update wallets set wallet_amount = ? where user_id = ? ", walletAvailable-orderDetails.FinalPrice, orderBody.UserID)
-			orderDetails.PaymentStatus = "paid"
+		err := o.DB.Exec("update used_coupons set used = true where user_id = ?", UserID).Error
+		if err != nil {
+			return err
 		}
+	}
+	return nil
+}
 
+func (o *orderRepository) GetWalletAmount(UserID uint) (float64, error) {
+
+	var walletAvailable float64
+	err := o.DB.Raw("select wallet_amount from wallets where user_id = ?", UserID).Scan(&walletAvailable).Error
+	if err != nil {
+		return 0.0, err
 	}
 
-	o.DB.Create(&orderDetails)
+	return walletAvailable, nil
+}
 
-	// details being added to the orderItems table - which shows details about the individual products
-	for _, c := range cartItems {
-		// for each order save details of products and associated details and use order_id as foreign key ( for each order multiple product will be there)
-		fmt.Println(c)
-		orderItemDetails.OrderID = orderDetails.OrderId
-		orderItemDetails.ProductID = c.ProductID
-		orderItemDetails.Quantity = int(c.Quantity)
-		orderItemDetails.TotalPrice = c.TotalPrice
+func (o *orderRepository) GetCouponDiscountPrice(UserID int, GrandTotal float64) (float64, error) {
 
-		// after creating the order delete all cart items and also update the quantity of the product
-		o.DB.Omit("id").Create(&orderItemDetails)
-		o.DB.Exec("delete from carts where user_id = ? and product_id = ?", orderDetails.UserID, c.ProductID)
-		fmt.Println(c.Quantity)
-		fmt.Println(c.ProductID)
-		o.DB.Exec("update products set quantity = quantity - ? where id = ?", c.Quantity, c.ProductID)
+	discountPrice, err := helper.GetCouponDiscountPrice(UserID, GrandTotal, o.DB)
+	if err != nil {
+		return 0.0, err
 	}
 
-	o.DB.Exec("update category_offer_useds set used = true where user_id = ?", orderBody.UserID)
-	o.DB.Exec("update product_offer_useds set used = true where user_id = ?", orderBody.UserID)
+	return discountPrice, nil
+
+}
+
+func (o *orderRepository) UpdateWalletAmount(walletAmount float64, UserID uint) error {
+
+	err := o.DB.Exec("update wallets set wallet_amount = ? where user_id = ? ", walletAmount, UserID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (o *orderRepository) CreateOrder(orderDetails domain.Order) error {
+
+	err := o.DB.Create(&orderDetails).Error
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (o *orderRepository) AddOrderItems(orderItemDetails domain.OrderItem, UserID int, ProductID uint, Quantity float64) error {
+
+	// after creating the order delete all cart items and also update the quantity of the product
+	err := o.DB.Omit("id").Create(&orderItemDetails).Error
+	if err != nil {
+		return err
+	}
+
+	err = o.DB.Exec("delete from carts where user_id = ? and product_id = ?", UserID, ProductID).Error
+	if err != nil {
+		return err
+	}
+
+	err = o.DB.Exec("update products set quantity = quantity - ? where id = ?", Quantity, ProductID).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (o *orderRepository) UpdateUsedOfferDetails(userID uint) error {
+
+	o.DB.Exec("update category_offer_useds set used = true where user_id = ?", userID)
+	o.DB.Exec("update product_offer_useds set used = true where user_id = ?", userID)
+
+	return nil
+}
+
+func (o *orderRepository) GetBriefOrderDetails(orderID string) (domain.OrderSuccessResponse, error) {
 
 	var orderSuccessResponse domain.OrderSuccessResponse
-	o.DB.Raw("select order_id,shipment_status from orders where order_id = ?", orderDetails.OrderId).Scan(&orderSuccessResponse)
+	o.DB.Raw("select order_id,shipment_status from orders where order_id = ?", orderID).Scan(&orderSuccessResponse)
 	return orderSuccessResponse, nil
 
 }

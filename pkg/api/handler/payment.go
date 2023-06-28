@@ -49,7 +49,7 @@ func (p *PaymentHandler) VerifyPayment(c *gin.Context) {
 	razorID := c.Query("order_id")
 
 	err := p.paymentUseCase.SavePaymentDetails(paymentID, razorID, orderID)
-	
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not update payment details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)

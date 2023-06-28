@@ -284,7 +284,7 @@ func (pr *ProductHandler) SearchProduct(c *gin.Context) {
 func (ad *ProductHandler) GetGenresToUser(c *gin.Context) {
 
 	genres, err := ad.productUseCase.GetGenres()
-	
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)

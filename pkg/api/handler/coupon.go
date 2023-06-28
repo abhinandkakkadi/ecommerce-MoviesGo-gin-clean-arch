@@ -65,7 +65,7 @@ func (co *CouponHandler) AddCoupon(c *gin.Context) {
 func (co *CouponHandler) GetCoupon(c *gin.Context) {
 
 	coupons, err := co.couponUseCase.GetCoupon()
-	
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not get coupon details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
@@ -164,7 +164,7 @@ func (co *CouponHandler) AddCategoryOffer(c *gin.Context) {
 	}
 
 	err := co.couponUseCase.AddCategoryOffer(categoryOffer)
-	
+
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusInternalServerError, "could not add offer", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)

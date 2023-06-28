@@ -198,30 +198,29 @@ func (ad *adminUseCase) DashBoard() (models.CompleteAdminDashboard, error) {
 
 	totalRevenue, err := ad.adminRepository.TotalRevenue()
 	if err != nil {
-		return models.CompleteAdminDashboard{},err
+		return models.CompleteAdminDashboard{}, err
 	}
 	fmt.Println(totalRevenue)
 
 	orderDetails, err := ad.adminRepository.DashBoardOrder()
 	if err != nil {
-		return models.CompleteAdminDashboard{},err
+		return models.CompleteAdminDashboard{}, err
 	}
 
 	amountDetails, err := ad.adminRepository.AmountDetails()
 	if err != nil {
-		return models.CompleteAdminDashboard{},err
+		return models.CompleteAdminDashboard{}, err
 	}
 
 	userDetails, err := ad.adminRepository.DashboardUserDetails()
 	if err != nil {
-		return models.CompleteAdminDashboard{},err
+		return models.CompleteAdminDashboard{}, err
 	}
 
 	productDetails, err := ad.adminRepository.DashBoardProductDetails()
 	if err != nil {
-		return models.CompleteAdminDashboard{},err
+		return models.CompleteAdminDashboard{}, err
 	}
-
 
 	return models.CompleteAdminDashboard{
 		DashboardRevenue: totalRevenue,

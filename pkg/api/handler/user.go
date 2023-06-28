@@ -490,5 +490,5 @@ func (u *UserHandler) ResetPassword(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "successfully updated the password", nil, nil)
 	c.JSON(http.StatusOK, successRes)
-	
+
 }

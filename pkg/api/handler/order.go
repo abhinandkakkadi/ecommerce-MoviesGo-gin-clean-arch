@@ -62,7 +62,7 @@ func (o *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param id path string true "page number"
-// @Param count query string true "page count"
+// @Param pageSize query string true "page size"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /users/orders/{id} [get]
@@ -77,7 +77,7 @@ func (o *OrderHandler) GetOrderDetails(c *gin.Context) {
 		return
 	}
 
-	count, err := strconv.Atoi(c.Query("count"))
+	pageSize, err := strconv.Atoi(c.Query("count"))
 
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "page count not in right format", nil, err.Error())
@@ -88,7 +88,7 @@ func (o *OrderHandler) GetOrderDetails(c *gin.Context) {
 	id, _ := c.Get("user_id")
 	userID := id.(int)
 
-	fullOrderDetails, err := o.orderUseCase.GetOrderDetails(userID, page, count)
+	fullOrderDetails, err := o.orderUseCase.GetOrderDetails(userID, page, pageSize)
 
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not do the order", nil, err.Error())
@@ -139,7 +139,6 @@ func (o *OrderHandler) CancelOrder(c *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param page path string true "Page number"
-// @Param count query string true "page count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/orders/{id} [get]
@@ -289,7 +288,7 @@ func (o *OrderHandler) RefundUser(c *gin.Context) {
 	orderID := c.Param("order_id")
 
 	err := o.orderUseCase.RefundOrder(orderID)
-	
+
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusInternalServerError, "refund was not possible", nil, err)
 		c.JSON(http.StatusInternalServerError, errRes)

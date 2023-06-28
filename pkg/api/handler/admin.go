@@ -89,7 +89,7 @@ func (cr *AdminHandler) CreateAdmin(c *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param page path string true "Page number"
-// @Param count query string true "User Count Per Page"
+// @Param pageSize query string true "page size"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/users/{page} [get]
@@ -103,14 +103,14 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 		return
 	}
 
-	count, err := strconv.Atoi(c.Query("count"))
+	pageSize, err := strconv.Atoi(c.Query("count"))
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "user count in a page not in right format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	users, err := ad.adminUseCase.GetUsers(page, count)
+	users, err := ad.adminUseCase.GetUsers(page, pageSize)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)

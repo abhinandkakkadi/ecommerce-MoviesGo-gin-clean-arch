@@ -134,7 +134,7 @@ func (ot *OtpHandler) VerifyOTPToReset(c *gin.Context) {
 	}
 
 	signedToken, err := ot.otpUseCase.VerifyOTPtoReset(code)
-	
+
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not verify OTP", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
