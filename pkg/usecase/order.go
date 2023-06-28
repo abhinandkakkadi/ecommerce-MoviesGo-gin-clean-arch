@@ -3,7 +3,6 @@ package usecase
 import (
 	"errors"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
@@ -11,7 +10,6 @@ import (
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
-	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
@@ -38,7 +36,6 @@ func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, us
 	}
 
 	orderBody.UserID = uint(userID)
-
 	cartExist, err := o.orderRepository.DoesCartExist(userID)
 	if err != nil {
 		return domain.OrderSuccessResponse{}, err
@@ -57,7 +54,6 @@ func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, us
 		return domain.OrderSuccessResponse{}, errors.New("address does not exist")
 	}
 
-
 	// get all items a slice of carts
 	cartItems, err := o.cartRepository.GetAllItemsFromCart(int(orderBody.UserID))
 	if err != nil {
@@ -68,17 +64,8 @@ func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, us
 	var orderItemDetails domain.OrderItem
 
 	// add general order details - that is to be added to orders table
-	id := uuid.New().ID()
-	str := strconv.Itoa(int(id))
-	orderDetails.OrderId = str[:8]
-	// details being added to the orders table
-	orderDetails.AddressID = orderBody.AddressID
-	orderDetails.PaymentMethodID = orderBody.PaymentID
-	orderDetails.UserID = int(orderBody.UserID)
-	orderDetails.Approval = false
-	orderDetails.ShipmentStatus = "processing"
-	orderDetails.PaymentStatus = "not paid"
-
+	orderDetails = helper.CopyOrderDetails(orderDetails,orderBody)
+	
 	// get grand total iterating through each products in carts
 	for _, c := range cartItems {
 		orderDetails.GrandTotal += c.TotalPrice
@@ -127,13 +114,15 @@ func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, us
 
 	for _, c := range cartItems {
 		// for each order save details of products and associated details and use order_id as foreign key ( for each order multiple product will be there)
-		fmt.Println(c)
 		orderItemDetails.OrderID = orderDetails.OrderId
 		orderItemDetails.ProductID = c.ProductID
 		orderItemDetails.Quantity = int(c.Quantity)
 		orderItemDetails.TotalPrice = c.TotalPrice
 
-		o.orderRepository.AddOrderItems(orderItemDetails, orderDetails.UserID, c.ProductID, c.Quantity)
+		err :=o.orderRepository.AddOrderItems(orderItemDetails, orderDetails.UserID, c.ProductID, c.Quantity)
+		if err != nil {
+			return domain.OrderSuccessResponse{},err
+		}
 
 	}
 
