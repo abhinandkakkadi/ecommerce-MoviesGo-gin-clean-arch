@@ -89,8 +89,38 @@ func (cr *cartUseCase) RemoveFromCart(product_id int, userID int) (models.CartRe
 		return models.CartResponse{}, err
 	}
 
-	updatedCart, err := cr.cartRepository.RemoveFromCart(product_id, userID, priceDecrement)
+	var cartDetails struct {
+		Quantity   int
+		TotalPrice float64
+	}
 
+	cartDetails,err = cr.cartRepository.GetQuantityAndTotalPrice(userID,product_id,cartDetails)
+	if err != nil {
+		return models.CartResponse{},err
+	}
+
+	cartDetails.Quantity = cartDetails.Quantity - 1
+	// after decrementing one quantity if the quantity = 0. delete that item from the cart
+	if cartDetails.Quantity == 0 {
+		
+		err := cr.cartRepository.RemoveProductFromCart(userID,product_id)
+		if err != nil {
+			return models.CartResponse{},err
+		}
+	}
+
+	if cartDetails.Quantity != 0 {
+
+		cartDetails.TotalPrice = cartDetails.TotalPrice - priceDecrement
+
+		err := cr.cartRepository.UpdateCartDetails(cartDetails,userID,product_id)
+		if err != nil {
+			return models.CartResponse{},err
+		}
+	
+	}
+	
+	updatedCart, err := cr.cartRepository.RemoveFromCart(userID)
 	if err != nil {
 		return models.CartResponse{}, err
 	}

@@ -119,14 +119,17 @@ func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, us
 		orderItemDetails.Quantity = int(c.Quantity)
 		orderItemDetails.TotalPrice = c.TotalPrice
 
-		err :=o.orderRepository.AddOrderItems(orderItemDetails, orderDetails.UserID, c.ProductID, c.Quantity)
+		err := o.orderRepository.AddOrderItems(orderItemDetails, orderDetails.UserID, c.ProductID, c.Quantity)
 		if err != nil {
 			return domain.OrderSuccessResponse{},err
 		}
 
 	}
 
-	o.orderRepository.UpdateUsedOfferDetails(orderBody.UserID)
+	err = o.orderRepository.UpdateUsedOfferDetails(orderBody.UserID)
+	if err != nil {
+		return domain.OrderSuccessResponse{},err
+	}
 
 	orderSuccessResponse, err := o.orderRepository.GetBriefOrderDetails(orderDetails.OrderId)
 	if err != nil {
