@@ -169,14 +169,12 @@ func (ad *adminRepository) UpdateBlockUserByID(user domain.Users) error {
 
 func (ad *adminRepository) FilteredSalesReport(startTime time.Time, endTime time.Time) (models.SalesReport, error) {
 
-
 	var salesReport models.SalesReport
 
 	result := ad.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status = 'paid' and approval = true and created_at >= ? and created_at <= ?", startTime, endTime).Scan(&salesReport.TotalSales)
 	if result.Error != nil {
 		return models.SalesReport{}, result.Error
 	}
-
 
 	result = ad.DB.Raw("select count(*) from orders").Scan(&salesReport.TotalOrders)
 	if result.Error != nil {
@@ -198,7 +196,6 @@ func (ad *adminRepository) FilteredSalesReport(startTime time.Time, endTime time
 	if result.Error != nil {
 		return models.SalesReport{}, result.Error
 	}
-
 
 	result = ad.DB.Raw("select movie_name from products where id = ?", productID).Scan(&salesReport.TrendingProduct)
 	if result.Error != nil {

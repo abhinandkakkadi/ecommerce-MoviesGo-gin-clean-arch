@@ -7,18 +7,18 @@ type CartRepository interface {
 	RemoveFromCart(userID int) ([]models.Cart, error)
 	DisplayCart(userID int) ([]models.Cart, error)
 	EmptyCart(userID int) ([]models.Cart, error)
-	GetQuantityAndTotalPrice(userID int,product_id int,cartDetails struct {
-		Quantity int
+	GetQuantityAndTotalPrice(userID int, product_id int, cartDetails struct {
+		Quantity   int
 		TotalPrice float64
 	}) (struct {
-		Quantity int
+		Quantity   int
 		TotalPrice float64
-	},error)
+	}, error)
 	UpdateCartDetails(cartDetails struct {
-		Quantity int
+		Quantity   int
 		TotalPrice float64
-	},userID int, productID int) error
-	RemoveProductFromCart(userID int,product_id int) error
+	}, userID int, productID int) error
+	RemoveProductFromCart(userID int, product_id int) error
 	GetTotalPrice(userID int) (models.CartTotal, error)
 	GetAllItemsFromCart(userID int) ([]models.Cart, error)
 	CheckProduct(product_id int) (bool, string, error)

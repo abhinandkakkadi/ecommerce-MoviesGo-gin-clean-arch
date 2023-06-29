@@ -64,8 +64,8 @@ func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, us
 	var orderItemDetails domain.OrderItem
 
 	// add general order details - that is to be added to orders table
-	orderDetails = helper.CopyOrderDetails(orderDetails,orderBody)
-	
+	orderDetails = helper.CopyOrderDetails(orderDetails, orderBody)
+
 	// get grand total iterating through each products in carts
 	for _, c := range cartItems {
 		orderDetails.GrandTotal += c.TotalPrice
@@ -121,14 +121,14 @@ func (o *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, us
 
 		err := o.orderRepository.AddOrderItems(orderItemDetails, orderDetails.UserID, c.ProductID, c.Quantity)
 		if err != nil {
-			return domain.OrderSuccessResponse{},err
+			return domain.OrderSuccessResponse{}, err
 		}
 
 	}
 
 	err = o.orderRepository.UpdateUsedOfferDetails(orderBody.UserID)
 	if err != nil {
-		return domain.OrderSuccessResponse{},err
+		return domain.OrderSuccessResponse{}, err
 	}
 
 	orderSuccessResponse, err := o.orderRepository.GetBriefOrderDetails(orderDetails.OrderId)

@@ -55,7 +55,7 @@ func GetTimeFromPeriod(timePeriod string) (time.Time, time.Time) {
 
 }
 
-func CopyOrderDetails(orderDetails domain.Order ,orderBody models.OrderIncoming) domain.Order {
+func CopyOrderDetails(orderDetails domain.Order, orderBody models.OrderIncoming) domain.Order {
 
 	id := uuid.New().ID()
 	str := strconv.Itoa(int(id))
