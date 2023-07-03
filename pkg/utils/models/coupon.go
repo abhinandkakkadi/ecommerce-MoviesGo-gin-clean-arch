@@ -58,7 +58,6 @@ type ReferralAmount struct {
 	ReferralAmount float64 `json:"referral_amount"`
 }
 
-
 type Offer struct {
 	ID                 uint
 	OfferName          string
@@ -70,10 +69,8 @@ type Offer struct {
 }
 
 type CombinedOffer struct {
-
-	ProductOffer Offer
+	ProductOffer  Offer
 	CategoryOffer Offer
-	FinalOffer OfferResponse
+	FinalOffer    OfferResponse
 	OriginalPrice float64
-
 }

@@ -33,7 +33,6 @@ func (o *orderRepository) DoesCartExist(userID int) (bool, error) {
 	return exist, nil
 }
 
-
 func (o *orderRepository) AddressExist(orderBody models.OrderIncoming) (bool, error) {
 
 	var count int
@@ -178,14 +177,14 @@ func (o *orderRepository) GetProductDetailsFromOrders(orderID string) ([]models.
 	if err := o.DB.Raw("select product_id,quantity from order_items where order_id = ?", orderID).Scan(&orderProductDetails).Error; err != nil {
 		return []models.OrderProducts{}, err
 	}
-	fmt.Println(orderProductDetails)
+
 	return orderProductDetails, nil
 }
 
 func (o *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error {
 
 	for _, od := range orderProducts {
-		fmt.Println("quantity = ", od.Quantity, "product: ", od.ProductId)
+
 		var quantity int
 		if err := o.DB.Raw("select quantity from products where id = ?", od.ProductId).Scan(&quantity).Error; err != nil {
 			return err
@@ -203,8 +202,6 @@ func (o *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderPr
 
 func (o *orderRepository) CancelOrder(orderID string) error {
 
-	
-	
 	shipmentStatus := "cancelled"
 	err := o.DB.Exec("update orders set shipment_status = ? where order_id = ?", shipmentStatus, orderID).Error
 	if err != nil {
@@ -228,6 +225,7 @@ func (o *orderRepository) CancelOrder(orderID string) error {
 			FinalPrice float64
 			UserID     int
 		}
+
 		var amountDetails AmountDetails
 		err = o.DB.Raw("select final_price,user_id from orders where order_id = ?", orderID).Scan(&amountDetails).Error
 		if err != nil {
@@ -300,7 +298,6 @@ func (o *orderRepository) ApproveOrder(orderID string) error {
 	return nil
 }
 
-
 func (o *orderRepository) SavePayment(charge domain.Charge) error {
 	if err := o.DB.Create(&charge).Error; err != nil {
 		return err
@@ -315,7 +312,7 @@ func (o *orderRepository) GetPaymentDetails(OrderID string) (domain.Charge, erro
 	if err := o.DB.Raw("select orders.order_id,orders.grand_total,users.email from orders inner join users on orders.user_id = users.id where order_id = ?", OrderID).Scan(&paymentDetails).Error; err != nil {
 		return domain.Charge{}, err
 	}
-	// fmt.Println("amount no problem",productDetails)
+
 	return paymentDetails, nil
 }
 

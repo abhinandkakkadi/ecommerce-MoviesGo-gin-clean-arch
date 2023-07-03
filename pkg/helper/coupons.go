@@ -1,13 +1,10 @@
 package helper
 
 import (
-	"fmt"
-
 	"gorm.io/gorm"
 )
 
 func GetCouponDiscountPrice(userID int, TotalPrice float64, DB *gorm.DB) (float64, error) {
-	fmt.Println("code reached coupon discount price")
 
 	// If there is no coupons added for this user, return 0 as discount price
 	var count int

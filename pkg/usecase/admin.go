@@ -176,8 +176,6 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 
 }
 
-
-
 func (ad *adminUseCase) FilteredSalesReport(timePeriod string) (models.SalesReport, error) {
 
 	startTime, endTime := helper.GetTimeFromPeriod(timePeriod)

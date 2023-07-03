@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
@@ -173,14 +174,26 @@ func (pr *productUseCase) FilterCategory(data map[string]int) ([]models.Products
 
 func (pr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error) {
 
-	productsBrief, err := pr.productRepo.SearchItemBasedOnPrefix(prefix)
+	productsBrief, lengthOfPrefix, err := pr.productRepo.SearchItemBasedOnPrefix(prefix)
 	if err != nil {
 		return []models.ProductsBrief{}, err
 	}
 
-	for i := range productsBrief {
+	// Create a slice to add the products which have the given prefix
+	var filteredProductBrief []models.ProductsBrief
+	for _, p := range productsBrief {
+		length := len(p.MovieName)
+		if length >= lengthOfPrefix {
+			moviePrefix := p.MovieName[:lengthOfPrefix]
+			if strings.ToLower(moviePrefix) == strings.ToLower(prefix) {
+				filteredProductBrief = append(filteredProductBrief, p)
+			}
+		}
+	}
+
+	for i := range filteredProductBrief {
 		fmt.Println("the code reached here")
-		p := &productsBrief[i]
+		p := &filteredProductBrief[i]
 		if p.Quantity == 0 {
 			p.ProductStatus = "out of stock"
 		} else {
@@ -188,7 +201,7 @@ func (pr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.Produ
 		}
 	}
 
-	return productsBrief, nil
+	return filteredProductBrief, nil
 }
 
 func (pr *productUseCase) GetGenres() ([]domain.Genre, error) {

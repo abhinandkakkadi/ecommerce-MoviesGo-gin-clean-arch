@@ -84,7 +84,7 @@ func (ot *otpUseCase) SendOTPtoReset(email string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	
+
 	helper.TwilioSetup(ot.cfg.ACCOUNTSID, ot.cfg.AUTHTOKEN)
 	_, err = helper.TwilioSendOTP(phone, ot.cfg.SERVICESSID)
 	if err != nil {

@@ -169,7 +169,7 @@ func (o *orderUseCase) CancelOrder(orderID string, userID int) error {
 		return err
 	}
 
-	shipmentStatus,err := o.orderRepository.GetShipmentStatus(orderID)
+	shipmentStatus, err := o.orderRepository.GetShipmentStatus(orderID)
 	if err != nil {
 		return err
 	}

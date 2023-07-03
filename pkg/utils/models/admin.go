@@ -12,10 +12,10 @@ type AdminDetails struct {
 }
 
 type AdminSignUp struct {
-	Name            string `json:"name binding:required" gorm:"validate:required"`
-	Email           string `json:"email binding:required" gorm:"validate:required"`
-	Password        string `json:"password binding:required" gorm:"validate:required"`
-	ConfirmPassword string `json:"confirmpassword binding:required"`
+	Name            string `json:"name" binding:"required" gorm:"validate:required"`
+	Email           string `json:"email" binding:"required" gorm:"validate:required"`
+	Password        string `json:"password" binding:"required" gorm:"validate:required"`
+	ConfirmPassword string `json:"confirmpassword" binding:"required"`
 }
 
 type AdminDetailsResponse struct {

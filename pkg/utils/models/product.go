@@ -53,10 +53,10 @@ type CategoryUpdateCheck struct {
 }
 
 type UpdateProduct struct {
-	Quantity  int `json:"quantity binding:required"`
-	ProductID int `json:"product-id binding:required"`
+	Quantity  int `json:"quantity" binding:"required"`
+	ProductID int `json:"product-id" binding:"required"`
 }
 
 type SearchItems struct {
-	Name string `json:"name binding:required"`
+	Name string `json:"name" binding:"required"`
 }

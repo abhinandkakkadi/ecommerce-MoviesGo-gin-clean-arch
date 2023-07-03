@@ -58,7 +58,7 @@ func (ad *adminRepository) CreateAdmin(admin models.AdminSignUp) (models.AdminDe
 
 // Get users details for authenticated admins
 func (ad *adminRepository) GetUsers(page int, count int) ([]models.UserDetailsAtAdmin, error) {
-	// pagination purpose -
+
 	if page == 0 {
 		page = 1
 	}

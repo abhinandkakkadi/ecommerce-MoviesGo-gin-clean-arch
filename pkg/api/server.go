@@ -18,9 +18,10 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 
 	router.LoadHTMLGlob("templates/*.html")
 
-	// Use logger from Gin
 	router.Use(gin.Logger())
+
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	routes.UserRoutes(router.Group("/"), userHandler, otpHandler, productHandler, cartHandler, orderHandler, paymentHandler)
 	routes.AdminRoutes(router.Group("/admin"), adminHandler, productHandler, orderHandler, userHandler, couponHandler)
 

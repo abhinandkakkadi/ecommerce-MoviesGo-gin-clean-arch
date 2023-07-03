@@ -6,10 +6,8 @@ import (
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
 
-
 func OfferHelper(combinedOfferDetails models.CombinedOffer) models.OfferResponse {
 
-	
 	// if product offer exist check whether it is still active or if it have been expired and also if the user limit for that offer is not exceeded
 	currentTime := time.Now()
 	if combinedOfferDetails.ProductOffer.OfferName != "" {
@@ -52,5 +50,5 @@ func OfferHelper(combinedOfferDetails models.CombinedOffer) models.OfferResponse
 	combinedOfferDetails.FinalOffer.OfferPrice = combinedOfferDetails.OriginalPrice - ((float64(combinedOfferDetails.FinalOffer.OfferPercentage) * combinedOfferDetails.OriginalPrice) / 100)
 
 	return combinedOfferDetails.FinalOffer
-	
+
 }

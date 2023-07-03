@@ -9,9 +9,7 @@ import (
 func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, productHandler *handler.ProductHandler, orderHandler *handler.OrderHandler, userHandler *handler.UserHandler, couponHandler *handler.CouponHandler) {
 
 	router.POST("/adminlogin", adminHandler.LoginHandler)
-	// api := router.Group("/admin_panel", middleware.AuthorizationMiddleware)
-	// api.GET("users", adminHandler.GetUsers)
-	
+
 	router.Use(middleware.AuthorizationMiddleware)
 	{
 		router.GET("/dashboard", adminHandler.DashBoard)

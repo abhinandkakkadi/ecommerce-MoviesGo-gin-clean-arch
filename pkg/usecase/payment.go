@@ -29,27 +29,28 @@ func (p *paymentUseCase) MakePaymentRazorPay(orderID string, userID int) (models
 	// check whether there is an order given by this order and also check if the current user have made this order
 	err := p.orderRepository.CheckOrder(orderID, userID)
 	if err != nil {
-		panic(err)
+		return models.CombinedOrderDetails{}, "", err
 	}
 
 	orderDetails, err := p.orderRepository.GetOrderDetail(orderID)
 	if err != nil {
-		panic(err)
+		return models.CombinedOrderDetails{}, "", err
 	}
 
 	userDetails, err := p.userRepository.FindUserByOrderID(orderID)
 	if err != nil {
-		panic(err)
+		return models.CombinedOrderDetails{}, "", err
 	}
 	//  get shipping address for that particular order
 	userAddress, err := p.userRepository.FindUserAddressByOrderID(orderID)
 	if err != nil {
-		panic(err)
+		return models.CombinedOrderDetails{}, "", err
 	}
+
 	// combine all the three details
 	combinedOrderDetails, err := helper.CombinedOrderDetails(orderDetails, userDetails, userAddress)
 	if err != nil {
-		panic(err)
+		return models.CombinedOrderDetails{}, "", err
 	}
 
 	client := razorpay.NewClient("rzp_test_6m0J6O6Dngl96V", "F9zSviAWO3DIXnNAtKgrufzT")

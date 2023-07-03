@@ -341,7 +341,6 @@ func (cr *userDatabase) ApplyReferral(userID int) (string, error) {
 		return "", err
 	}
 
-
 	var totalCartAmount float64
 	err = tx.Raw("select COALESCE(SUM(total_price), 0) from carts where user_id = ?", userID).Scan(&totalCartAmount).Error
 	if err != nil {

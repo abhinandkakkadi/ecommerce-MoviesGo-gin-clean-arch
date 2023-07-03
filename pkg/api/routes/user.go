@@ -73,11 +73,11 @@ func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 
 		}
 
-		whishlist := router.Group("wishlist")
+		wishList := router.Group("wishlist")
 		{
-			whishlist.GET("", userHandler.GetWishList)
-			whishlist.GET("/add/:id", userHandler.AddToWishList)
-			whishlist.DELETE("/remove/:id", userHandler.RemoveFromWishList)
+			wishList.GET("", userHandler.GetWishList)
+			wishList.GET("/add/:id", userHandler.AddToWishList)
+			wishList.DELETE("/remove/:id", userHandler.RemoveFromWishList)
 
 		}
 

@@ -12,7 +12,7 @@ import (
 func AuthorizationMiddleware(c *gin.Context) {
 
 	s := c.Request.Header.Get("Authorization")
-	fmt.Println(s)
+
 	var token string
 	if s[:7] == "Bearer " {
 		token = strings.TrimPrefix(s, "Bearer ")

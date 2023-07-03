@@ -2,9 +2,7 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
@@ -140,14 +138,12 @@ func (p *productDatabase) AddProduct(product models.ProductsReceiver) (models.Pr
 func (p *productDatabase) DeleteProduct(product_id string) error {
 
 	id, _ := strconv.Atoi(product_id)
-	fmt.Println(id)
 	result := p.DB.Exec("delete from products where id = ?", id)
 
 	if result.RowsAffected < 1 {
 		return errors.New("no records were of that id exists")
 	}
 
-	fmt.Println(result.Error)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -208,6 +204,7 @@ func (p *productDatabase) GetProductFromCategory(data map[string]int) ([]models.
 		} else {
 			product.ProductStatus = "in stock"
 		}
+
 		// if a product exist for that genre. Then only append it
 		if product.ID != 0 {
 			productFromCategory = append(productFromCategory, product)
@@ -218,7 +215,7 @@ func (p *productDatabase) GetProductFromCategory(data map[string]int) ([]models.
 	return productFromCategory, nil
 }
 
-func (p *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error) {
+func (p *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, int, error) {
 
 	// find length of prefix
 	lengthOfPrefix := len(prefix)
@@ -230,21 +227,10 @@ func (p *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.Produ
 	`).Scan(&productsBrief).Error
 
 	if err != nil {
-		return nil, err
-	}
-	// Create a slice to add the products which have the given prefix
-	var filteredProductBrief []models.ProductsBrief
-	for _, p := range productsBrief {
-		length := len(p.MovieName)
-		if length >= lengthOfPrefix {
-			moviePrefix := p.MovieName[:lengthOfPrefix]
-			if strings.ToLower(moviePrefix) == strings.ToLower(prefix) {
-				filteredProductBrief = append(filteredProductBrief, p)
-			}
-		}
+		return nil, 0, err
 	}
 
-	return filteredProductBrief, nil
+	return productsBrief, lengthOfPrefix, nil
 
 }
 

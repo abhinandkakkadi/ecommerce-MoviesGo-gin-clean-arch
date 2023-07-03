@@ -32,10 +32,10 @@ type UserDetailsAtAdmin struct {
 
 // show in users profile / also used to update user details
 type UsersProfileDetails struct {
-	Name         string `json:"name binding:required"`
-	Email        string `json:"email binding:required"`
-	Phone        string `json:"phone binding:required"`
-	ReferralCode string `json:"referral_code binding:required"`
+	Name         string `json:"name" binding:"required"`
+	Email        string `json:"email" binding:"required"`
+	Phone        string `json:"phone" binding:"required"`
+	ReferralCode string `json:"referral_code" binding:"required"`
 }
 
 // user details along with embedded token which can be used by the user to access protected routes
@@ -89,12 +89,12 @@ type CheckoutDetails struct {
 }
 
 type UpdatePassword struct {
-	OldPassword        string `json:"old-password binding:required"`
-	NewPassword        string `json:"newpassword binding:required"`
-	ConfirmNewPassword string `json:"confirm-newpassword binding:required "`
+	OldPassword        string `json:"old-password" binding:"required"`
+	NewPassword        string `json:"newpassword" binding:"required"`
+	ConfirmNewPassword string `json:"confirm-newpassword" binding:"required "`
 }
 
 type ResetPassword struct {
-	Password  string `json:"password binding:required" validate:"required"`
-	CPassword string `json:"cpassword binding:required" validate:"required"`
+	Password  string `json:"password" binding:"required" validate:"required"`
+	CPassword string `json:"cpassword" binding:"required" validate:"required"`
 }

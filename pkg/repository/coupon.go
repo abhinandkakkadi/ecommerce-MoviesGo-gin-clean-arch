@@ -103,6 +103,7 @@ func (co *couponRepository) CouponAlreadyExpired(couponID int) error {
 	}
 
 	return errors.New("already expired")
+
 }
 
 func (co *couponRepository) AddProductOffer(productOffer models.ProductOfferReceiver) error {
@@ -214,12 +215,12 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Co
 		return models.CombinedOffer{}, err
 	}
 
-    return models.CombinedOffer{
-		ProductOffer: pOff,
+	return models.CombinedOffer{
+		ProductOffer:  pOff,
 		CategoryOffer: cOff,
-		FinalOffer: offer,
+		FinalOffer:    offer,
 		OriginalPrice: price,
-	},nil
+	}, nil
 
 }
 
@@ -227,37 +228,36 @@ func (co *couponRepository) CheckIfOfferAlreadyUsed(offerDetails models.OfferRes
 
 	if offerDetails.OfferType == "product" {
 
-			var used bool
-			err := co.DB.Raw("select used from product_offer_useds where user_id = ? and product_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
+		var used bool
+		err := co.DB.Raw("select used from product_offer_useds where user_id = ? and product_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
+		if err != nil {
+			return models.OfferResponse{}, err
+		}
+
+		if used {
+			err := co.DB.Raw("select price from products where id = ? ", product_id).Scan(&offerDetails.OfferPrice).Error
 			if err != nil {
 				return models.OfferResponse{}, err
 			}
-
-			if used {
-				err := co.DB.Raw("select price from products where id = ? ", product_id).Scan(&offerDetails.OfferPrice).Error
-				if err != nil {
-					return models.OfferResponse{}, err
-				}
-				return offerDetails, nil
-			}
-		
+			return offerDetails, nil
+		}
 
 	} else if offerDetails.OfferType == "category" {
-		
-			var used bool
-			err := co.DB.Raw("select used from category_offer_useds where user_id = ? and category_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
+
+		var used bool
+		err := co.DB.Raw("select used from category_offer_useds where user_id = ? and category_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
+		if err != nil {
+			return models.OfferResponse{}, err
+		}
+
+		if used {
+			err := co.DB.Raw("select price from products where id = ? ", product_id).Scan(&offerDetails.OfferPrice).Error
 			if err != nil {
 				return models.OfferResponse{}, err
 			}
+			return offerDetails, nil
+		}
 
-			if used {
-				err := co.DB.Raw("select price from products where id = ? ", product_id).Scan(&offerDetails.OfferPrice).Error
-				if err != nil {
-					return models.OfferResponse{}, err
-				}
-				return offerDetails, nil
-			}
-		
 	}
 
 	return offerDetails, nil
@@ -283,9 +283,6 @@ func (co *couponRepository) OfferUpdate(offerDetails models.OfferResponse, userI
 		if genreID == 0 {
 			if count == 0 {
 				co.DB.Exec("insert into product_offer_useds (user_id,product_offer_id,offer_amount,offer_count,used) values (?,?,?,?,?)", userID, offerDetails.OfferID, offerDetails.OfferPrice, 1, false).Scan(&count)
-				// if err != nil {
-				// 	return err
-				// }
 			} else {
 				err = co.DB.Exec("update product_offer_useds set offer_count = offer_count + 1 where product_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
 				if err != nil {
@@ -317,9 +314,6 @@ func (co *couponRepository) OfferUpdate(offerDetails models.OfferResponse, userI
 		if productID == 0 {
 			if count == 0 {
 				co.DB.Exec("insert into category_offer_useds (user_id,category_offer_id,offer_amount,offer_count,used) values (?,?,?,?,?)", userID, offerDetails.OfferID, offerDetails.OfferPrice, 1, false).Scan(&count)
-				// if err != nil {
-				// 	return err
-				// }
 			} else {
 				err = co.DB.Exec("update category_offer_useds set offer_count = offer_count + 1 where category_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
 				if err != nil {
@@ -383,7 +377,6 @@ func (co *couponRepository) GetPriceBasedOnOffer(product_id int, userID int) (fl
 	if err != nil {
 		return 0.0, err
 	}
-
 
 	var cOfferCount int
 	err = co.DB.Raw("select count(*) from category_offer_useds where category_offer_id = ? and user_id = ? and used = false", cOfferID, userID).Scan(&cOfferCount).Error

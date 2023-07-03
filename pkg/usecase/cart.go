@@ -34,23 +34,20 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 		return models.CartResponse{}, errors.New("product does not exist")
 	}
 
-	
 	combinedOfferDetails, err := cr.couponRepository.OfferDetails(product_id, genre)
 	if err != nil {
-		return models.CartResponse{},err
+		return models.CartResponse{}, err
 	}
 
 	offerDetails := helper.OfferHelper(combinedOfferDetails)
-
 
 	// Now check if the offer is already used by the user
 	if offerDetails.OfferType != "no offer" {
 		offerDetails, err = cr.couponRepository.CheckIfOfferAlreadyUsed(offerDetails, product_id, userID)
 		if err != nil {
-			return models.CartResponse{},err
+			return models.CartResponse{}, err
 		}
 	}
-
 
 	// if offer id ! =0 that means some kind of offer exist - do the complete things inside this
 	err = cr.couponRepository.OfferUpdate(offerDetails, userID)
@@ -214,4 +211,5 @@ func (cr *cartUseCase) ApplyCoupon(coupon string, userID int) error {
 		return nil
 	}
 	return errors.New("could not add the coupon")
+
 }

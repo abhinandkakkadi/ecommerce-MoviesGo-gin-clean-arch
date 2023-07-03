@@ -9,6 +9,4 @@ type OtpUseCase interface {
 	VerifyOTPtoReset(code models.VerifyData) (string, error)
 	SendOTP(phone string) error
 	SendOTPtoReset(email string) (string, error)
-
-	// VerifyMobileNumberAlreadyPresent(ctx context.Context,phone string) error
 }

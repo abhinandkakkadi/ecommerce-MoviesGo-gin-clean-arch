@@ -16,7 +16,6 @@ type UserRepository interface {
 	GetWalletDetails(userID int) (models.Wallet, error)
 	GetAllPaymentOption() ([]models.PaymentDetails, error)
 	UserDetails(userID int) (models.UsersProfileDetails, error)
-	// UpdateUserDetails(userDetails models.UsersProfileDetails) (models.UsersProfileDetails,error)
 	UpdateUserEmail(email string, userID int) error
 	UpdateUserName(name string, userID int) error
 	UpdateUserPhone(phone string, userID int) error
@@ -28,7 +27,6 @@ type UserRepository interface {
 	GetWishList(userID int) ([]models.WishListResponse, error)
 	ProductExistInWishList(productID int, userId int) (bool, error)
 	RemoveFromWishList(userID int, productID int) error
-
 	CreateReferralEntry(users models.UserDetailsResponse, userReferral string, referralCode string) error
 	ApplyReferral(userID int) (string, error)
 	ResetPassword(userID int, password string) error
