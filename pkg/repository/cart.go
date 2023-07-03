@@ -52,7 +52,6 @@ func (cr *cartRepository) AddToCart(product_id int, userID int, offerDetails mod
 	}
 
 	if itemsPresentInCart == 0 && productQuantity == 0 {
-		fmt.Println("it can't reach here")
 		return []models.Cart{}, errors.New("product out of stock")
 	}
 
@@ -94,12 +93,10 @@ func (cr *cartRepository) AddToCart(product_id int, userID int, offerDetails mod
 	if count == 0 {
 
 		totalPrice = productPrice
-		fmt.Println(totalPrice)
 		if err := tx.Exec("insert into carts (user_id,product_id,quantity,total_price) values(?,?,?,?)", userID, product_id, 1, totalPrice).Error; err != nil {
 			tx.Rollback()
 			return []models.Cart{}, err
 		}
-		fmt.Println("the above thing worked")
 
 	} else {
 
@@ -157,7 +154,6 @@ func (cr *cartRepository) GetTotalPrice(userID int) (models.CartTotal, error) {
 	}
 
 	cartTotal.FinalPrice = cartTotal.TotalPrice - discount_price
-	fmt.Println("this is discount price which is initially 0 ", discount_price)
 	return cartTotal, nil
 
 }
@@ -257,15 +253,13 @@ func (cr *cartRepository) EmptyCart(userID int) ([]models.Cart, error) {
 	if err := cr.DB.Raw("select category_offer_id from category_offer_useds where user_id = ? and used = false", userID).Scan(&categoryOfferID).Error; err != nil {
 		return []models.Cart{}, err
 	}
-	fmt.Println("this have to be two :", categoryOfferID)
+
 	for _, cOfferID := range categoryOfferID {
 
-		fmt.Println("values of offer id in slice", cOfferID)
 		var offerCount int
 		if err := cr.DB.Raw("select offer_count from category_offer_useds where category_offer_id = ?", cOfferID).Scan(&offerCount).Error; err != nil {
 			return []models.Cart{}, err
 		}
-		fmt.Println("this is the offer count for this particular category which is used by this user", offerCount)
 
 		// code for deleting this record
 		if err := cr.DB.Exec("update category_offers set offer_used = offer_used - ? where id = ?", offerCount, cOfferID).Error; err != nil {
@@ -286,12 +280,10 @@ func (cr *cartRepository) EmptyCart(userID int) ([]models.Cart, error) {
 
 	for _, pOfferID := range productOfferID {
 
-		fmt.Println("values of offer id in slice", pOfferID)
 		var offerCount int
 		if err := cr.DB.Raw("select offer_count from product_offer_useds where product_offer_id = ?", pOfferID).Scan(&offerCount).Error; err != nil {
 			return []models.Cart{}, err
 		}
-		fmt.Println("this is the offer count for this particular category which is used by this user", offerCount)
 
 		// code for deleting this record
 		if err := cr.DB.Exec("update product_offers set offer_used = offer_used - ? where id = ?", offerCount, pOfferID).Error; err != nil {
@@ -344,7 +336,6 @@ func (cr *cartRepository) CheckProduct(product_id int) (bool, string, error) {
 	if err != nil {
 		return false, "", err
 	}
-	fmt.Println("product count", count, product_id)
 
 	var genre string
 	if count > 0 {
@@ -371,8 +362,6 @@ func (cr *cartRepository) ProductExist(product_id int, userID int) (bool, error)
 }
 
 func (cr *cartRepository) CouponValidity(coupon string, userID int) (bool, error) {
-
-	// if cart is empty don't let them add coupon
 
 	// check if the coupon exist
 	var count int

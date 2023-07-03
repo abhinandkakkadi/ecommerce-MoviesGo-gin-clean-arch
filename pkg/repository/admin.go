@@ -228,8 +228,6 @@ func (ad *adminRepository) TotalRevenue() (models.DashboardRevenue, error) {
 		return models.DashboardRevenue{}, nil
 	}
 
-	fmt.Println(revenueDetails)
-
 	return revenueDetails, nil
 }
 
@@ -260,8 +258,6 @@ func (ad *adminRepository) DashBoardOrder() (models.DashboardOrder, error) {
 	if err != nil {
 		return models.DashboardOrder{}, nil
 	}
-
-	fmt.Println(orderDetails)
 
 	return orderDetails, nil
 

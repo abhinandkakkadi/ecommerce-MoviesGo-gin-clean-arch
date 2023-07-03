@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Coupon struct {
 	ID                 uint    `json:"id"`
 	Coupon             string  `json:"coupon"`
@@ -9,30 +11,28 @@ type Coupon struct {
 }
 
 type AddCoupon struct {
-	Coupon             string  `json:"coupon binding:required"`
-	DiscountPercentage int     `json:"discount_percentage binding:required"`
-	MinimumPrice       float64 `json:"minimum_price binding:required"`
-	Validity           bool    `json:"validity binding:required"`
+	Coupon             string  `json:"coupon" binding:"required"`
+	DiscountPercentage int     `json:"discount_percentage" binding:"required"`
+	MinimumPrice       float64 `json:"minimum_price" binding:"required"`
+	Validity           bool    `json:"validity" binding:"required"`
 }
 
 type CouponAddUser struct {
-	CouponName string `json:"coupon_name binding:required"`
+	CouponName string `json:"coupon_name" binding:"required"`
 }
 
 type ProductOfferReceiver struct {
-	ProductID          uint   `json:"product_id binding:required"`
-	OfferName          string `json:"offer_name binding:required"`
-	OfferDescription   string `json:"offer_description binding:required"`
-	DiscountPercentage int    `json:"discount_percentage binding:required"`
-	OfferLimit         int    `json:"offer_limit binding:required"`
+	ProductID          uint   `json:"product_id" binding:"required"`
+	OfferName          string `json:"offer_name" binding:"required"`
+	DiscountPercentage int    `json:"discount_percentage" binding:"required"`
+	OfferLimit         int    `json:"offer_limit" binding:"required"`
 }
 
 type CategoryOfferReceiver struct {
-	GenreID            uint   `json:"genre_id binding:required"`
-	OfferName          string `json:"offer_name binding:required"`
-	OfferDescription   string `json:"offer_description binding:required"`
-	DiscountPercentage int    `json:"discount_percentage binding:required"`
-	OfferLimit         int    `json:"offer_limit binding:required"`
+	GenreID            uint   `json:"genre_id" binding:"required"`
+	OfferName          string `json:"offer_name" binding:"required"`
+	DiscountPercentage int    `json:"discount_percentage" binding:"required"`
+	OfferLimit         int    `json:"offer_limit" binding:"required"`
 }
 
 type OfferResponse struct {
@@ -56,4 +56,24 @@ type ProductOfferLongResponse struct {
 
 type ReferralAmount struct {
 	ReferralAmount float64 `json:"referral_amount"`
+}
+
+
+type Offer struct {
+	ID                 uint
+	OfferName          string
+	DiscountPercentage int
+	StartDate          time.Time
+	EndDate            time.Time
+	OfferLimit         int
+	OfferUsed          int
+}
+
+type CombinedOffer struct {
+
+	ProductOffer Offer
+	CategoryOffer Offer
+	FinalOffer OfferResponse
+	OriginalPrice float64
+
 }

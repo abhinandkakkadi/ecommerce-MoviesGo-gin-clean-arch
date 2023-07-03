@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
+	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
@@ -27,10 +28,8 @@ func NewProductUseCase(repo interfaces.ProductRepository, cartRepo interfaces.Ca
 func (pr *productUseCase) ShowAllProducts(page int, count int) ([]models.ProductOfferBriefResponse, error) {
 
 	productsBrief, err := pr.productRepo.ShowAllProducts(page, count)
-	fmt.Println(productsBrief)
 	// here memory address of each item in productBrief is taken so that a copy of each instance is not made while updating
 	for i := range productsBrief {
-		fmt.Println("the code reached here")
 		p := &productsBrief[i]
 		if p.Quantity == 0 {
 			p.ProductStatus = "out of stock"
@@ -41,13 +40,15 @@ func (pr *productUseCase) ShowAllProducts(page int, count int) ([]models.Product
 	var combinedProductsOffer []models.ProductOfferBriefResponse
 	for _, p := range productsBrief {
 		var productOffer models.ProductOfferBriefResponse
-		OfferDetails, err := pr.couponRepo.OfferDetails(p.ID, p.Genre)
+		combinedOfferDetails, err := pr.couponRepo.OfferDetails(p.ID, p.Genre)
 		if err != nil {
 			return []models.ProductOfferBriefResponse{}, err
 		}
-		fmt.Println(OfferDetails)
+
+		offerDetails := helper.OfferHelper(combinedOfferDetails)
+
 		productOffer.ProductsBrief = p
-		productOffer.OfferResponse = OfferDetails
+		productOffer.OfferResponse = offerDetails
 		combinedProductsOffer = append(combinedProductsOffer, productOffer)
 	}
 
@@ -64,7 +65,6 @@ func (pr *productUseCase) ShowAllProductsToAdmin(page int, count int) ([]models.
 	fmt.Println(productsBrief)
 	// here memory address of each item in productBrief is taken so that a copy of each instance is not made while updating
 	for i := range productsBrief {
-		fmt.Println("the code reached here")
 		p := &productsBrief[i]
 		if p.Quantity == 0 {
 			p.ProductStatus = "out of stock"
@@ -83,15 +83,16 @@ func (pr *productUseCase) ShowIndividualProducts(id string) (models.ProductOffer
 		return models.ProductOfferLongResponse{}, err
 	}
 	if product.MovieName == "" {
-		err = errors.New("record not available")
-		return models.ProductOfferLongResponse{}, err
+		return models.ProductOfferLongResponse{}, errors.New("record not available")
 	}
 
 	var productOfferResponse models.ProductOfferLongResponse
-	offerDetails, err := pr.couponRepo.OfferDetails(product.ID, product.GenreName)
+	combinedOfferDetails, err := pr.couponRepo.OfferDetails(product.ID, product.GenreName)
 	if err != nil {
 		return models.ProductOfferLongResponse{}, err
 	}
+
+	offerDetails := helper.OfferHelper(combinedOfferDetails)
 
 	productOfferResponse.ProductsResponse = product
 	productOfferResponse.OfferResponse = offerDetails

@@ -197,7 +197,6 @@ func (p *productDatabase) GetProductFromCategory(data map[string]int) ([]models.
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println("individual product details : ", product)
 		var quantity int
 		err = p.DB.Raw("select quantity from products where id = ?", product.ID).Scan(&quantity).Error
 		if err != nil {
@@ -215,7 +214,6 @@ func (p *productDatabase) GetProductFromCategory(data map[string]int) ([]models.
 		}
 
 	}
-	fmt.Println("complete product details")
 
 	return productFromCategory, nil
 }
@@ -237,14 +235,10 @@ func (p *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.Produ
 	// Create a slice to add the products which have the given prefix
 	var filteredProductBrief []models.ProductsBrief
 	for _, p := range productsBrief {
-		// If length of the movie name is greater than prefix - continue the logic
 		length := len(p.MovieName)
 		if length >= lengthOfPrefix {
-			// slice the movie name to length of prefix
 			moviePrefix := p.MovieName[:lengthOfPrefix]
-			// if they are equal - append that movie to the returning slice
 			if strings.ToLower(moviePrefix) == strings.ToLower(prefix) {
-				fmt.Println("got the condition right")
 				filteredProductBrief = append(filteredProductBrief, p)
 			}
 		}

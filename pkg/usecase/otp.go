@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 
 	config "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/config"
 	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
@@ -85,7 +84,7 @@ func (ot *otpUseCase) SendOTPtoReset(email string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("the phone number : ", phone)
+	
 	helper.TwilioSetup(ot.cfg.ACCOUNTSID, ot.cfg.AUTHTOKEN)
 	_, err = helper.TwilioSendOTP(phone, ot.cfg.SERVICESSID)
 	if err != nil {

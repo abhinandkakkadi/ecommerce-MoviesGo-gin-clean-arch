@@ -33,8 +33,9 @@ func (o *orderRepository) DoesCartExist(userID int) (bool, error) {
 	return exist, nil
 }
 
+
 func (o *orderRepository) AddressExist(orderBody models.OrderIncoming) (bool, error) {
-	fmt.Println("user id = ", orderBody.UserID, "address id = ", orderBody.AddressID)
+
 	var count int
 	if err := o.DB.Raw("select count(*) from addresses where user_id = ? and id = ?", orderBody.UserID, orderBody.AddressID).Scan(&count).Error; err != nil {
 		return false, err
@@ -182,18 +183,15 @@ func (o *orderRepository) GetProductDetailsFromOrders(orderID string) ([]models.
 }
 
 func (o *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error {
-	fmt.Println("the code reached update qunatity")
-	fmt.Println(orderProducts)
+
 	for _, od := range orderProducts {
 		fmt.Println("quantity = ", od.Quantity, "product: ", od.ProductId)
 		var quantity int
 		if err := o.DB.Raw("select quantity from products where id = ?", od.ProductId).Scan(&quantity).Error; err != nil {
 			return err
 		}
-		fmt.Println("products quantity = ", quantity)
 
 		od.Quantity += quantity
-		fmt.Println("updated quantity = ", od.Quantity)
 		if err := o.DB.Exec("update products set quantity = ? where id = ?", od.Quantity, od.ProductId).Error; err != nil {
 			return err
 		}
@@ -206,14 +204,11 @@ func (o *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderPr
 func (o *orderRepository) CancelOrder(orderID string) error {
 
 	var shipmentStatus string
-	fmt.Println(orderID)
 	err := o.DB.Raw("select shipment_status from orders where order_id = ?", orderID).Scan(&shipmentStatus).Error
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(shipmentStatus)
-	fmt.Println("ok")
 	if shipmentStatus == "delivered" {
 		return errors.New("item already delivered, cannot cancel")
 	}
@@ -246,7 +241,6 @@ func (o *orderRepository) CancelOrder(orderID string) error {
 			return err
 		}
 
-		fmt.Println("the code reached here since this order is done by wallet")
 		type AmountDetails struct {
 			FinalPrice float64
 			UserID     int
@@ -257,7 +251,6 @@ func (o *orderRepository) CancelOrder(orderID string) error {
 			return err
 		}
 		// check if a user have a uer have a wallet record if not create on
-		fmt.Println("amount details = ", amountDetails)
 		result := o.DB.Exec("update wallets set wallet_amount = wallet_amount + ? where user_id = ?", amountDetails.FinalPrice, amountDetails.UserID)
 		if result.Error != nil {
 			return err
@@ -323,6 +316,7 @@ func (o *orderRepository) ApproveOrder(orderID string) error {
 	}
 	return nil
 }
+
 
 func (o *orderRepository) SavePayment(charge domain.Charge) error {
 	if err := o.DB.Create(&charge).Error; err != nil {
@@ -419,7 +413,6 @@ func (o *orderRepository) CheckPaymentStatus(razorID string, orderID string) err
 		}
 		return nil
 	}
-	fmt.Println("should not reach here")
 	return errors.New("already paid")
 
 }

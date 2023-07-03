@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 
+	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
@@ -34,22 +34,30 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 		return models.CartResponse{}, errors.New("product does not exist")
 	}
 
-	offerDetails, err := cr.couponRepository.OfferDetails(product_id, genre)
-	_ = err
-	// fmt.Println(offerPrice)
-	fmt.Println("here the price was: ", offerDetails.OfferPrice)
+	
+	combinedOfferDetails, err := cr.couponRepository.OfferDetails(product_id, genre)
+	if err != nil {
+		return models.CartResponse{},err
+	}
+
+	offerDetails := helper.OfferHelper(combinedOfferDetails)
+
+
 	// Now check if the offer is already used by the user
 	if offerDetails.OfferType != "no offer" {
 		offerDetails, err = cr.couponRepository.CheckIfOfferAlreadyUsed(offerDetails, product_id, userID)
+		if err != nil {
+			return models.CartResponse{},err
+		}
 	}
-	// before adding to cart we have to check all the dependencies
+
+
 	// if offer id ! =0 that means some kind of offer exist - do the complete things inside this
 	err = cr.couponRepository.OfferUpdate(offerDetails, userID)
 	if err != nil {
 		return models.CartResponse{}, err
 	}
 
-	fmt.Println("if i am right this is 400", offerDetails.OfferPrice)
 	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID, offerDetails)
 
 	if err != nil {

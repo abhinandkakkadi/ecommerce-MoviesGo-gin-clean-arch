@@ -176,10 +176,7 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 
 }
 
-// func (ad *adminUseCase) OverView() error {
 
-// 	todayOrder,err := ad.adminRepository.TodayOrder()
-// }
 
 func (ad *adminUseCase) FilteredSalesReport(timePeriod string) (models.SalesReport, error) {
 

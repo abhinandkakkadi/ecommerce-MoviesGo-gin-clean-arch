@@ -228,7 +228,7 @@ func (cr *userDatabase) FindUserAddressByOrderID(orderID string) (models.Address
 }
 
 func (cr *userDatabase) UserBlockStatus(email string) (bool, error) {
-	fmt.Println(email)
+
 	var isBlocked bool
 	err := cr.DB.Raw("select blocked from users where email = ?", email).Scan(&isBlocked).Error
 	if err != nil {
@@ -341,7 +341,6 @@ func (cr *userDatabase) ApplyReferral(userID int) (string, error) {
 		return "", err
 	}
 
-	fmt.Println("referral amount for this particular user : ", referralAmount)
 
 	var totalCartAmount float64
 	err = tx.Raw("select COALESCE(SUM(total_price), 0) from carts where user_id = ?", userID).Scan(&totalCartAmount).Error
@@ -349,8 +348,6 @@ func (cr *userDatabase) ApplyReferral(userID int) (string, error) {
 		tx.Rollback()
 		return "", err
 	}
-
-	fmt.Println("total price as of now := ", totalCartAmount)
 
 	if totalCartAmount > referralAmount {
 		totalCartAmount = totalCartAmount - referralAmount

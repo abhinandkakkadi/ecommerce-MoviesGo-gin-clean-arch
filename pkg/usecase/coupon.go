@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
@@ -26,7 +25,7 @@ func (co *couponUseCase) AddCoupon(coupon models.AddCoupon) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("coupon exist :", couponExist)
+
 	if couponExist {
 		alreadyValid, err := co.couponRepository.CouponRevalidateIfExpired(coupon.Coupon)
 		if err != nil {

@@ -290,8 +290,6 @@ func (o *orderUseCase) OrderDelivered(orderID string) error {
 		return err
 	}
 
-	fmt.Println("orderId : ", orderID)
-	fmt.Println("shipment status : ", shipmentStatus)
 	if shipmentStatus == "order placed" {
 		shipmentStatus = "delivered"
 		return o.orderRepository.UpdateShipmentStatus(shipmentStatus, orderID)
