@@ -227,14 +227,6 @@ func (co *couponRepository) CheckIfOfferAlreadyUsed(offerDetails models.OfferRes
 
 	if offerDetails.OfferType == "product" {
 
-		var tableExists bool
-		co.DB.Raw(`SELECT EXISTS (
-    SELECT 1 
-    FROM information_schema.tables 
-    WHERE table_name = ?)`, "product_offer_useds").Row().Scan(&tableExists)
-
-		if tableExists {
-
 			var used bool
 			err := co.DB.Raw("select used from product_offer_useds where user_id = ? and product_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
 			if err != nil {
@@ -242,23 +234,16 @@ func (co *couponRepository) CheckIfOfferAlreadyUsed(offerDetails models.OfferRes
 			}
 
 			if used {
-				fmt.Println("PLEASE DONT GO HERE")
 				err := co.DB.Raw("select price from products where id = ? ", product_id).Scan(&offerDetails.OfferPrice).Error
 				if err != nil {
 					return models.OfferResponse{}, err
 				}
 				return offerDetails, nil
 			}
-		}
+		
 
 	} else if offerDetails.OfferType == "category" {
-		var tableExists bool
-		co.DB.Raw(`SELECT EXISTS (
-    SELECT 1 
-    FROM information_schema.tables 
-    WHERE table_name = ?)`, "category_offer_useds").Row().Scan(&tableExists)
-
-		if tableExists {
+		
 			var used bool
 			err := co.DB.Raw("select used from category_offer_useds where user_id = ? and category_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
 			if err != nil {
@@ -272,7 +257,7 @@ func (co *couponRepository) CheckIfOfferAlreadyUsed(offerDetails models.OfferRes
 				}
 				return offerDetails, nil
 			}
-		}
+		
 	}
 
 	return offerDetails, nil

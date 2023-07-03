@@ -203,27 +203,10 @@ func (o *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderPr
 
 func (o *orderRepository) CancelOrder(orderID string) error {
 
-	var shipmentStatus string
-	err := o.DB.Raw("select shipment_status from orders where order_id = ?", orderID).Scan(&shipmentStatus).Error
-	if err != nil {
-		return err
-	}
-
-	if shipmentStatus == "delivered" {
-		return errors.New("item already delivered, cannot cancel")
-	}
-
-	if shipmentStatus == "pending" || shipmentStatus == "returned" || shipmentStatus == "return" {
-		message := fmt.Sprint(shipmentStatus)
-		return errors.New("the order is in" + message + ", so no point in cancelling")
-	}
-
-	if shipmentStatus == "cancelled" {
-		return errors.New("the order is already cancelled, so no point in cancelling")
-	}
-
-	shipmentStatus = "cancelled"
-	err = o.DB.Exec("update orders set shipment_status = ? where order_id = ?", shipmentStatus, orderID).Error
+	
+	
+	shipmentStatus := "cancelled"
+	err := o.DB.Exec("update orders set shipment_status = ? where order_id = ?", shipmentStatus, orderID).Error
 	if err != nil {
 		return err
 	}
@@ -382,23 +365,6 @@ func (o *orderRepository) AddRazorPayDetails(orderID string, razorPayOrderID str
 
 func (o *orderRepository) CheckPaymentStatus(razorID string, orderID string) error {
 
-	// fmt.Println(razorID)
-	// var orderID string
-	// err := o.DB.Raw("select order_id from razer_pays where razor_id = ?", razorID).Scan(&orderID).Error
-	// if err != nil {
-	// 	return err
-	// }
-	// fmt.Printf("%T",razorID)
-	// type Order struct {
-	// 	OrderID string `json:"order_id"`
-	// }
-	// var orderID Order
-	// err := o.DB.Raw("SELECT order_id FROM razer_pays WHERE razor_id = ?",razorID).Scan(&orderID).Error
-	// if err != nil {
-	//   return err
-	// }
-
-	fmt.Print("order id corresponding to razor id := ", orderID)
 	var paymentStatus string
 	err := o.DB.Raw("select payment_status from orders where order_id = ?", orderID).Scan(&paymentStatus).Error
 	if err != nil {

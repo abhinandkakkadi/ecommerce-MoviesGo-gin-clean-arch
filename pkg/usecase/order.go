@@ -169,6 +169,24 @@ func (o *orderUseCase) CancelOrder(orderID string, userID int) error {
 		return err
 	}
 
+	shipmentStatus,err := o.orderRepository.GetShipmentStatus(orderID)
+	if err != nil {
+		return err
+	}
+
+	if shipmentStatus == "delivered" {
+		return errors.New("item already delivered, cannot cancel")
+	}
+
+	if shipmentStatus == "pending" || shipmentStatus == "returned" || shipmentStatus == "return" {
+		message := fmt.Sprint(shipmentStatus)
+		return errors.New("the order is in" + message + ", so no point in cancelling")
+	}
+
+	if shipmentStatus == "cancelled" {
+		return errors.New("the order is already cancelled, so no point in cancelling")
+	}
+
 	err = o.orderRepository.CancelOrder(orderID)
 	if err != nil {
 		return err

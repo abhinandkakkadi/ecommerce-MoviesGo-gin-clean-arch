@@ -217,7 +217,7 @@ func (cr *cartRepository) DisplayCart(userID int) ([]models.Cart, error) {
 	if err := cr.DB.Raw("select count(*) from carts where user_id = ? ", userID).First(&count).Error; err != nil {
 		return []models.Cart{}, err
 	}
-	fmt.Println(count)
+
 	if count == 0 {
 		return []models.Cart{}, nil
 	}
@@ -229,6 +229,7 @@ func (cr *cartRepository) DisplayCart(userID int) ([]models.Cart, error) {
 	}
 	fmt.Println(cartResponse)
 	return cartResponse, nil
+
 }
 
 func (cr *cartRepository) EmptyCart(userID int) ([]models.Cart, error) {
@@ -245,8 +246,6 @@ func (cr *cartRepository) EmptyCart(userID int) ([]models.Cart, error) {
 	if err := cr.DB.Exec("delete from carts where user_id = ? ", userID).Error; err != nil {
 		return []models.Cart{}, err
 	}
-
-	// loop through all the category_offer_useds
 
 	// CATEGORY OFFER RESTORED
 	var categoryOfferID []int
