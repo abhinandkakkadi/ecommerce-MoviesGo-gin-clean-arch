@@ -267,6 +267,19 @@ func (o *orderRepository) GetOrderDetailsBrief(page int) ([]models.CombinedOrder
 	return orderDetails, nil
 }
 
+func (o *orderRepository) GetOrderDetailsByOrderId(orderID string) (models.CombinedOrderDetails, error) {
+
+	var orderDetails models.CombinedOrderDetails
+
+	err := o.DB.Raw("select orders.order_id,orders.final_price,orders.shipment_status,orders.payment_status,users.name,users.email,users.phone,addresses.house_name,addresses.state,addresses.pin,addresses.street,addresses.city from orders inner join users on orders.user_id = users.id inner join addresses on users.id = addresses.user_id where order_id = ?",orderID).Scan(&orderDetails).Error
+	
+	if err != nil {
+		return models.CombinedOrderDetails{}, nil
+	}
+
+	return orderDetails, nil
+}
+
 func (o *orderRepository) CheckOrderID(orderID string) (bool, error) {
 
 	var count int
