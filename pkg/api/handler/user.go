@@ -136,7 +136,7 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 		return
 	}
 
-	addressResponse, err := u.userUseCase.AddAddress(address, userID.(int))
+	err = u.userUseCase.AddAddress(address, userID.(int))
 
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusInternalServerError, "failed adding address", nil, err.Error())
@@ -144,7 +144,7 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusCreated, "address added successfully", addressResponse, nil)
+	successRes := response.ClientResponse(http.StatusCreated, "address added successfully", nil, nil)
 	c.JSON(http.StatusCreated, successRes)
 
 }

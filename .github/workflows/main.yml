@@ -1,0 +1,44 @@
+name: CI CD -MoviesGo
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.20.1
+
+      - name: Install Make
+        run: |
+          sudo apt update
+          sudo apt install -y make
+
+      - name: Test
+        run: make test
+
+      - name: Build
+        run: make build
+
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.EC2_PUBLIC_IP}}
+          username: ubuntu
+          key: ${{secrets.EC2_SSH_KEY}}
+          script: |
+            echo "Connected to AWS EC2 instance"
+            cd ecommerce-MoviesGo-gin-clean-arch
+            git pull
+            go build -o api ./cmd/api 
+            sudo systemctl restart go_app.service

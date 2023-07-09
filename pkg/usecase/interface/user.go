@@ -9,7 +9,7 @@ import (
 type UserUseCase interface {
 	UserSignUp(user models.UserDetails) (models.TokenUsers, error)
 	LoginHandler(user models.UserLogin) (models.TokenUsers, error)
-	AddAddress(address models.AddressInfo, userID int) ([]models.AddressInfoResponse, error)
+	AddAddress(address models.AddressInfo, userID int) error
 	UpdateAddress(address models.AddressInfo, addressID int, userID int) (models.AddressInfoResponse, error)
 	Checkout(userID int) (models.CheckoutDetails, error)
 	UserDetails(userID int) (models.UsersProfileDetails, error)

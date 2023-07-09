@@ -150,7 +150,7 @@ func (pr *productUseCase) UpdateProduct(productID int, quantity int) error {
 	}
 
 	if !ok {
-		return errors.New("error does not exist")
+		return errors.New("product does not exist")
 	}
 
 	return pr.productRepo.UpdateQuantity(productID, quantity)

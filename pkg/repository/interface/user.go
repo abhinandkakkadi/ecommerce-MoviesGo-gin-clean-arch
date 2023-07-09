@@ -10,7 +10,7 @@ type UserRepository interface {
 	CheckUserAvailability(email string) bool
 	UserBlockStatus(email string) (bool, error)
 	LoginHandler(user models.UserDetails) (models.UserDetailsResponse, error)
-	AddAddress(address models.AddressInfo, userID int) ([]models.AddressInfoResponse, error)
+	AddAddress(address models.AddressInfo, userID int) error
 	UpdateAddress(address models.AddressInfo, addressID int, userID int) (models.AddressInfoResponse, error)
 	GetAllAddresses(userID int) ([]models.AddressInfoResponse, error)
 	GetWalletDetails(userID int) (models.Wallet, error)

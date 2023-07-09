@@ -9,16 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type userDatabase struct {
+type UserDatabase struct {
 	DB *gorm.DB
 }
 
 func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
-	return &userDatabase{DB}
+	return &UserDatabase{DB}
 }
 
 // check whether the user is already present in the database . If there recommend to login
-func (c *userDatabase) CheckUserAvailability(email string) bool {
+func (c *UserDatabase) CheckUserAvailability(email string) bool {
 
 	var count int
 	query := fmt.Sprintf("select count(*) from users where email='%s'", email)
@@ -31,7 +31,7 @@ func (c *userDatabase) CheckUserAvailability(email string) bool {
 }
 
 // retrieve the user details form the database
-func (c *userDatabase) FindUserByEmail(user models.UserLogin) (models.UserSignInResponse, error) {
+func (c *UserDatabase) FindUserByEmail(user models.UserLogin) (models.UserSignInResponse, error) {
 
 	var user_details models.UserSignInResponse
 
@@ -48,10 +48,10 @@ func (c *userDatabase) FindUserByEmail(user models.UserLogin) (models.UserSignIn
 
 }
 
-func (c *userDatabase) UserSignUp(user models.UserDetails) (models.UserDetailsResponse, error) {
+func (c *UserDatabase) UserSignUp(user models.UserDetails) (models.UserDetailsResponse, error) {
 
 	var userDetails models.UserDetailsResponse
-	err := c.DB.Raw("INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?) RETURNING id, name, email, phone", user.Name, user.Email, user.Password, user.Phone).Scan(&userDetails).Error
+	err := c.DB.Raw(`INSERT INTO users (name, email, phone, password) VALUES ($1, $2 $3, $4) RETURNING id, name, email, phone`, user.Name, user.Email, user.Phone, user.Password).Scan(&userDetails).Error
 
 	if err != nil {
 		return models.UserDetailsResponse{}, err
@@ -60,31 +60,33 @@ func (c *userDatabase) UserSignUp(user models.UserDetails) (models.UserDetailsRe
 	return userDetails, nil
 }
 
-func (c *userDatabase) LoginHandler(user models.UserDetails) (models.UserDetailsResponse, error) {
+func (c *UserDatabase) LoginHandler(user models.UserDetails) (models.UserDetailsResponse, error) {
+
 	var userResponse models.UserDetailsResponse
 	err := c.DB.Save(&userResponse).Error
 	return userResponse, err
+
 }
 
-func (cr *userDatabase) AddAddress(address models.AddressInfo, userID int) ([]models.AddressInfoResponse, error) {
+func (cr *UserDatabase) AddAddress(address models.AddressInfo, userID int) error {
 
 	fmt.Println(address)
 	err := cr.DB.Exec("insert into addresses (user_id,name,house_name,state,pin,street,city) values (?, ?, ?, ?, ?, ?, ?)", userID, address.Name, address.HouseName, address.State, address.Pin, address.Street, address.City).Error
 	if err != nil {
-		return []models.AddressInfoResponse{}, err
+		return err
 	}
 
-	var addressResponse []models.AddressInfoResponse
-	err = cr.DB.Raw("select * from addresses where user_id = ?", userID).Scan(&addressResponse).Error
-	if err != nil {
-		return []models.AddressInfoResponse{}, err
-	}
+	// var addressResponse []models.AddressInfoResponse
+	// err = cr.DB.Raw("select * from addresses where user_id = ?", userID).Scan(&addressResponse).Error
+	// if err != nil {
+	// 	return []models.AddressInfoResponse{}, err
+	// }
 
-	return addressResponse, nil
+	return nil
 
 }
 
-func (cr *userDatabase) UpdateAddress(address models.AddressInfo, addressID int, userID int) (models.AddressInfoResponse, error) {
+func (cr *UserDatabase) UpdateAddress(address models.AddressInfo, addressID int, userID int) (models.AddressInfoResponse, error) {
 
 	fmt.Println(address)
 	err := cr.DB.Exec("update addresses set house_name = ?, state = ?, pin = ?, street = ?, city = ? where id = ? and user_id = ?", address.HouseName, address.State, address.Pin, address.Street, address.City, addressID, userID).Error
@@ -101,10 +103,10 @@ func (cr *userDatabase) UpdateAddress(address models.AddressInfo, addressID int,
 	return addressResponse, nil
 }
 
-func (cr *userDatabase) GetAllAddresses(userID int) ([]models.AddressInfoResponse, error) {
+func (cr *UserDatabase) GetAllAddresses(userID int) ([]models.AddressInfoResponse, error) {
 
 	var addressResponse []models.AddressInfoResponse
-	err := cr.DB.Raw("select * from addresses where user_id = ?", userID).Scan(&addressResponse).Error
+	err := cr.DB.Raw(`select * from addresses where user_id = $1`, userID).Scan(&addressResponse).Error
 	if err != nil {
 		return []models.AddressInfoResponse{}, err
 	}
@@ -113,7 +115,7 @@ func (cr *userDatabase) GetAllAddresses(userID int) ([]models.AddressInfoRespons
 
 }
 
-func (cr *userDatabase) GetAllPaymentOption() ([]models.PaymentDetails, error) {
+func (cr *UserDatabase) GetAllPaymentOption() ([]models.PaymentDetails, error) {
 
 	var paymentMethods []models.PaymentDetails
 	err := cr.DB.Raw("select * from payment_methods").Scan(&paymentMethods).Error
@@ -125,7 +127,7 @@ func (cr *userDatabase) GetAllPaymentOption() ([]models.PaymentDetails, error) {
 
 }
 
-func (cr *userDatabase) GetWalletDetails(userID int) (models.Wallet, error) {
+func (cr *UserDatabase) GetWalletDetails(userID int) (models.Wallet, error) {
 
 	var walletDetails models.Wallet
 	err := cr.DB.Raw("select wallet_amount from wallets where user_id = ?", userID).Scan(&walletDetails).Error
@@ -137,7 +139,7 @@ func (cr *userDatabase) GetWalletDetails(userID int) (models.Wallet, error) {
 
 }
 
-func (cr *userDatabase) UserDetails(userID int) (models.UsersProfileDetails, error) {
+func (cr *UserDatabase) UserDetails(userID int) (models.UsersProfileDetails, error) {
 
 	var userDetails models.UsersProfileDetails
 	err := cr.DB.Raw("select name,email,phone from users where id = ?", userID).Scan(&userDetails).Error
@@ -153,7 +155,7 @@ func (cr *userDatabase) UserDetails(userID int) (models.UsersProfileDetails, err
 	return userDetails, nil
 }
 
-func (cr *userDatabase) UpdateUserEmail(email string, userID int) error {
+func (cr *UserDatabase) UpdateUserEmail(email string, userID int) error {
 
 	err := cr.DB.Exec("update users set email = ? where id = ?", email, userID).Error
 	if err != nil {
@@ -163,7 +165,7 @@ func (cr *userDatabase) UpdateUserEmail(email string, userID int) error {
 
 }
 
-func (cr *userDatabase) UpdateUserPhone(phone string, userID int) error {
+func (cr *UserDatabase) UpdateUserPhone(phone string, userID int) error {
 
 	err := cr.DB.Exec("update users set phone = ? where id = ?", phone, userID).Error
 	if err != nil {
@@ -173,7 +175,7 @@ func (cr *userDatabase) UpdateUserPhone(phone string, userID int) error {
 
 }
 
-func (cr *userDatabase) UpdateUserName(name string, userID int) error {
+func (cr *UserDatabase) UpdateUserName(name string, userID int) error {
 
 	err := cr.DB.Exec("update users set name = ? where id = ?", name, userID).Error
 	if err != nil {
@@ -183,7 +185,7 @@ func (cr *userDatabase) UpdateUserName(name string, userID int) error {
 
 }
 
-func (cr *userDatabase) UpdateUserPassword(password string, userID int) error {
+func (cr *UserDatabase) UpdateUserPassword(password string, userID int) error {
 
 	err := cr.DB.Exec("update users set password = ? where id = ?", password, userID).Error
 	if err != nil {
@@ -193,7 +195,7 @@ func (cr *userDatabase) UpdateUserPassword(password string, userID int) error {
 
 }
 
-func (cr *userDatabase) UserPassword(userID int) (string, error) {
+func (cr *UserDatabase) UserPassword(userID int) (string, error) {
 
 	var userPassword string
 	err := cr.DB.Raw("select password from users where id = ?", userID).Scan(&userPassword).Error
@@ -204,7 +206,7 @@ func (cr *userDatabase) UserPassword(userID int) (string, error) {
 
 }
 
-func (cr *userDatabase) FindUserByOrderID(orderId string) (models.UsersProfileDetails, error) {
+func (cr *UserDatabase) FindUserByOrderID(orderId string) (models.UsersProfileDetails, error) {
 
 	var userDetails models.UsersProfileDetails
 	err := cr.DB.Raw("select users.name,users.email,users.phone from users inner join orders on orders.user_id = users.id where order_id = ?", orderId).Scan(&userDetails).Error
@@ -216,7 +218,7 @@ func (cr *userDatabase) FindUserByOrderID(orderId string) (models.UsersProfileDe
 }
 
 // get the shipping address of
-func (cr *userDatabase) FindUserAddressByOrderID(orderID string) (models.AddressInfo, error) {
+func (cr *UserDatabase) FindUserAddressByOrderID(orderID string) (models.AddressInfo, error) {
 
 	var shipmentAddress models.AddressInfo
 	err := cr.DB.Raw("select addresses.name,addresses.house_name,addresses.street,addresses.city,addresses.state,addresses.pin from addresses inner join orders on orders.address_id = addresses.id where order_id = ?", orderID).Scan(&shipmentAddress).Error
@@ -227,7 +229,7 @@ func (cr *userDatabase) FindUserAddressByOrderID(orderID string) (models.Address
 	return shipmentAddress, nil
 }
 
-func (cr *userDatabase) UserBlockStatus(email string) (bool, error) {
+func (cr *UserDatabase) UserBlockStatus(email string) (bool, error) {
 
 	var isBlocked bool
 	err := cr.DB.Raw("select blocked from users where email = ?", email).Scan(&isBlocked).Error
@@ -238,7 +240,7 @@ func (cr *userDatabase) UserBlockStatus(email string) (bool, error) {
 	return isBlocked, nil
 }
 
-func (cr *userDatabase) ProductExistInWishList(productID int, userID int) (bool, error) {
+func (cr *UserDatabase) ProductExistInWishList(productID int, userID int) (bool, error) {
 
 	var count int
 	err := cr.DB.Raw("select count(*) from wish_lists where user_id = ? and product_id = ? ", userID, productID).Scan(&count).Error
@@ -250,7 +252,7 @@ func (cr *userDatabase) ProductExistInWishList(productID int, userID int) (bool,
 
 }
 
-func (cr *userDatabase) AddToWishList(userID int, productID int) error {
+func (cr *UserDatabase) AddToWishList(userID int, productID int) error {
 
 	err := cr.DB.Exec("insert into wish_lists (user_id,product_id) values (?, ?)", userID, productID).Error
 	if err != nil {
@@ -260,7 +262,7 @@ func (cr *userDatabase) AddToWishList(userID int, productID int) error {
 	return nil
 }
 
-func (cr *userDatabase) GetWishList(userID int) ([]models.WishListResponse, error) {
+func (cr *UserDatabase) GetWishList(userID int) ([]models.WishListResponse, error) {
 
 	var wishList []models.WishListResponse
 	err := cr.DB.Raw("select products.id as product_id, products.movie_name as product_name,products.price as product_price from products inner join wish_lists on products.id = wish_lists.product_id where wish_lists.user_id = ? ", userID).Scan(&wishList).Error
@@ -272,7 +274,7 @@ func (cr *userDatabase) GetWishList(userID int) ([]models.WishListResponse, erro
 
 }
 
-func (cr *userDatabase) RemoveFromWishList(userID int, productID int) error {
+func (cr *UserDatabase) RemoveFromWishList(userID int, productID int) error {
 
 	err := cr.DB.Exec("delete from wish_lists where user_id = ? and product_id = ?", userID, productID).Error
 	if err != nil {
@@ -283,7 +285,7 @@ func (cr *userDatabase) RemoveFromWishList(userID int, productID int) error {
 
 }
 
-func (cr *userDatabase) CreateReferralEntry(userDetails models.UserDetailsResponse, userReferral string, referralCode string) error {
+func (cr *UserDatabase) CreateReferralEntry(userDetails models.UserDetailsResponse, userReferral string, referralCode string) error {
 
 	err := cr.DB.Exec("insert into referrals (user_id,referral_code,referral_amount) values (?,?,?)", userDetails.Id, userReferral, 0).Error
 	if err != nil {
@@ -316,9 +318,10 @@ func (cr *userDatabase) CreateReferralEntry(userDetails models.UserDetailsRespon
 	}
 
 	return nil
+
 }
 
-func (cr *userDatabase) ApplyReferral(userID int) (string, error) {
+func (cr *UserDatabase) ApplyReferral(userID int) (string, error) {
 
 	// first check whether the cart is empty -- do this for coupon too
 	tx := cr.DB.Begin()
@@ -376,7 +379,7 @@ func (cr *userDatabase) ApplyReferral(userID int) (string, error) {
 	return "", nil
 }
 
-func (cr *userDatabase) ResetPassword(userID int, password string) error {
+func (cr *UserDatabase) ResetPassword(userID int, password string) error {
 
 	err := cr.DB.Exec("update users set password = ? where id = ?", password, userID).Error
 	if err != nil {

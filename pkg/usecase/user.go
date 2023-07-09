@@ -33,14 +33,14 @@ func NewUserUseCase(repo interfaces.UserRepository, cartRepositiry interfaces.Ca
 }
 
 func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
-	fmt.Println("add users")
+
 	// Check whether the user already exist. If yes, show the error message, since this is signUp
 	userExist := u.userRepo.CheckUserAvailability(user.Email)
-	fmt.Println("user exists", userExist)
+
 	if userExist {
 		return models.TokenUsers{}, errors.New("user already exist, sign in")
 	}
-	fmt.Println(user)
+
 	if user.Password != user.ConfirmPassword {
 		return models.TokenUsers{}, errors.New("password does not match")
 	}
@@ -132,14 +132,14 @@ func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 
 }
 
-func (u *userUseCase) AddAddress(address models.AddressInfo, userID int) ([]models.AddressInfoResponse, error) {
+func (u *userUseCase) AddAddress(address models.AddressInfo, userID int) error {
 
-	addressResponse, err := u.userRepo.AddAddress(address, userID)
+	err := u.userRepo.AddAddress(address, userID)
 	if err != nil {
-		return []models.AddressInfoResponse{}, err
+		return err
 	}
 
-	return addressResponse, nil
+	return nil
 }
 
 func (u *userUseCase) UpdateAddress(address models.AddressInfo, addressID int, userID int) (models.AddressInfoResponse, error) {
