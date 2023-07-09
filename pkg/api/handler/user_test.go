@@ -42,14 +42,13 @@ func TestUserSignup(t *testing.T) {
 
 				useCaseMock.EXPECT().UserSignUp(signupData).Times(1).Return(models.TokenUsers{
 					Users: models.UserDetailsResponse{
-						Id: 1,
-						Name: "Abhinand",
+						Id:    1,
+						Name:  "Abhinand",
 						Email: "nanduttanvsabhi@gmail.com",
 						Phone: "9961088604",
 					},
 					Token: "aksjgnalfiugliagbldfgbldfgbladfjnb",
-				
-				},nil)
+				}, nil)
 			},
 			checkResponse: func(t *testing.T, responseRecorder *httptest.ResponseRecorder) {
 				assert.Equal(t, http.StatusCreated, responseRecorder.Code)
@@ -58,7 +57,6 @@ func TestUserSignup(t *testing.T) {
 		},
 	}
 
-	
 	for testName, test := range testCase {
 		test := test
 		t.Run(testName, func(t *testing.T) {

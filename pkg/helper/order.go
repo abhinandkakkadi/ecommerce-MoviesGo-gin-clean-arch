@@ -9,7 +9,6 @@ import (
 	"github.com/google/uuid"
 )
 
-
 func GetTimeFromPeriod(timePeriod string) (time.Time, time.Time) {
 
 	endDate := time.Now()

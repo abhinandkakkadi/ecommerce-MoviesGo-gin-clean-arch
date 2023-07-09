@@ -197,12 +197,6 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Co
 		return models.CombinedOffer{}, err
 	}
 
-	// var genreID int
-	// err = co.DB.Raw("select id from genres where genre_name  = ?", genre).Scan(&genreID).Error
-	// if err != nil {
-	// 	return models.CombinedOffer{}, err
-	// }
-
 	var price float64
 	err = co.DB.Raw("select price from products where id = ?", productID).Scan(&price).Error
 	if err != nil {
@@ -214,8 +208,6 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Co
 	if err != nil {
 		return models.CombinedOffer{}, err
 	}
-
-
 
 	return models.CombinedOffer{
 		ProductOffer:  pOff,

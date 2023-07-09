@@ -23,10 +23,10 @@ func NewPaymentUseCase(paymentRepo interfaces.PaymentRepository, orderRepo inter
 
 func (p *paymentUseCase) MakePaymentRazorPay(orderID string, userID int) (models.CombinedOrderDetails, string, error) {
 
-		combinedOrderDetails,err := p.orderRepository.GetOrderDetailsByOrderId(orderID)
-		if err != nil {
-			return models.CombinedOrderDetails{},"",err
-		}
+	combinedOrderDetails, err := p.orderRepository.GetOrderDetailsByOrderId(orderID)
+	if err != nil {
+		return models.CombinedOrderDetails{}, "", err
+	}
 
 	client := razorpay.NewClient("rzp_test_6m0J6O6Dngl96V", "F9zSviAWO3DIXnNAtKgrufzT")
 
@@ -37,9 +37,8 @@ func (p *paymentUseCase) MakePaymentRazorPay(orderID string, userID int) (models
 	}
 	body, err := client.Order.Create(data, nil)
 	if err != nil {
-		return models.CombinedOrderDetails{},"",err
+		return models.CombinedOrderDetails{}, "", err
 	}
-
 
 	razorPayOrderID := body["id"].(string)
 

@@ -24,7 +24,7 @@ func NewCartUseCase(repository interfaces.CartRepository, couponRepo interfaces.
 }
 
 func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartResponse, error) {
-	
+
 	//  to check whether the product exist
 	ok, genre, err := cr.cartRepository.CheckProduct(product_id)
 	if err != nil {

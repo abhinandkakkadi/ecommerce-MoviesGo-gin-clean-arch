@@ -232,7 +232,6 @@ func (o *orderUseCase) GetAllOrderDetailsForAdmin(page int) ([]models.CombinedOr
 	}
 	return orderDetails, nil
 
-	
 }
 
 func (o *orderUseCase) ApproveOrder(orderID string) error {
