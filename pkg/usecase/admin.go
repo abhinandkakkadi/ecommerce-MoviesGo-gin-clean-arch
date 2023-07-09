@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 
 	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
@@ -195,7 +194,6 @@ func (ad *adminUseCase) DashBoard() (models.CompleteAdminDashboard, error) {
 	if err != nil {
 		return models.CompleteAdminDashboard{}, err
 	}
-	fmt.Println(totalRevenue)
 
 	orderDetails, err := ad.adminRepository.DashBoardOrder()
 	if err != nil {

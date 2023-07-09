@@ -250,16 +250,18 @@ func (o *orderRepository) CancelOrder(orderID string) error {
 	return nil
 }
 
-func (o *orderRepository) GetOrderDetailsBrief(page int) ([]models.OrderDetails, error) {
+func (o *orderRepository) GetOrderDetailsBrief(page int) ([]models.CombinedOrderDetails, error) {
 
 	if page == 0 {
 		page = 1
 	}
 	offset := (page - 1) * 2
-	var orderDetails []models.OrderDetails
-	err := o.DB.Raw("select order_id,final_price,shipment_status,payment_status from orders limit ? offset ?", 2, offset).Scan(&orderDetails).Error
+	var orderDetails []models.CombinedOrderDetails
+
+	err := o.DB.Raw("select orders.order_id,orders.final_price,orders.shipment_status,orders.payment_status,users.name,users.email,users.phone,addresses.house_name,addresses.state,addresses.pin,addresses.street,addresses.city from orders inner join users on orders.user_id = users.id inner join addresses on users.id = addresses.user_id limit ? offset ?", 2, offset).Scan(&orderDetails).Error
+	
 	if err != nil {
-		return []models.OrderDetails{}, nil
+		return []models.CombinedOrderDetails{}, nil
 	}
 
 	return orderDetails, nil

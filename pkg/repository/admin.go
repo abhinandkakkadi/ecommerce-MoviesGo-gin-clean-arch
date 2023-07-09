@@ -206,6 +206,8 @@ func (ad *adminRepository) FilteredSalesReport(startTime time.Time, endTime time
 	return salesReport, nil
 }
 
+
+
 func (ad *adminRepository) TotalRevenue() (models.DashboardRevenue, error) {
 
 	var revenueDetails models.DashboardRevenue
@@ -230,6 +232,8 @@ func (ad *adminRepository) TotalRevenue() (models.DashboardRevenue, error) {
 
 	return revenueDetails, nil
 }
+
+
 
 func (ad *adminRepository) DashBoardOrder() (models.DashboardOrder, error) {
 
@@ -263,6 +267,7 @@ func (ad *adminRepository) DashBoardOrder() (models.DashboardOrder, error) {
 
 }
 
+
 func (ad *adminRepository) AmountDetails() (models.DashboardAmount, error) {
 
 	var amountDetails models.DashboardAmount
@@ -279,6 +284,7 @@ func (ad *adminRepository) AmountDetails() (models.DashboardAmount, error) {
 	return amountDetails, nil
 
 }
+
 
 func (ad *adminRepository) DashboardUserDetails() (models.DashboardUser, error) {
 
@@ -300,6 +306,7 @@ func (ad *adminRepository) DashboardUserDetails() (models.DashboardUser, error) 
 
 	return userDetails, nil
 }
+
 
 func (ad *adminRepository) DashBoardProductDetails() (models.DashBoardProduct, error) {
 

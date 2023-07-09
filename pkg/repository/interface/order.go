@@ -23,7 +23,7 @@ type OrderRepository interface {
 	GetProductDetailsFromOrders(orderID string) ([]models.OrderProducts, error)
 	UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error
 	UserOrderRelationship(orderID string, userID int) (int, error)
-	GetOrderDetailsBrief(page int) ([]models.OrderDetails, error)
+	GetOrderDetailsBrief(page int) ([]models.CombinedOrderDetails, error)
 	GetShipmentStatus(orderID string) (string, error)
 	ApproveOrder(orderID string) error
 	CheckOrderID(orderID string) (bool, error)

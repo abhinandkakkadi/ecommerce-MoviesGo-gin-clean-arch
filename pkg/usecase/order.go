@@ -230,33 +230,9 @@ func (o *orderUseCase) GetAllOrderDetailsForAdmin(page int) ([]models.CombinedOr
 	if err != nil {
 		return []models.CombinedOrderDetails{}, err
 	}
+	return orderDetails, nil
 
-	var allCombinedOrderDetails []models.CombinedOrderDetails
-
-	// we will take the order details from orders table,  and for each order we combine it with the corresponding user details and address of that particular user that made the order
-	for _, od := range orderDetails {
-
-		// get users details who made that order
-		userDetails, err := o.userRepository.FindUserByOrderID(od.OrderId)
-		if err != nil {
-			return []models.CombinedOrderDetails{}, err
-		}
-		//  get shipping address for that particular order
-		userAddress, err := o.userRepository.FindUserAddressByOrderID(od.OrderId)
-		if err != nil {
-			return []models.CombinedOrderDetails{}, err
-		}
-		// combine all the three details
-		combinedOrderDetails, err := helper.CombinedOrderDetails(od, userDetails, userAddress)
-		if err != nil {
-			return []models.CombinedOrderDetails{}, err
-		}
-		// combine all of these details and append it to a slice
-		allCombinedOrderDetails = append(allCombinedOrderDetails, combinedOrderDetails)
-
-	}
-
-	return allCombinedOrderDetails, nil
+	
 }
 
 func (o *orderUseCase) ApproveOrder(orderID string) error {
