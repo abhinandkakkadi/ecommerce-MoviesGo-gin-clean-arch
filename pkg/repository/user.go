@@ -136,12 +136,7 @@ func (cr *UserDatabase) GetWalletDetails(userID int) (models.Wallet, error) {
 func (cr *UserDatabase) UserDetails(userID int) (models.UsersProfileDetails, error) {
 
 	var userDetails models.UsersProfileDetails
-	err := cr.DB.Raw("select name,email,phone from users where id = ?", userID).Scan(&userDetails).Error
-	if err != nil {
-		return models.UsersProfileDetails{}, err
-	}
-
-	err = cr.DB.Raw("select referral_code from referrals where user_id = ?", userID).Scan(&userDetails.ReferralCode).Error
+	err := cr.DB.Raw("select users.name,users.email,users.phone,referrals.referral_code from users inner join referrals on users.id = referrals.user_id where users.id = ?", userID).Row().Scan(&userDetails.Name,&userDetails.Email,&userDetails.Phone,&userDetails.ReferralCode)
 	if err != nil {
 		return models.UsersProfileDetails{}, err
 	}
