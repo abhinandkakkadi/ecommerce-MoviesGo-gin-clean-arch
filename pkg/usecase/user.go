@@ -187,7 +187,18 @@ func (u *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 	}
 
 	// discount reason - offer - coupon - wallet
-	discountReason, err := u.couponRepo.DiscountReason(userID)
+	var discountApplied []string
+	err = u.couponRepo.DiscountReason(userID,"used_coupons","COUPON APPLIED",&discountApplied)
+	if err != nil {
+		return models.CheckoutDetails{}, err
+	}
+
+	err = u.couponRepo.DiscountReason(userID, "product_offer_useds", "PRODUCT OFFER APPLIED", &discountApplied)
+	if err != nil {
+		return models.CheckoutDetails{}, err
+	}
+
+	err = u.couponRepo.DiscountReason(userID, "category_offer_useds", "CATEGORY OFFER APPLIED", &discountApplied)
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}
@@ -200,7 +211,7 @@ func (u *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 		ReferralAmount:      referralAmount,
 		Grand_Total:         grandTotal.TotalPrice,
 		Total_Price:         grandTotal.FinalPrice,
-		DiscountReason:      discountReason,
+		DiscountReason:      discountApplied,
 	}, nil
 }
 
