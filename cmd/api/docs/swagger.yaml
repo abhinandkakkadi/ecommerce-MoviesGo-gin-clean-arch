@@ -9,6 +9,11 @@ definitions:
         type: number
       validity:
         type: boolean
+    required:
+    - coupon
+    - discount_percentage
+    - minimum_price
+    - validity
     type: object
   models.AddressInfo:
     properties:
@@ -25,10 +30,12 @@ definitions:
       street:
         type: string
     required:
+    - city
     - house_name
     - name
     - pin
     - state
+    - street
     type: object
   models.AdminLogin:
     properties:
@@ -40,6 +47,7 @@ definitions:
         type: string
     required:
     - email
+    - password
     type: object
   models.AdminSignUp:
     properties:
@@ -51,6 +59,11 @@ definitions:
         type: string
       password:
         type: string
+    required:
+    - confirmpassword
+    - email
+    - name
+    - password
     type: object
   models.CategoryOfferReceiver:
     properties:
@@ -58,22 +71,27 @@ definitions:
         type: integer
       genre_id:
         type: integer
-      offer_description:
-        type: string
       offer_limit:
         type: integer
       offer_name:
         type: string
+    required:
+    - discount_percentage
+    - genre_id
+    - offer_limit
+    - offer_name
     type: object
   models.CategoryUpdate:
     properties:
-      genre:
+      genre binding:required:
         type: string
     type: object
   models.CouponAddUser:
     properties:
       coupon_name:
         type: string
+    required:
+    - coupon_name
     type: object
   models.Email:
     properties:
@@ -95,43 +113,49 @@ definitions:
         type: integer
       payment_id:
         type: integer
+    required:
+    - address_id
+    - payment_id
     type: object
   models.ProductOfferReceiver:
     properties:
       discount_percentage:
         type: integer
-      offer_description:
-        type: string
       offer_limit:
         type: integer
       offer_name:
         type: string
       product_id:
         type: integer
+    required:
+    - discount_percentage
+    - offer_limit
+    - offer_name
+    - product_id
     type: object
   models.ProductsReceiver:
     properties:
-      director:
+      director binding:required:
         type: string
-      format:
+      format binding:required:
         type: string
-      genre_id:
+      genre_id binding:required:
         type: integer
-      language:
+      language binding:required:
         type: string
-      movie_name:
+      movie_name binding:required:
         type: string
-      price:
+      price binding:required:
         type: number
-      products_description:
+      products_description binding:required:
         type: string
-      quantity:
+      quantity binding:required:
         type: integer
-      release_year:
+      release_year binding:required:
         type: string
-      run_time:
+      run_time binding:required:
         type: number
-      studio_id:
+      studio_id binding:required:
         type: integer
     type: object
   models.ResetPassword:
@@ -148,6 +172,8 @@ definitions:
     properties:
       name:
         type: string
+    required:
+    - name
     type: object
   models.UpdatePassword:
     properties:
@@ -157,6 +183,9 @@ definitions:
         type: string
       old-password:
         type: string
+    required:
+    - newpassword
+    - old-password
     type: object
   models.UpdateProduct:
     properties:
@@ -164,6 +193,9 @@ definitions:
         type: integer
       quantity:
         type: integer
+    required:
+    - product-id
+    - quantity
     type: object
   models.UserDetails:
     properties:
@@ -179,6 +211,12 @@ definitions:
         type: string
       referral_code:
         type: string
+    required:
+    - confirmpassword
+    - email
+    - name
+    - password
+    - phone
     type: object
   models.UserLogin:
     properties:
@@ -186,6 +224,9 @@ definitions:
         type: string
       password:
         type: string
+    required:
+    - email
+    - password
     type: object
   models.VerifyData:
     properties:
@@ -567,11 +608,6 @@ paths:
         name: page
         required: true
         type: string
-      - description: page count
-        in: query
-        name: count
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -822,9 +858,9 @@ paths:
         name: page
         required: true
         type: string
-      - description: User Count Per Page
+      - description: page size
         in: query
-        name: count
+        name: pageSize
         required: true
         type: string
       produces:
@@ -1514,9 +1550,9 @@ paths:
         name: id
         required: true
         type: string
-      - description: page count
+      - description: page size
         in: query
-        name: count
+        name: pageSize
         required: true
         type: string
       produces:

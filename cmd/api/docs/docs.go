@@ -685,13 +685,6 @@ const docTemplate = `{
                         "name": "page",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "page count",
-                        "name": "count",
-                        "in": "query",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -1138,8 +1131,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "User Count Per Page",
-                        "name": "count",
+                        "description": "page size",
+                        "name": "pageSize",
                         "in": "query",
                         "required": true
                     }
@@ -2092,8 +2085,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "page count",
-                        "name": "count",
+                        "description": "page size",
+                        "name": "pageSize",
                         "in": "query",
                         "required": true
                     }
@@ -2366,6 +2359,12 @@ const docTemplate = `{
     "definitions": {
         "models.AddCoupon": {
             "type": "object",
+            "required": [
+                "coupon",
+                "discount_percentage",
+                "minimum_price",
+                "validity"
+            ],
             "properties": {
                 "coupon": {
                     "type": "string"
@@ -2384,10 +2383,12 @@ const docTemplate = `{
         "models.AddressInfo": {
             "type": "object",
             "required": [
+                "city",
                 "house_name",
                 "name",
                 "pin",
-                "state"
+                "state",
+                "street"
             ],
             "properties": {
                 "city": {
@@ -2413,7 +2414,8 @@ const docTemplate = `{
         "models.AdminLogin": {
             "type": "object",
             "required": [
-                "email"
+                "email",
+                "password"
             ],
             "properties": {
                 "email": {
@@ -2428,6 +2430,12 @@ const docTemplate = `{
         },
         "models.AdminSignUp": {
             "type": "object",
+            "required": [
+                "confirmpassword",
+                "email",
+                "name",
+                "password"
+            ],
             "properties": {
                 "confirmpassword": {
                     "type": "string"
@@ -2445,15 +2453,18 @@ const docTemplate = `{
         },
         "models.CategoryOfferReceiver": {
             "type": "object",
+            "required": [
+                "discount_percentage",
+                "genre_id",
+                "offer_limit",
+                "offer_name"
+            ],
             "properties": {
                 "discount_percentage": {
                     "type": "integer"
                 },
                 "genre_id": {
                     "type": "integer"
-                },
-                "offer_description": {
-                    "type": "string"
                 },
                 "offer_limit": {
                     "type": "integer"
@@ -2466,13 +2477,16 @@ const docTemplate = `{
         "models.CategoryUpdate": {
             "type": "object",
             "properties": {
-                "genre": {
+                "genre binding:required": {
                     "type": "string"
                 }
             }
         },
         "models.CouponAddUser": {
             "type": "object",
+            "required": [
+                "coupon_name"
+            ],
             "properties": {
                 "coupon_name": {
                     "type": "string"
@@ -2503,6 +2517,10 @@ const docTemplate = `{
         },
         "models.OrderFromCart": {
             "type": "object",
+            "required": [
+                "address_id",
+                "payment_id"
+            ],
             "properties": {
                 "address_id": {
                     "type": "integer"
@@ -2514,12 +2532,15 @@ const docTemplate = `{
         },
         "models.ProductOfferReceiver": {
             "type": "object",
+            "required": [
+                "discount_percentage",
+                "offer_limit",
+                "offer_name",
+                "product_id"
+            ],
             "properties": {
                 "discount_percentage": {
                     "type": "integer"
-                },
-                "offer_description": {
-                    "type": "string"
                 },
                 "offer_limit": {
                     "type": "integer"
@@ -2535,37 +2556,37 @@ const docTemplate = `{
         "models.ProductsReceiver": {
             "type": "object",
             "properties": {
-                "director": {
+                "director binding:required": {
                     "type": "string"
                 },
-                "format": {
+                "format binding:required": {
                     "type": "string"
                 },
-                "genre_id": {
+                "genre_id binding:required": {
                     "type": "integer"
                 },
-                "language": {
+                "language binding:required": {
                     "type": "string"
                 },
-                "movie_name": {
+                "movie_name binding:required": {
                     "type": "string"
                 },
-                "price": {
+                "price binding:required": {
                     "type": "number"
                 },
-                "products_description": {
+                "products_description binding:required": {
                     "type": "string"
                 },
-                "quantity": {
+                "quantity binding:required": {
                     "type": "integer"
                 },
-                "release_year": {
+                "release_year binding:required": {
                     "type": "string"
                 },
-                "run_time": {
+                "run_time binding:required": {
                     "type": "number"
                 },
-                "studio_id": {
+                "studio_id binding:required": {
                     "type": "integer"
                 }
             }
@@ -2587,6 +2608,9 @@ const docTemplate = `{
         },
         "models.SearchItems": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -2595,6 +2619,10 @@ const docTemplate = `{
         },
         "models.UpdatePassword": {
             "type": "object",
+            "required": [
+                "newpassword",
+                "old-password"
+            ],
             "properties": {
                 "confirm-newpassword": {
                     "type": "string"
@@ -2609,6 +2637,10 @@ const docTemplate = `{
         },
         "models.UpdateProduct": {
             "type": "object",
+            "required": [
+                "product-id",
+                "quantity"
+            ],
             "properties": {
                 "product-id": {
                     "type": "integer"
@@ -2620,6 +2652,13 @@ const docTemplate = `{
         },
         "models.UserDetails": {
             "type": "object",
+            "required": [
+                "confirmpassword",
+                "email",
+                "name",
+                "password",
+                "phone"
+            ],
             "properties": {
                 "confirmpassword": {
                     "type": "string"
@@ -2643,6 +2682,10 @@ const docTemplate = `{
         },
         "models.UserLogin": {
             "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
