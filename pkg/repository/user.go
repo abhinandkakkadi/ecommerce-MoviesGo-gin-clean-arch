@@ -33,18 +33,18 @@ func (c *UserDatabase) CheckUserAvailability(email string) bool {
 // retrieve the user details form the database
 func (c *UserDatabase) FindUserByEmail(user models.UserLogin) (models.UserSignInResponse, error) {
 
-	var user_details models.UserSignInResponse
+	var userDetails models.UserSignInResponse
 
 	err := c.DB.Raw(`
 		SELECT *
 		FROM users where email = ? and blocked = false
-		`, user.Email).Scan(&user_details).Error
+		`, user.Email).Scan(&userDetails).Error
 
 	if err != nil {
 		return models.UserSignInResponse{}, errors.New("error checking user details")
 	}
 
-	return user_details, nil
+	return userDetails, nil
 
 }
 
@@ -76,19 +76,12 @@ func (cr *UserDatabase) AddAddress(address models.AddressInfo, userID int) error
 		return err
 	}
 
-	// var addressResponse []models.AddressInfoResponse
-	// err = cr.DB.Raw("select * from addresses where user_id = ?", userID).Scan(&addressResponse).Error
-	// if err != nil {
-	// 	return []models.AddressInfoResponse{}, err
-	// }
-
 	return nil
 
 }
 
 func (cr *UserDatabase) UpdateAddress(address models.AddressInfo, addressID int, userID int) (models.AddressInfoResponse, error) {
 
-	fmt.Println(address)
 	err := cr.DB.Exec("update addresses set house_name = ?, state = ?, pin = ?, street = ?, city = ? where id = ? and user_id = ?", address.HouseName, address.State, address.Pin, address.Street, address.City, addressID, userID).Error
 	if err != nil {
 		return models.AddressInfoResponse{}, err
@@ -101,6 +94,7 @@ func (cr *UserDatabase) UpdateAddress(address models.AddressInfo, addressID int,
 	}
 
 	return addressResponse, nil
+
 }
 
 func (cr *UserDatabase) GetAllAddresses(userID int) ([]models.AddressInfoResponse, error) {
@@ -236,7 +230,7 @@ func (cr *UserDatabase) UserBlockStatus(email string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	fmt.Println(isBlocked)
+
 	return isBlocked, nil
 }
 

@@ -17,12 +17,6 @@ func GetCouponDiscountPrice(userID int, TotalPrice float64, DB *gorm.DB) (float6
 		return 0.0, nil
 	}
 
-	var couponID int
-	err = DB.Raw("select coupon_id from used_coupons where user_id = ? and used = false", userID).Scan(&couponID).Error
-	if err != nil {
-		return 0.0, err
-	}
-
 	type CouponDetails struct {
 		DiscountPercentage int
 		MinimumPrice       float64
@@ -31,7 +25,7 @@ func GetCouponDiscountPrice(userID int, TotalPrice float64, DB *gorm.DB) (float6
 	// take the discount percentage and minimum price to check the condition ( !! Actually this is not needed. As all the conditions were checked while adding the coupon !!)
 	// just discount percentage would work fine - should refactor this in the future
 	var coupD CouponDetails
-	err = DB.Raw("select discount_percentage,minimum_price from coupons where id = ?", couponID).Scan(&coupD).Error
+	err = DB.Raw("select discount_percentage,minimum_price from coupons where id = (select coupon_id from used_coupons where user_id = ? and used = false)", userID).Scan(&coupD).Error
 	if err != nil {
 		return 0.0, err
 	}
