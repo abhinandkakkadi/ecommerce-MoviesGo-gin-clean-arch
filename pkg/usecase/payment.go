@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"errors"
+
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
@@ -54,16 +56,27 @@ func (p *paymentUseCase) MakePaymentRazorPay(orderID string, userID int) (models
 func (p *paymentUseCase) SavePaymentDetails(paymentID string, razorID string, orderID string) error {
 
 	// to check whether the order is already paid
-	err := p.orderRepository.CheckPaymentStatus(razorID, orderID)
+	status, err := p.orderRepository.CheckPaymentStatus(razorID, orderID)
 	if err != nil {
 		return err
 	}
 
-	err = p.orderRepository.UpdatePaymentDetails(orderID, paymentID)
-	if err != nil {
+	if status == "not paid" {
+
+		err = p.orderRepository.UpdatePaymentDetails(orderID, paymentID)
+		if err != nil {
 		return err
+		}
+
+		err := p.orderRepository.UpdateShipmentAndPaymentByOrderID("processing","paid",orderID)
+		if err != nil {
+			return err
+		}
+
+		return nil
+
 	}
 
-	return nil
+	return errors.New("already paid")
 
 }

@@ -82,6 +82,7 @@ func (p *productDatabase) UpdateQuantity(productID int, quantity int) error {
 	if err != nil {
 		return err
 	}
+	
 	finalQuantity := currentQuantity + quantity
 	err = p.DB.Exec("update products set quantity = ? where id = ?", finalQuantity, productID).Error
 	if err != nil {

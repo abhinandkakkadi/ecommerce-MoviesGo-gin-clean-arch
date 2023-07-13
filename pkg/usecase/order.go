@@ -248,7 +248,7 @@ func (o *orderUseCase) ApproveOrder(orderID string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(shipmentStatus)
+	
 	if shipmentStatus == "cancelled" {
 
 		return errors.New("the order is cancelled, cannot approve it")

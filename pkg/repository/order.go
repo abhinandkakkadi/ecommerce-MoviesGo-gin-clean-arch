@@ -231,6 +231,7 @@ func (o *orderRepository) CancelOrder(orderID string) error {
 		if err != nil {
 			return err
 		}
+		
 		// check if a user have a uer have a wallet record if not create on
 		result := o.DB.Exec("update wallets set wallet_amount = wallet_amount + ? where user_id = ?", amountDetails.FinalPrice, amountDetails.UserID)
 		if result.Error != nil {
@@ -375,23 +376,26 @@ func (o *orderRepository) AddRazorPayDetails(orderID string, razorPayOrderID str
 	return nil
 }
 
-func (o *orderRepository) CheckPaymentStatus(razorID string, orderID string) error {
+func (o *orderRepository) CheckPaymentStatus(razorID string, orderID string) (string,error) {
 
 	var paymentStatus string
 	err := o.DB.Raw("select payment_status from orders where order_id = ?", orderID).Scan(&paymentStatus).Error
 	if err != nil {
-		return err
+		return "",err
 	}
+	
+	return paymentStatus,nil
 
-	if paymentStatus == "not paid" {
-		fmt.Println("have to reach here")
-		err = o.DB.Exec("update orders set payment_status = 'paid', shipment_status = 'processing' where order_id = ?", orderID).Error
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-	return errors.New("already paid")
+}
+
+func (o *orderRepository) UpdateShipmentAndPaymentByOrderID(shipmentStatus string,paymentStatus string,orderID string) error {
+
+	err := o.DB.Exec("update orders set payment_status = ?, shipment_status = ? where order_id = ?",paymentStatus,shipmentStatus, orderID).Error
+	if err != nil {
+		return err
+	}	
+
+	return nil
 
 }
 

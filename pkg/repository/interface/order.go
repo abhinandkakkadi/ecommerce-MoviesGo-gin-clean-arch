@@ -33,11 +33,12 @@ type OrderRepository interface {
 	CheckOrder(orderID string, userID int) error
 	GetOrderDetail(orderID string) (models.OrderDetails, error)
 	AddRazorPayDetails(orderID string, razorPayOrderID string) error
-	CheckPaymentStatus(razorID string, orderID string) error
+	CheckPaymentStatus(razorID string, orderID string) (string,error)
 	UpdatePaymentDetails(orderID string, paymentID string) error
 	UpdateShipmentStatus(shipmentStatus string, orderID string) error
 	GetDeliveredTime(orderID string) (time.Time, error)
 	ReturnOrder(shipmentStatus string, orderID string) error
 	GetPaymentStatus(orderID string) (string, error)
 	RefundOrder(paymentStatus string, orderID string) error
+	UpdateShipmentAndPaymentByOrderID(shipmentStatus string,paymentStatus string,orderID string) error
 }
