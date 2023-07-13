@@ -172,9 +172,9 @@ func (pr *productUseCase) FilterCategory(data map[string]int) ([]models.Products
 			return []models.ProductsBrief{}, err
 		}
 
-		quantity,err := pr.productRepo.GetQuantityFromProductID(product.ID)
+		quantity, err := pr.productRepo.GetQuantityFromProductID(product.ID)
 		if err != nil {
-			return []models.ProductsBrief{},err
+			return []models.ProductsBrief{}, err
 		}
 
 		if quantity == 0 {
@@ -190,7 +190,7 @@ func (pr *productUseCase) FilterCategory(data map[string]int) ([]models.Products
 
 	}
 	return productFromCategory, nil
-	
+
 }
 
 func (pr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error) {

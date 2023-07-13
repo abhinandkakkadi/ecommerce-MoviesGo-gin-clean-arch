@@ -370,19 +370,19 @@ func (u *userUseCase) RemoveFromWishList(productID int, userID int) error {
 
 func (u *userUseCase) ApplyReferral(userID int) (string, error) {
 
-	exist,err := u.cartRepo.DoesCartExist(userID)
+	exist, err := u.cartRepo.DoesCartExist(userID)
 	if err != nil {
-		return "",err
+		return "", err
 	}
 
 	if !exist {
-		return "",errors.New("cart does not exist, can't apply offer")
+		return "", errors.New("cart does not exist, can't apply offer")
 	}
 
 	referralAmount, totalCartAmount, err := u.userRepo.GetReferralAndTotalAmount(userID)
 	if err != nil {
-		return "",err
-	} 
+		return "", err
+	}
 
 	if totalCartAmount > referralAmount {
 		totalCartAmount = totalCartAmount - referralAmount
@@ -392,17 +392,17 @@ func (u *userUseCase) ApplyReferral(userID int) (string, error) {
 		totalCartAmount = 0
 	}
 
-	err = u.userRepo.UpdateSomethingBasedOnUserID("referrals","referral_amount",referralAmount,userID)
+	err = u.userRepo.UpdateSomethingBasedOnUserID("referrals", "referral_amount", referralAmount, userID)
 	if err != nil {
-		return "",err
+		return "", err
 	}
 
-	err = u.userRepo.UpdateSomethingBasedOnUserID("carts","total_price",totalCartAmount,userID)
+	err = u.userRepo.UpdateSomethingBasedOnUserID("carts", "total_price", totalCartAmount, userID)
 	if err != nil {
-		return "",err
+		return "", err
 	}
 
-	return "",nil
+	return "", nil
 }
 
 func (u *userUseCase) ResetPassword(userID int, pass models.ResetPassword) error {

@@ -21,5 +21,4 @@ type UserUseCase interface {
 	RemoveFromWishList(productID int, userID int) error
 	ApplyReferral(userID int) (string, error)
 	ResetPassword(userID int, pass models.ResetPassword) error
-	
 }

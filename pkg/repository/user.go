@@ -313,26 +313,26 @@ func (cr *UserDatabase) UpdateReferralAmount(referralAmount float64, referredUse
 
 }
 
-func (cr *UserDatabase) GetReferralAndTotalAmount(userID int) (float64,float64, error) {
+func (cr *UserDatabase) GetReferralAndTotalAmount(userID int) (float64, float64, error) {
 
 	// first check whether the cart is empty -- do this for coupon too
 	var cartDetails struct {
-		ReferralAmount float64
+		ReferralAmount  float64
 		TotalCartAmount float64
 	}
-	
+
 	err := cr.DB.Raw("SELECT (SELECT referral_amount FROM referrals WHERE user_id = ?) AS referral_amount, COALESCE(SUM(total_price), 0) AS total_cart_amount FROM carts WHERE user_id = ?", userID, userID).Scan(&cartDetails).Error
 	if err != nil {
-    return 0.0,0.0,err
+		return 0.0, 0.0, err
 	}
 
-	return cartDetails.ReferralAmount,cartDetails.TotalCartAmount,nil
+	return cartDetails.ReferralAmount, cartDetails.TotalCartAmount, nil
 
 }
 
-func (cr *UserDatabase) UpdateSomethingBasedOnUserID(tableName string,columnName string,updateValue float64,userID int) error {
+func (cr *UserDatabase) UpdateSomethingBasedOnUserID(tableName string, columnName string, updateValue float64, userID int) error {
 
-	err := cr.DB.Exec("update " +tableName+ " set " +columnName+ " = ? where user_id = ?", updateValue, userID).Error
+	err := cr.DB.Exec("update "+tableName+" set "+columnName+" = ? where user_id = ?", updateValue, userID).Error
 	if err != nil {
 		cr.DB.Rollback()
 		return err
@@ -340,8 +340,6 @@ func (cr *UserDatabase) UpdateSomethingBasedOnUserID(tableName string,columnName
 	return nil
 
 }
-
-
 
 func (cr *UserDatabase) ResetPassword(userID int, password string) error {
 

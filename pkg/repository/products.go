@@ -82,7 +82,7 @@ func (p *productDatabase) UpdateQuantity(productID int, quantity int) error {
 	if err != nil {
 		return err
 	}
-	
+
 	finalQuantity := currentQuantity + quantity
 	err = p.DB.Exec("update products set quantity = ? where id = ?", finalQuantity, productID).Error
 	if err != nil {
@@ -189,16 +189,15 @@ func (p *productDatabase) GetProductFromCategory(id int) (models.ProductsBrief, 
 		 where genres.id = ?
 	`, id).Scan(&product).Error
 
-		if err != nil {
-			return models.ProductsBrief{}, err
-		}
+	if err != nil {
+		return models.ProductsBrief{}, err
+	}
 
-		return product,nil
+	return product, nil
 
 }
 
-func (p *productDatabase) GetQuantityFromProductID(id int) (int,error) {
-
+func (p *productDatabase) GetQuantityFromProductID(id int) (int, error) {
 
 	var quantity int
 	err := p.DB.Raw("select quantity from products where id = ?", id).Scan(&quantity).Error
@@ -206,7 +205,7 @@ func (p *productDatabase) GetQuantityFromProductID(id int) (int,error) {
 		return 0.0, err
 	}
 
-	return quantity,nil
+	return quantity, nil
 
 }
 

@@ -65,10 +65,10 @@ func (p *paymentUseCase) SavePaymentDetails(paymentID string, razorID string, or
 
 		err = p.orderRepository.UpdatePaymentDetails(orderID, paymentID)
 		if err != nil {
-		return err
+			return err
 		}
 
-		err := p.orderRepository.UpdateShipmentAndPaymentByOrderID("processing","paid",orderID)
+		err := p.orderRepository.UpdateShipmentAndPaymentByOrderID("processing", "paid", orderID)
 		if err != nil {
 			return err
 		}
