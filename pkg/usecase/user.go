@@ -62,9 +62,26 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	id := uuid.New().ID()
 	str := strconv.Itoa(int(id))
 	userReferral := str[:8]
-	err = u.userRepo.CreateReferralEntry(userData, userReferral, user.ReferralCode)
+	err = u.userRepo.CreateReferralEntry(userData, userReferral)
 	if err != nil {
 		return models.TokenUsers{}, err
+	}
+
+	if user.ReferralCode != "" {
+		// first check whether if a user with that referralCode exist
+		referredUserId, err := u.userRepo.GetUserIdFromReferrals(user.ReferralCode)
+		if err != nil {
+			return models.TokenUsers{}, err
+		}
+
+		if referredUserId != 0 {
+			referralAmount := 100
+			err := u.userRepo.UpdateReferralAmount(float64(referralAmount), referredUserId, userData.Id)
+			if err != nil {
+				return models.TokenUsers{}, err
+			}
+
+		}
 	}
 
 	// crete a JWT token string for the user
@@ -188,7 +205,7 @@ func (u *userUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 
 	// discount reason - offer - coupon - wallet
 	var discountApplied []string
-	err = u.couponRepo.DiscountReason(userID,"used_coupons","COUPON APPLIED",&discountApplied)
+	err = u.couponRepo.DiscountReason(userID, "used_coupons", "COUPON APPLIED", &discountApplied)
 	if err != nil {
 		return models.CheckoutDetails{}, err
 	}

@@ -51,7 +51,7 @@ func (c *UserDatabase) FindUserByEmail(user models.UserLogin) (models.UserSignIn
 func (c *UserDatabase) UserSignUp(user models.UserDetails) (models.UserDetailsResponse, error) {
 
 	var userDetails models.UserDetailsResponse
-	err := c.DB.Raw(`INSERT INTO users (name, email, phone, password) VALUES ($1, $2 $3, $4) RETURNING id, name, email, phone`, user.Name, user.Email, user.Phone, user.Password).Scan(&userDetails).Error
+	err := c.DB.Raw(`INSERT INTO users (name, email, phone, password) VALUES ($1, $2, $3, $4) RETURNING id, name, email, phone`, user.Name, user.Email, user.Phone, user.Password).Scan(&userDetails).Error
 
 	if err != nil {
 		return models.UserDetailsResponse{}, err
@@ -136,7 +136,7 @@ func (cr *UserDatabase) GetWalletDetails(userID int) (models.Wallet, error) {
 func (cr *UserDatabase) UserDetails(userID int) (models.UsersProfileDetails, error) {
 
 	var userDetails models.UsersProfileDetails
-	err := cr.DB.Raw("select users.name,users.email,users.phone,referrals.referral_code from users inner join referrals on users.id = referrals.user_id where users.id = ?", userID).Row().Scan(&userDetails.Name,&userDetails.Email,&userDetails.Phone,&userDetails.ReferralCode)
+	err := cr.DB.Raw("select users.name,users.email,users.phone,referrals.referral_code from users inner join referrals on users.id = referrals.user_id where users.id = ?", userID).Row().Scan(&userDetails.Name, &userDetails.Email, &userDetails.Phone, &userDetails.ReferralCode)
 	if err != nil {
 		return models.UsersProfileDetails{}, err
 	}
@@ -274,36 +274,39 @@ func (cr *UserDatabase) RemoveFromWishList(userID int, productID int) error {
 
 }
 
-func (cr *UserDatabase) CreateReferralEntry(userDetails models.UserDetailsResponse, userReferral string, referralCode string) error {
+func (cr *UserDatabase) CreateReferralEntry(userDetails models.UserDetailsResponse, userReferral string) error {
 
 	err := cr.DB.Exec("insert into referrals (user_id,referral_code,referral_amount) values (?,?,?)", userDetails.Id, userReferral, 0).Error
 	if err != nil {
 		return err
 	}
 
-	if referralCode != "" {
-		// first check whether if a user with that referralCode exist
-		var referredUserId int
-		err := cr.DB.Raw("select user_id from referrals where referral_code = ?", referralCode).Scan(&referredUserId).Error
-		if err != nil {
-			return nil
-		}
+	return nil
 
-		if referredUserId != 0 {
+}
 
-			referralAmount := 100
-			err := cr.DB.Exec("update referrals set referral_amount = ?,referred_user_id = ? where user_id = ? ", referralAmount, referredUserId, userDetails.Id).Error
-			if err != nil {
-				return err
-			}
+func (cr *UserDatabase) GetUserIdFromReferrals(ReferralCode string) (int, error) {
 
-			// find the current amount in referred users referral table and add 100 with that
-			err = cr.DB.Exec("update referrals set referral_amount = referral_amount + ? where user_id = ? ", referralAmount, referredUserId).Error
-			if err != nil {
-				return err
-			}
+	var referredUserId int
+	err := cr.DB.Raw("select user_id from referrals where referral_code = ?", ReferralCode).Scan(&referredUserId).Error
+	if err != nil {
+		return 0, nil
+	}
 
-		}
+	return referredUserId, nil
+}
+
+func (cr *UserDatabase) UpdateReferralAmount(referralAmount float64, referredUserId int, currentUserID int) error {
+
+	err := cr.DB.Exec("update referrals set referral_amount = ?,referred_user_id = ? where user_id = ? ", referralAmount, referredUserId, currentUserID).Error
+	if err != nil {
+		return err
+	}
+
+	// find the current amount in referred users referral table and add 100 with that
+	err = cr.DB.Exec("update referrals set referral_amount = referral_amount + ? where user_id = ? ", referralAmount, referredUserId).Error
+	if err != nil {
+		return err
 	}
 
 	return nil
