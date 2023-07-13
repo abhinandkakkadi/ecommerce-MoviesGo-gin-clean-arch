@@ -39,7 +39,7 @@ func (o *orderRepository) AddressExist(orderBody models.OrderIncoming) (bool, er
 	if err := o.DB.Raw("select count(*) from addresses where user_id = ? and id = ?", orderBody.UserID, orderBody.AddressID).Scan(&count).Error; err != nil {
 		return false, err
 	}
-	fmt.Println(count)
+
 	return count > 0, nil
 
 }

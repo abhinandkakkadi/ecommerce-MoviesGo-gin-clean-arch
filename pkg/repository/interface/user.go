@@ -28,8 +28,9 @@ type UserRepository interface {
 	ProductExistInWishList(productID int, userId int) (bool, error)
 	RemoveFromWishList(userID int, productID int) error
 	CreateReferralEntry(users models.UserDetailsResponse, userReferral string) error
-	ApplyReferral(userID int) (string, error)
+	GetReferralAndTotalAmount(userID int) (float64,float64, error)
 	ResetPassword(userID int, password string) error
 	GetUserIdFromReferrals(ReferralCode string) (int, error)
 	UpdateReferralAmount(referralAmount float64, referredUserId int, currentUserID int) error
+	UpdateSomethingBasedOnUserID(tableName string,columnName string,updateValue float64,userID int) error
 }
