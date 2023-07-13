@@ -27,7 +27,9 @@ type UserRepository interface {
 	GetWishList(userID int) ([]models.WishListResponse, error)
 	ProductExistInWishList(productID int, userId int) (bool, error)
 	RemoveFromWishList(userID int, productID int) error
-	CreateReferralEntry(users models.UserDetailsResponse, userReferral string, referralCode string) error
+	CreateReferralEntry(users models.UserDetailsResponse, userReferral string) error
 	ApplyReferral(userID int) (string, error)
 	ResetPassword(userID int, password string) error
+	GetUserIdFromReferrals(ReferralCode string) (int, error)
+	UpdateReferralAmount(referralAmount float64, referredUserId int, currentUserID int) error
 }

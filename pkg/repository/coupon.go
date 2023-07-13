@@ -470,12 +470,12 @@ func (co *couponRepository) GetReferralAmount(userID int) (models.ReferralAmount
 
 }
 
-func (co *couponRepository) DiscountReason(userID int,tableName string, discountLabel string, discountApplied *[]string)  error {
+func (co *couponRepository) DiscountReason(userID int, tableName string, discountLabel string, discountApplied *[]string) error {
 
 	var count int
 	err := co.DB.Raw("select count(*) from "+tableName+" where used = false and user_id = ?", userID).Scan(&count).Error
 	if err != nil {
-		return  err
+		return err
 	}
 
 	if count != 0 {
@@ -483,6 +483,6 @@ func (co *couponRepository) DiscountReason(userID int,tableName string, discount
 		count = 0
 	}
 
-	return  nil
+	return nil
 
 }
