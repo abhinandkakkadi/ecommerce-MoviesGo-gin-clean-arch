@@ -164,12 +164,33 @@ func (pr *productUseCase) FilterCategory(data map[string]int) ([]models.Products
 		return []models.ProductsBrief{}, err
 	}
 
-	productByCategory, err := pr.productRepo.GetProductFromCategory(data)
-	if err != nil {
-		return []models.ProductsBrief{}, err
+	var productFromCategory []models.ProductsBrief
+	for _, id := range data {
+
+		product, err := pr.productRepo.GetProductFromCategory(id)
+		if err != nil {
+			return []models.ProductsBrief{}, err
+		}
+
+		quantity,err := pr.productRepo.GetQuantityFromProductID(product.ID)
+		if err != nil {
+			return []models.ProductsBrief{},err
+		}
+
+		if quantity == 0 {
+			product.ProductStatus = "out of stock"
+		} else {
+			product.ProductStatus = "in stock"
+		}
+
+		// if a product exist for that genre. Then only append it
+		if product.ID != 0 {
+			productFromCategory = append(productFromCategory, product)
+		}
+
 	}
-	fmt.Println("products By Category: ", productByCategory)
-	return productByCategory, nil
+	return productFromCategory, nil
+	
 }
 
 func (pr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error) {

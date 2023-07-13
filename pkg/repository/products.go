@@ -178,12 +178,10 @@ func (p *productDatabase) CheckValidityOfCategory(data map[string]int) error {
 	return nil
 }
 
-func (p *productDatabase) GetProductFromCategory(data map[string]int) ([]models.ProductsBrief, error) {
+func (p *productDatabase) GetProductFromCategory(id int) (models.ProductsBrief, error) {
 
-	var productFromCategory []models.ProductsBrief
-	for _, id := range data {
-		var product models.ProductsBrief
-		err := p.DB.Raw(`
+	var product models.ProductsBrief
+	err := p.DB.Raw(`
 		SELECT products.id, products.movie_name,products.sku,products.language, genres.genre_name AS genre,products.price,products.quantity
 		FROM products
 		JOIN genres ON products.genre_id = genres.id
@@ -191,28 +189,24 @@ func (p *productDatabase) GetProductFromCategory(data map[string]int) ([]models.
 	`, id).Scan(&product).Error
 
 		if err != nil {
-			return nil, err
-		}
-		var quantity int
-		err = p.DB.Raw("select quantity from products where id = ?", product.ID).Scan(&quantity).Error
-		if err != nil {
-			return nil, err
+			return models.ProductsBrief{}, err
 		}
 
-		if quantity == 0 {
-			product.ProductStatus = "out of stock"
-		} else {
-			product.ProductStatus = "in stock"
-		}
+		return product,nil
 
-		// if a product exist for that genre. Then only append it
-		if product.ID != 0 {
-			productFromCategory = append(productFromCategory, product)
-		}
+}
 
+func (p *productDatabase) GetQuantityFromProductID(id int) (int,error) {
+
+
+	var quantity int
+	err := p.DB.Raw("select quantity from products where id = ?", id).Scan(&quantity).Error
+	if err != nil {
+		return 0.0, err
 	}
 
-	return productFromCategory, nil
+	return quantity,nil
+
 }
 
 func (p *productDatabase) SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, int, error) {

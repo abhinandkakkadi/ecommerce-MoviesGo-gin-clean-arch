@@ -13,7 +13,8 @@ type ProductRepository interface {
 	DeleteProduct(product_id string) error
 	DoesProductExist(productID int) (bool, error)
 	CheckValidityOfCategory(data map[string]int) error
-	GetProductFromCategory(data map[string]int) ([]models.ProductsBrief, error)
+	GetProductFromCategory(id int) (models.ProductsBrief, error)
 	SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, int, error)
 	GetGenres() ([]domain.Genre, error)
+	GetQuantityFromProductID(id int) (int,error)
 }
