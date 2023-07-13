@@ -370,8 +370,39 @@ func (u *userUseCase) RemoveFromWishList(productID int, userID int) error {
 
 func (u *userUseCase) ApplyReferral(userID int) (string, error) {
 
-	return u.userRepo.ApplyReferral(userID)
+	exist,err := u.cartRepo.DoesCartExist(userID)
+	if err != nil {
+		return "",err
+	}
 
+	if !exist {
+		return "",errors.New("cart does not exist, can't apply offer")
+	}
+
+	referralAmount, totalCartAmount, err := u.userRepo.GetReferralAndTotalAmount(userID)
+	if err != nil {
+		return "",err
+	} 
+
+	if totalCartAmount > referralAmount {
+		totalCartAmount = totalCartAmount - referralAmount
+		referralAmount = 0
+	} else {
+		referralAmount = referralAmount - totalCartAmount
+		totalCartAmount = 0
+	}
+
+	err = u.userRepo.UpdateSomethingBasedOnUserID("referrals","referral_amount",referralAmount,userID)
+	if err != nil {
+		return "",err
+	}
+
+	err = u.userRepo.UpdateSomethingBasedOnUserID("carts","total_price",totalCartAmount,userID)
+	if err != nil {
+		return "",err
+	}
+
+	return "",nil
 }
 
 func (u *userUseCase) ResetPassword(userID int, pass models.ResetPassword) error {
