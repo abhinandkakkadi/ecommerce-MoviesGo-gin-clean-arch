@@ -239,8 +239,7 @@ func (pr *productDatabase) GetGenres() ([]domain.Genre, error) {
 
 }
 
-
-func (pr *productDatabase) GetPriceOfProductFromID(productID int) (float64,error) {
+func (pr *productDatabase) GetPriceOfProductFromID(productID int) (float64, error) {
 
 	var productPrice float64
 	if err := pr.DB.Raw("select price from products where id = ?", productID).Scan(&productPrice).Error; err != nil {
@@ -248,6 +247,6 @@ func (pr *productDatabase) GetPriceOfProductFromID(productID int) (float64,error
 		return 0.0, err
 	}
 
-	return productPrice,nil
+	return productPrice, nil
 
 }

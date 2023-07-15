@@ -17,5 +17,5 @@ type ProductRepository interface {
 	SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, int, error)
 	GetGenres() ([]domain.Genre, error)
 	GetQuantityFromProductID(id int) (int, error)
-	GetPriceOfProductFromID(productID int) (float64,error)
+	GetPriceOfProductFromID(productID int) (float64, error)
 }
