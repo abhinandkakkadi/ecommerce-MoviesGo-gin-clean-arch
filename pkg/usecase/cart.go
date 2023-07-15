@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
@@ -12,16 +13,20 @@ import (
 type cartUseCase struct {
 	cartRepository   interfaces.CartRepository
 	couponRepository interfaces.CouponRepository
+	productRepository interfaces.ProductRepository
 }
 
-func NewCartUseCase(repository interfaces.CartRepository, couponRepo interfaces.CouponRepository) services.CartUseCase {
+func NewCartUseCase(repository interfaces.CartRepository, couponRepo interfaces.CouponRepository, productRepo interfaces.ProductRepository) services.CartUseCase {
 
 	return &cartUseCase{
 		cartRepository:   repository,
 		couponRepository: couponRepo,
+		productRepository: productRepo,
 	}
 
 }
+
+
 
 func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartResponse, error) {
 
@@ -56,11 +61,61 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 		return models.CartResponse{}, err
 	}
 
-	cartDetails, err := cr.cartRepository.AddToCart(product_id, userID, offerDetails)
+	quantityOfProductInCart,err := cr.cartRepository.QuantityOfProductInCart(userID,product_id)
+	fmt.Println(quantityOfProductInCart)
+	if err != nil {
+		return models.CartResponse{},err
+	}
 
+	quantityOfProduct,err := cr.productRepository.GetQuantityFromProductID(product_id)
+	fmt.Println(quantityOfProduct)
+	if err != nil {
+		return models.CartResponse{},err
+	}
+
+	if quantityOfProduct == 0 {
+		return models.CartResponse{},errors.New("product out of stock")
+	}
+
+	if quantityOfProduct == quantityOfProductInCart {
+		return models.CartResponse{},errors.New("stock limit exceeded")
+	}
+
+	productPrice,err := cr.productRepository.GetPriceOfProductFromID(product_id)
+  if err != nil {
+		return models.CartResponse{},err
+	}
+
+	if offerDetails.OfferPrice != productPrice {
+
+		if quantityOfProductInCart < offerDetails.OfferLimit {
+			productPrice = offerDetails.OfferPrice
+		}
+
+	}
+
+	if quantityOfProductInCart == 0 {
+		err := cr.cartRepository.AddItemToCart(userID,product_id,1,productPrice)
+		if err != nil {
+			return models.CartResponse{},err
+		}
+	} else {
+		currentTotal,err := cr.cartRepository.TotalPriceForProductInCart(userID,product_id)
+		if err != nil {
+			return models.CartResponse{},err
+		}
+
+		err = cr.cartRepository.UpdateCart(quantityOfProductInCart+1,currentTotal+productPrice,userID,product_id)
+		if err != nil {
+			return models.CartResponse{},err
+		}
+	}
+
+	cartDetails,err := cr.cartRepository.DisplayCart(userID)
 	if err != nil {
 		return models.CartResponse{}, err
 	}
+
 	// function to get the grand total price
 	cartTotal, err := cr.cartRepository.GetTotalPrice(userID)
 
@@ -171,11 +226,47 @@ func (cr *cartUseCase) DisplayCart(userID int) (models.CartResponse, error) {
 
 func (cr *cartUseCase) EmptyCart(userID int) (models.CartResponse, error) {
 
-	emptyCart, err := cr.cartRepository.EmptyCart(userID)
+	cartExist,err := cr.cartRepository.DoesCartExist(userID)
+	if err != nil {
+		return models.CartResponse{},err
+	}
 
+	if !cartExist {
+		return models.CartResponse{},errors.New("cart already empty")
+	}
+
+
+	err = cr.cartRepository.EmptyCart(userID)
 	if err != nil {
 		return models.CartResponse{}, err
 	}
+
+	// CATEGORY OFFER RESTORED 
+	categoryOfferIDS,err := cr.cartRepository.GetUnUsedCategoryOfferIDS(userID)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+
+	for _,cOfferId := range categoryOfferIDS {
+		err := cr.cartRepository.UpdateUnUsedCategoryOffer(cOfferId,userID)
+		if err != nil {
+			return models.CartResponse{}, err
+		}
+	}
+
+  // PRODUCT OFFER RESTORED
+	productOfferIDS,err := cr.cartRepository.GetUnUsedProductOfferIDS(userID)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+
+	for _,pOfferID := range productOfferIDS {
+		err := cr.cartRepository.UpdateUnUsedProductOffer(pOfferID,userID)
+		if err != nil {
+			return models.CartResponse{}, err
+		}
+	}
+
 
 	cartTotal, err := cr.cartRepository.GetTotalPrice(userID)
 
@@ -186,7 +277,7 @@ func (cr *cartUseCase) EmptyCart(userID int) (models.CartResponse, error) {
 	cartResponse := models.CartResponse{
 		UserName:   cartTotal.UserName,
 		TotalPrice: cartTotal.TotalPrice,
-		Cart:       emptyCart,
+		Cart:       []models.Cart{},
 	}
 
 	return cartResponse, nil
