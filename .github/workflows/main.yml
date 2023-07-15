@@ -27,9 +27,6 @@ jobs:
       - name: Test
         run: make test
 
-      - name: Build
-        run: make build
-
       - name: Deploy to AWS EC2
         uses: appleboy/ssh-action@master
         with:

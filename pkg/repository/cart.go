@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
@@ -20,119 +19,49 @@ func NewCartRepository(DB *gorm.DB) interfaces.CartRepository {
 	}
 }
 
-func (cr *cartRepository) AddToCart(product_id int, userID int, offerDetails models.OfferResponse) ([]models.Cart, error) {
-
-	var cartResponse []models.Cart
-	tx := cr.DB.Begin()
-	var count int
-
-	// to check if product for this particular user exist in the cart. If it does not add a new item else update the quantity
-	if err := tx.Raw("select count(*) from carts where user_id = ? and  product_id = ?", userID, product_id).Scan(&count).Error; err != nil {
-		tx.Rollback()
-		return []models.Cart{}, err
-	}
-
-	// to check if the user try to add more quantity than what is already present in stock
-	var productQuantity int
-	if err := tx.Raw("select quantity from products where id = ?", product_id).Scan(&productQuantity).Error; err != nil {
-		tx.Rollback()
-		return []models.Cart{}, err
-	}
+func (cr *cartRepository) QuantityOfProductInCart(userID int,product_id int) (int,error) {
 
 	var cartsQuantity int
-	if err := tx.Raw("select quantity from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&cartsQuantity).Error; err != nil {
-		tx.Rollback()
-		return []models.Cart{}, err
+	if err := cr.DB.Raw("select quantity from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&cartsQuantity).Error; err != nil {
+
+		return 0, err
 	}
 
-	// if the cart is empty and the product we trying to add is out of stock
-	var itemsPresentInCart int
-	if err := cr.DB.Raw("select count(*) from carts where user_id = ?", userID).Scan(&itemsPresentInCart).Error; err != nil {
-		return []models.Cart{}, err
-	}
-
-	if itemsPresentInCart == 0 && productQuantity == 0 {
-		return []models.Cart{}, errors.New("product out of stock")
-	}
-
-	// quantity in carts is equal to quantity in STOCK  -- don't allow to add further products OR product out of stock  -- or if prodctQuanity = 0 - which means the item is out of stock
-	if cartsQuantity == productQuantity || productQuantity == 0 {
-
-		if err := tx.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error; err != nil {
-			tx.Rollback()
-			return []models.Cart{}, err
-		}
-		return cartResponse, nil
-	}
-
-	var totalPrice float64
-	var productPrice float64
-
-	// OFFER DETAILS ARE DONE HERE
-	if err := tx.Raw("select price from products where id = ?", product_id).Scan(&productPrice).Error; err != nil {
-		tx.Rollback()
-		return []models.Cart{}, err
-	}
-
-	// if this condition is true that means a offer exist for this product
-	if offerDetails.OfferPrice != productPrice {
-
-		var pQuantity int
-		if err := tx.Raw("select quantity from carts where product_id = ?", product_id).Scan(&pQuantity).Error; err != nil {
-			tx.Rollback()
-			return []models.Cart{}, err
-		}
-
-		if pQuantity < offerDetails.OfferLimit {
-			productPrice = offerDetails.OfferPrice
-		}
-
-	}
-
-	// if the product is not already present in the cart - fresh item
-	if count == 0 {
-
-		totalPrice = productPrice
-		if err := tx.Exec("insert into carts (user_id,product_id,quantity,total_price) values(?,?,?,?)", userID, product_id, 1, totalPrice).Error; err != nil {
-			tx.Rollback()
-			return []models.Cart{}, err
-		}
-
-	} else {
-
-		// if the product already exist - just iterate the quantity
-		if err := tx.Raw("select sum(total_price) as total_price from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&totalPrice).Error; err != nil {
-			tx.Rollback()
-			return []models.Cart{}, err
-		}
-
-		var quantity int
-		if err := tx.Raw("select quantity from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&quantity).Error; err != nil {
-			tx.Rollback()
-			return []models.Cart{}, err
-
-		}
-
-		if err := tx.Exec("update carts set quantity = ?, total_price = ? where user_id = ? and product_id = ?", quantity+1, totalPrice+productPrice, userID, product_id).Error; err != nil {
-			tx.Rollback()
-			return []models.Cart{}, err
-
-		}
-	}
-	// list the cart and return
-	if err := tx.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error; err != nil {
-		tx.Rollback()
-		return []models.Cart{}, err
-	}
-	// commit the transation
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback()
-		return []models.Cart{}, err
-	}
-
-	return cartResponse, nil
+	return cartsQuantity,nil
 
 }
+
+func (cr *cartRepository) AddItemToCart(userID int,product_id int,quantity int,productPrice float64) error {
+
+		if err := cr.DB.Exec("insert into carts (user_id,product_id,quantity,total_price) values(?,?,?,?)", userID, product_id, quantity, productPrice).Error; err != nil {
+			return err
+		}
+
+		return nil
+
+}
+
+func (cr *cartRepository) TotalPriceForProductInCart(userID int,productID int) (float64,error) {
+
+	var totalPrice float64
+	if err := cr.DB.Raw("select sum(total_price) as total_price from carts where user_id = ? and product_id = ?", userID, productID).Scan(&totalPrice).Error; err != nil {
+		return 0.0, err
+	}
+
+	return totalPrice,nil
+}
+
+
+func (cr *cartRepository) UpdateCart(quantity int,price float64,userID int,product_id int ) error {
+
+	if err := cr.DB.Exec("update carts set quantity = ?, total_price = ? where user_id = ? and product_id = ?", quantity, price, userID, product_id).Error; err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
 
 func (cr *cartRepository) GetTotalPrice(userID int) (models.CartTotal, error) {
 
@@ -211,6 +140,7 @@ func (cr *cartRepository) RemoveFromCart(userID int) ([]models.Cart, error) {
 
 }
 
+
 func (cr *cartRepository) DisplayCart(userID int) ([]models.Cart, error) {
 
 	var count int
@@ -227,10 +157,11 @@ func (cr *cartRepository) DisplayCart(userID int) ([]models.Cart, error) {
 	if err := cr.DB.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error; err != nil {
 		return []models.Cart{}, err
 	}
-	fmt.Println(cartResponse)
+	
 	return cartResponse, nil
 
 }
+
 
 func (cr *cartRepository) EmptyCart(userID int) ([]models.Cart, error) {
 
