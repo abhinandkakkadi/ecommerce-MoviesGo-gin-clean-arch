@@ -20,7 +20,7 @@ func NewCouponRepository(DB *gorm.DB) interfaces.CouponRepository {
 	}
 }
 
-func (co *couponRepository) DidUserAlreadyUsedThisCoupon(coupon string,userID int) (bool,error) {
+func (co *couponRepository) DidUserAlreadyUsedThisCoupon(coupon string, userID int) (bool, error) {
 
 	var count int
 	err := co.DB.Raw("select count(*) from used_coupons where coupon_id = (select id from coupons where coupon = ?) and user_id = ?", coupon, userID).Scan(&count).Error
@@ -28,7 +28,7 @@ func (co *couponRepository) DidUserAlreadyUsedThisCoupon(coupon string,userID in
 		return false, err
 	}
 
-	return  count > 0, nil
+	return count > 0, nil
 
 }
 
@@ -44,17 +44,17 @@ func (co *couponRepository) CouponExist(couponName string) (bool, error) {
 
 }
 
-func (co *couponRepository) GetCouponMinimumAmount(coupon string) (float64,error) {
+func (co *couponRepository) GetCouponMinimumAmount(coupon string) (float64, error) {
 
 	var MinDiscountPrice float64
 	err := co.DB.Raw("select minimum_price from coupons where coupon = ?", coupon).Scan(&MinDiscountPrice).Error
 	if err != nil {
 		return 0.0, err
 	}
-	return MinDiscountPrice,nil
+	return MinDiscountPrice, nil
 }
 
-func (co *couponRepository) CouponValidity(couponName string) (bool,error) {
+func (co *couponRepository) CouponValidity(couponName string) (bool, error) {
 
 	var validity bool
 	err := co.DB.Raw("select validity from coupons where coupon = ?", couponName).Scan(&validity).Error
@@ -62,7 +62,7 @@ func (co *couponRepository) CouponValidity(couponName string) (bool,error) {
 		return false, err
 	}
 
-	return validity,nil
+	return validity, nil
 
 }
 

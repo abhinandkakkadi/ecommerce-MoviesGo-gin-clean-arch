@@ -19,7 +19,7 @@ func NewCartRepository(DB *gorm.DB) interfaces.CartRepository {
 	}
 }
 
-func (cr *cartRepository) QuantityOfProductInCart(userID int,product_id int) (int,error) {
+func (cr *cartRepository) QuantityOfProductInCart(userID int, product_id int) (int, error) {
 
 	var cartsQuantity int
 	if err := cr.DB.Raw("select quantity from carts where user_id = ? and product_id = ?", userID, product_id).Scan(&cartsQuantity).Error; err != nil {
@@ -27,32 +27,31 @@ func (cr *cartRepository) QuantityOfProductInCart(userID int,product_id int) (in
 		return 0, err
 	}
 
-	return cartsQuantity,nil
+	return cartsQuantity, nil
 
 }
 
-func (cr *cartRepository) AddItemToCart(userID int,product_id int,quantity int,productPrice float64) error {
+func (cr *cartRepository) AddItemToCart(userID int, product_id int, quantity int, productPrice float64) error {
 
-		if err := cr.DB.Exec("insert into carts (user_id,product_id,quantity,total_price) values(?,?,?,?)", userID, product_id, quantity, productPrice).Error; err != nil {
-			return err
-		}
+	if err := cr.DB.Exec("insert into carts (user_id,product_id,quantity,total_price) values(?,?,?,?)", userID, product_id, quantity, productPrice).Error; err != nil {
+		return err
+	}
 
-		return nil
+	return nil
 
 }
 
-func (cr *cartRepository) TotalPriceForProductInCart(userID int,productID int) (float64,error) {
+func (cr *cartRepository) TotalPriceForProductInCart(userID int, productID int) (float64, error) {
 
 	var totalPrice float64
 	if err := cr.DB.Raw("select sum(total_price) as total_price from carts where user_id = ? and product_id = ?", userID, productID).Scan(&totalPrice).Error; err != nil {
 		return 0.0, err
 	}
 
-	return totalPrice,nil
+	return totalPrice, nil
 }
 
-
-func (cr *cartRepository) UpdateCart(quantity int,price float64,userID int,product_id int ) error {
+func (cr *cartRepository) UpdateCart(quantity int, price float64, userID int, product_id int) error {
 
 	if err := cr.DB.Exec("update carts set quantity = ?, total_price = ? where user_id = ? and product_id = ?", quantity, price, userID, product_id).Error; err != nil {
 		return err
@@ -61,7 +60,6 @@ func (cr *cartRepository) UpdateCart(quantity int,price float64,userID int,produ
 	return nil
 
 }
-
 
 func (cr *cartRepository) GetTotalPrice(userID int) (models.CartTotal, error) {
 
@@ -140,7 +138,6 @@ func (cr *cartRepository) RemoveFromCart(userID int) ([]models.Cart, error) {
 
 }
 
-
 func (cr *cartRepository) DisplayCart(userID int) ([]models.Cart, error) {
 
 	var count int
@@ -157,13 +154,12 @@ func (cr *cartRepository) DisplayCart(userID int) ([]models.Cart, error) {
 	if err := cr.DB.Raw("select carts.user_id,users.name as user_name,carts.product_id,products.movie_name as movie_name,carts.quantity,carts.total_price from carts inner join users on carts.user_id = users.id inner join products on carts.product_id = products.id where user_id = ?", userID).First(&cartResponse).Error; err != nil {
 		return []models.Cart{}, err
 	}
-	
+
 	return cartResponse, nil
 
 }
 
-
-func (cr *cartRepository) GetUnUsedCategoryOfferIDS(userID int) ([]int,error) {
+func (cr *cartRepository) GetUnUsedCategoryOfferIDS(userID int) ([]int, error) {
 
 	// CATEGORY OFFER RESTORED
 	var categoryOfferID []int
@@ -171,11 +167,11 @@ func (cr *cartRepository) GetUnUsedCategoryOfferIDS(userID int) ([]int,error) {
 		return []int{}, err
 	}
 
-	return categoryOfferID,nil
+	return categoryOfferID, nil
 
 }
 
-func (cr *cartRepository) GetUnUsedProductOfferIDS(userID int) ([]int,error) {
+func (cr *cartRepository) GetUnUsedProductOfferIDS(userID int) ([]int, error) {
 
 	// PRODUCT OFFER RESTORED
 	var productOfferID []int
@@ -183,20 +179,20 @@ func (cr *cartRepository) GetUnUsedProductOfferIDS(userID int) ([]int,error) {
 		return []int{}, err
 	}
 
-	return productOfferID,nil
+	return productOfferID, nil
 
 }
 
-func (cr *cartRepository) UpdateUnUsedCategoryOffer(cOfferID int,userID int) error {
+func (cr *cartRepository) UpdateUnUsedCategoryOffer(cOfferID int, userID int) error {
 
 	var offerCount int
 	if err := cr.DB.Raw("select offer_count from category_offer_useds where category_offer_id = ?", cOfferID).Scan(&offerCount).Error; err != nil {
-		return  err
+		return err
 	}
 
 	// code for deleting this record
 	if err := cr.DB.Exec("update category_offers set offer_used = offer_used - ? where id = ?", offerCount, cOfferID).Error; err != nil {
-		return  err
+		return err
 	}
 
 	if err := cr.DB.Exec("delete from category_offer_useds where user_id = ? and used = false", userID).Error; err != nil {
@@ -207,8 +203,7 @@ func (cr *cartRepository) UpdateUnUsedCategoryOffer(cOfferID int,userID int) err
 
 }
 
-
-func (cr *cartRepository) UpdateUnUsedProductOffer(pOfferID int,userID int) error {
+func (cr *cartRepository) UpdateUnUsedProductOffer(pOfferID int, userID int) error {
 
 	var offerCount int
 	if err := cr.DB.Raw("select offer_count from product_offer_useds where product_offer_id = ?", pOfferID).Scan(&offerCount).Error; err != nil {
@@ -220,19 +215,18 @@ func (cr *cartRepository) UpdateUnUsedProductOffer(pOfferID int,userID int) erro
 		return err
 	}
 
-  if err := cr.DB.Exec("delete from product_offer_useds where user_id = ? and used = false", userID).Error; err != nil {
-	return  err
-  }
+	if err := cr.DB.Exec("delete from product_offer_useds where user_id = ? and used = false", userID).Error; err != nil {
+		return err
+	}
 
 	return nil
 
 }
 
-
-func (cr *cartRepository) EmptyCart(userID int)  error {
+func (cr *cartRepository) EmptyCart(userID int) error {
 
 	if err := cr.DB.Exec("delete from carts where user_id = ? ", userID).Error; err != nil {
-		return  err
+		return err
 	}
 
 	return nil
@@ -300,8 +294,7 @@ func (cr *cartRepository) ProductExist(product_id int, userID int) (bool, error)
 
 }
 
-
-func (cr *cartRepository) GetTotalPriceFromCart(userID int) (float64,error) {
+func (cr *cartRepository) GetTotalPriceFromCart(userID int) (float64, error) {
 
 	var totalPrice float64
 	err := cr.DB.Raw("select COALESCE(SUM(total_price), 0) from carts where user_id = ?", userID).Scan(&totalPrice).Error
@@ -309,7 +302,7 @@ func (cr *cartRepository) GetTotalPriceFromCart(userID int) (float64,error) {
 		return 0.0, err
 	}
 
-	return totalPrice,nil
+	return totalPrice, nil
 
 }
 
