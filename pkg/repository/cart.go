@@ -163,70 +163,79 @@ func (cr *cartRepository) DisplayCart(userID int) ([]models.Cart, error) {
 }
 
 
-func (cr *cartRepository) EmptyCart(userID int) ([]models.Cart, error) {
-
-	var count int
-	if err := cr.DB.Raw("select count(*) from carts where user_id = ? ", userID).First(&count).Error; err != nil {
-		return []models.Cart{}, err
-	}
-	var cartResponse []models.Cart
-	if count == 0 {
-		return []models.Cart{}, nil
-	}
-
-	if err := cr.DB.Exec("delete from carts where user_id = ? ", userID).Error; err != nil {
-		return []models.Cart{}, err
-	}
+func (cr *cartRepository) GetUnUsedCategoryOfferIDS(userID int) ([]int,error) {
 
 	// CATEGORY OFFER RESTORED
 	var categoryOfferID []int
 	if err := cr.DB.Raw("select category_offer_id from category_offer_useds where user_id = ? and used = false", userID).Scan(&categoryOfferID).Error; err != nil {
-		return []models.Cart{}, err
+		return []int{}, err
 	}
 
-	for _, cOfferID := range categoryOfferID {
+	return categoryOfferID,nil
 
-		var offerCount int
-		if err := cr.DB.Raw("select offer_count from category_offer_useds where category_offer_id = ?", cOfferID).Scan(&offerCount).Error; err != nil {
-			return []models.Cart{}, err
-		}
+}
 
-		// code for deleting this record
-		if err := cr.DB.Exec("update category_offers set offer_used = offer_used - ? where id = ?", offerCount, cOfferID).Error; err != nil {
-			return []models.Cart{}, err
-		}
-
-	}
-
-	if err := cr.DB.Exec("delete from category_offer_useds where user_id = ? and used = false", userID).Error; err != nil {
-		return []models.Cart{}, err
-	}
+func (cr *cartRepository) GetUnUsedProductOfferIDS(userID int) ([]int,error) {
 
 	// PRODUCT OFFER RESTORED
 	var productOfferID []int
 	if err := cr.DB.Raw("select product_offer_id from product_offer_useds where user_id = ? and used = false", userID).Scan(&productOfferID).Error; err != nil {
-		return []models.Cart{}, err
+		return []int{}, err
 	}
 
-	for _, pOfferID := range productOfferID {
+	return productOfferID,nil
 
-		var offerCount int
-		if err := cr.DB.Raw("select offer_count from product_offer_useds where product_offer_id = ?", pOfferID).Scan(&offerCount).Error; err != nil {
-			return []models.Cart{}, err
-		}
+}
 
-		// code for deleting this record
-		if err := cr.DB.Exec("update product_offers set offer_used = offer_used - ? where id = ?", offerCount, pOfferID).Error; err != nil {
-			return []models.Cart{}, err
-		}
+func (cr *cartRepository) UpdateUnUsedCategoryOffer(cOfferID int,userID int) error {
 
+	var offerCount int
+	if err := cr.DB.Raw("select offer_count from category_offer_useds where category_offer_id = ?", cOfferID).Scan(&offerCount).Error; err != nil {
+		return  err
 	}
 
-	if err := cr.DB.Exec("delete from product_offer_useds where user_id = ? and used = false", userID).Error; err != nil {
-		return []models.Cart{}, err
+	// code for deleting this record
+	if err := cr.DB.Exec("update category_offers set offer_used = offer_used - ? where id = ?", offerCount, cOfferID).Error; err != nil {
+		return  err
 	}
 
-	return cartResponse, nil
+	if err := cr.DB.Exec("delete from category_offer_useds where user_id = ? and used = false", userID).Error; err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+
+func (cr *cartRepository) UpdateUnUsedProductOffer(pOfferID int,userID int) error {
+
+	var offerCount int
+	if err := cr.DB.Raw("select offer_count from product_offer_useds where product_offer_id = ?", pOfferID).Scan(&offerCount).Error; err != nil {
+		return err
+	}
+
+	// code for deleting this record
+	if err := cr.DB.Exec("update product_offers set offer_used = offer_used - ? where id = ?", offerCount, pOfferID).Error; err != nil {
+		return err
+	}
+
+  if err := cr.DB.Exec("delete from product_offer_useds where user_id = ? and used = false", userID).Error; err != nil {
+	return  err
+  }
+
+	return nil
+
+}
+
+
+func (cr *cartRepository) EmptyCart(userID int)  error {
+
+	if err := cr.DB.Exec("delete from carts where user_id = ? ", userID).Error; err != nil {
+		return  err
+	}
+
+	return nil
 
 }
 
@@ -339,7 +348,7 @@ func (cr *cartRepository) CouponValidity(coupon string, userID int) (bool, error
 		return false, err
 	}
 
-	// to check if used have already used this coupon
+	// to check if user have already used this coupon
 	err = cr.DB.Raw("select count(*) from used_coupons where coupon_id = ? and user_id = ?", couponID, userID).Scan(&count).Error
 	if err != nil {
 		return false, err

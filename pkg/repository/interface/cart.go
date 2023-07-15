@@ -9,7 +9,11 @@ type CartRepository interface {
 	QuantityOfProductInCart(userID int,product_id int) (int,error)
 	RemoveFromCart(userID int) ([]models.Cart, error)
 	DisplayCart(userID int) ([]models.Cart, error)
-	EmptyCart(userID int) ([]models.Cart, error)
+	EmptyCart(userID int) error
+	GetUnUsedCategoryOfferIDS(userID int) ([]int,error)
+	UpdateUnUsedCategoryOffer(cOfferID int,userID int) error
+	UpdateUnUsedProductOffer(pOfferID int,userID int) error
+	GetUnUsedProductOfferIDS(userID int) ([]int,error)
 	GetQuantityAndTotalPrice(userID int, product_id int, cartDetails struct {
 		Quantity   int
 		TotalPrice float64

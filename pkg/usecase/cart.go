@@ -88,7 +88,7 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 
 	if offerDetails.OfferPrice != productPrice {
 
-		if quantityOfProduct < offerDetails.OfferLimit {
+		if quantityOfProductInCart < offerDetails.OfferLimit {
 			productPrice = offerDetails.OfferPrice
 		}
 
@@ -228,13 +228,45 @@ func (cr *cartUseCase) EmptyCart(userID int) (models.CartResponse, error) {
 
 	cartExist,err := cr.cartRepository.DoesCartExist(userID)
 	if err != nil {
-		return err
+		return models.CartResponse{},err
 	}
 
-	emptyCart, err := cr.cartRepository.EmptyCart(userID)
+	if !cartExist {
+		return models.CartResponse{},errors.New("cart already empty")
+	}
+
+
+	err = cr.cartRepository.EmptyCart(userID)
 	if err != nil {
 		return models.CartResponse{}, err
 	}
+
+	// CATEGORY OFFER RESTORED 
+	categoryOfferIDS,err := cr.cartRepository.GetUnUsedCategoryOfferIDS(userID)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+
+	for _,cOfferId := range categoryOfferIDS {
+		err := cr.cartRepository.UpdateUnUsedCategoryOffer(cOfferId,userID)
+		if err != nil {
+			return models.CartResponse{}, err
+		}
+	}
+
+  // PRODUCT OFFER RESTORED
+	productOfferIDS,err := cr.cartRepository.GetUnUsedProductOfferIDS(userID)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+
+	for _,pOfferID := range productOfferIDS {
+		err := cr.cartRepository.UpdateUnUsedProductOffer(pOfferID,userID)
+		if err != nil {
+			return models.CartResponse{}, err
+		}
+	}
+
 
 	cartTotal, err := cr.cartRepository.GetTotalPrice(userID)
 
@@ -245,7 +277,7 @@ func (cr *cartUseCase) EmptyCart(userID int) (models.CartResponse, error) {
 	cartResponse := models.CartResponse{
 		UserName:   cartTotal.UserName,
 		TotalPrice: cartTotal.TotalPrice,
-		Cart:       emptyCart,
+		Cart:       []models.Cart{},
 	}
 
 	return cartResponse, nil

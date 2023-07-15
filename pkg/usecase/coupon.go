@@ -54,6 +54,7 @@ func (co *couponUseCase) AddCoupon(coupon models.AddCoupon) (string, error) {
 func (co *couponUseCase) GetCoupon() ([]models.Coupon, error) {
 
 	return co.couponRepository.GetCoupon()
+	
 }
 
 func (co *couponUseCase) ExpireCoupon(couponID int) error {
