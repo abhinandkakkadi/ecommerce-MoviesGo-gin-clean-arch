@@ -300,64 +300,28 @@ func (cr *cartRepository) ProductExist(product_id int, userID int) (bool, error)
 
 }
 
-func (cr *cartRepository) CouponValidity(coupon string, userID int) (bool, error) {
 
-	// check if the coupon exist
-	var count int
-	err := cr.DB.Raw("select count(*) from coupons where coupon = ?", coupon).Scan(&count).Error
-	if err != nil {
-		return false, err
-	}
-
-	if count < 1 {
-		return false, errors.New("coupon does not exist")
-	}
-
-	// check if the coupon have been revoked or not
-	var validity bool
-	err = cr.DB.Raw("select validity from coupons where coupon = ?", coupon).Scan(&validity).Error
-	if err != nil {
-		return false, err
-	}
-
-	if !validity {
-		return false, errors.New("coupon not valid")
-	}
-
-	var MinDiscountPrice float64
-
-	err = cr.DB.Raw("select minimum_price from coupons where coupon = ?", coupon).Scan(&MinDiscountPrice).Error
-	if err != nil {
-		return false, err
-	}
+func (cr *cartRepository) GetTotalPriceFromCart(userID int) (float64,error) {
 
 	var totalPrice float64
-	err = cr.DB.Raw("select COALESCE(SUM(total_price), 0) from carts where user_id = ?", userID).Scan(&totalPrice).Error
+	err := cr.DB.Raw("select COALESCE(SUM(total_price), 0) from carts where user_id = ?", userID).Scan(&totalPrice).Error
 	if err != nil {
-		return false, err
+		return 0.0, err
 	}
 
-	// if the total Price is less than minDiscount price don't allow coupon to be added
-	if totalPrice < MinDiscountPrice {
-		return false, errors.New("coupon cannot be added as the total amount is less than minimum amount for coupon")
-	}
+	return totalPrice,nil
+
+}
+
+func (cr *cartRepository) UpdateUsedCoupon(coupon string, userID int) (bool, error) {
 
 	var couponID uint
-	err = cr.DB.Raw("select id from coupons where coupon = ?", coupon).Scan(&couponID).Error
+	err := cr.DB.Raw("select id from coupons where coupon = ?", coupon).Scan(&couponID).Error
 	if err != nil {
 		return false, err
 	}
 
-	// to check if user have already used this coupon
-	err = cr.DB.Raw("select count(*) from used_coupons where coupon_id = ? and user_id = ?", couponID, userID).Scan(&count).Error
-	if err != nil {
-		return false, err
-	}
-
-	if count > 0 {
-		return false, errors.New("user have already used this coupon")
-	}
-
+	var count int
 	// if a coupon have already been added, replace the order with current coupon and delete the existing coupon
 	err = cr.DB.Raw("select count(*) from used_coupons where user_id = ? and used = false", userID).Scan(&count).Error
 	if err != nil {

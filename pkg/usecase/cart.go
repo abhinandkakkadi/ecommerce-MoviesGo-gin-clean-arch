@@ -294,7 +294,49 @@ func (cr *cartUseCase) ApplyCoupon(coupon string, userID int) error {
 		return errors.New("cart empty, can't apply coupon")
 	}
 
-	couponStatus, err := cr.cartRepository.CouponValidity(coupon, userID)
+	couponExist,err := cr.couponRepository.CouponExist(coupon)
+	if err != nil {
+		return err
+	}
+
+	if !couponExist {
+		return  errors.New("coupon does not exist")
+	}
+
+	couponValidity,err := cr.couponRepository.CouponValidity(coupon)
+	if err != nil {
+		return err
+	}
+
+	if !couponValidity {
+		return  errors.New("coupon expired")
+	}
+
+	minDiscountPrice,err := cr.couponRepository.GetCouponMinimumAmount(coupon)
+	if err != nil {
+		return err
+	}
+
+	totalPriceFromCarts,err := cr.cartRepository.GetTotalPriceFromCart(userID)
+	if err != nil {
+		return err
+	}
+
+	// if the total Price is less than minDiscount price don't allow coupon to be added
+	if totalPriceFromCarts < minDiscountPrice {
+		return errors.New("coupon cannot be added as the total amount is less than minimum amount for coupon")
+	}
+
+	userAlreadyUsed,err := cr.couponRepository.DidUserAlreadyUsedThisCoupon(coupon,userID)
+	if err != nil {
+		return err
+	}
+
+	if userAlreadyUsed {
+		return errors.New("user already used this coupon")
+	}
+
+	couponStatus, err := cr.cartRepository.UpdateUsedCoupon(coupon, userID)
 	if err != nil {
 		return err
 	}

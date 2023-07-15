@@ -10,6 +10,7 @@ type CartRepository interface {
 	RemoveFromCart(userID int) ([]models.Cart, error)
 	DisplayCart(userID int) ([]models.Cart, error)
 	EmptyCart(userID int) error
+	GetTotalPriceFromCart(userID int) (float64,error)
 	GetUnUsedCategoryOfferIDS(userID int) ([]int,error)
 	UpdateUnUsedCategoryOffer(cOfferID int,userID int) error
 	UpdateUnUsedProductOffer(pOfferID int,userID int) error
@@ -30,7 +31,7 @@ type CartRepository interface {
 	GetAllItemsFromCart(userID int) ([]models.Cart, error)
 	CheckProduct(product_id int) (bool, string, error)
 	ProductExist(product_id int, userID int) (bool, error)
-	CouponValidity(coupon string, userID int) (bool, error)
+	UpdateUsedCoupon(coupon string, userID int) (bool, error)
 	DoesCartExist(userID int) (bool, error)
 
 }
