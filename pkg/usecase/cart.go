@@ -47,16 +47,35 @@ func (cr *cartUseCase) AddToCart(product_id int, userID int) (models.CartRespons
 
 	// Now check if the offer is already used by the user
 	if offerDetails.OfferType != "no offer" {
-		offerDetails, err = cr.couponRepository.CheckIfOfferAlreadyUsed(offerDetails, product_id, userID)
-		if err != nil {
-			return models.CartResponse{}, err
+
+		if offerDetails.OfferType == "product" {
+
+			offerDetails, err = cr.couponRepository.CheckIfProductOfferAlreadyUsed(offerDetails, product_id, userID)
+			if err != nil {
+				return models.CartResponse{}, err
+			}
+
+		} else if offerDetails.OfferType == "category" {
+
+			offerDetails, err = cr.couponRepository.CheckIfCategoryOfferAlreadyUsed(offerDetails, product_id, userID)
+			if err != nil {
+				return models.CartResponse{}, err
+			}
 		}
 	}
 
-	// if offer id ! =0 that means some kind of offer exist - do the complete things inside this
-	err = cr.couponRepository.OfferUpdate(offerDetails, userID)
-	if err != nil {
-		return models.CartResponse{}, err
+	if offerDetails.OfferType == "product" {
+		err = cr.couponRepository.OfferUpdateProduct(offerDetails, userID)
+		if err != nil {
+			return models.CartResponse{}, err
+		}
+
+	} else if offerDetails.OfferType == "category" {
+		err = cr.couponRepository.OfferUpdateCategory(offerDetails, userID)
+		if err != nil {
+			return models.CartResponse{}, err
+		}
+
 	}
 
 	quantityOfProductInCart, err := cr.cartRepository.QuantityOfProductInCart(userID, product_id)
