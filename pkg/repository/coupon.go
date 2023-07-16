@@ -252,112 +252,112 @@ func (co *couponRepository) OfferDetails(productID int, genre string) (models.Co
 
 }
 
-func (co *couponRepository) CheckIfOfferAlreadyUsed(offerDetails models.OfferResponse, product_id int, userID int) (models.OfferResponse, error) {
+func (co *couponRepository) CheckIfProductOfferAlreadyUsed(offerDetails models.OfferResponse, product_id int, userID int) (models.OfferResponse, error) {
 
-	if offerDetails.OfferType == "product" {
+	var used bool
+	err := co.DB.Raw("select used from product_offer_useds where user_id = ? and product_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
+	if err != nil {
+		return models.OfferResponse{}, err
+	}
 
-		var used bool
-		err := co.DB.Raw("select used from product_offer_useds where user_id = ? and product_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
+	if used {
+		err := co.DB.Raw("select price from products where id = ? ", product_id).Scan(&offerDetails.OfferPrice).Error
 		if err != nil {
 			return models.OfferResponse{}, err
 		}
-
-		if used {
-			err := co.DB.Raw("select price from products where id = ? ", product_id).Scan(&offerDetails.OfferPrice).Error
-			if err != nil {
-				return models.OfferResponse{}, err
-			}
-			return offerDetails, nil
-		}
-
-	} else if offerDetails.OfferType == "category" {
-
-		var used bool
-		err := co.DB.Raw("select used from category_offer_useds where user_id = ? and category_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
-		if err != nil {
-			return models.OfferResponse{}, err
-		}
-
-		if used {
-			err := co.DB.Raw("select price from products where id = ? ", product_id).Scan(&offerDetails.OfferPrice).Error
-			if err != nil {
-				return models.OfferResponse{}, err
-			}
-			return offerDetails, nil
-		}
-
+		return offerDetails, nil
 	}
 
 	return offerDetails, nil
 }
 
-func (co *couponRepository) OfferUpdate(offerDetails models.OfferResponse, userID int) error {
+func (co *couponRepository) CheckIfCategoryOfferAlreadyUsed(offerDetails models.OfferResponse, product_id int, userID int) (models.OfferResponse, error) {
 
-	if offerDetails.OfferType == "product" {
-
-		var count int
-		err := co.DB.Raw("select count(*) from product_offer_useds where product_offer_id = ? and user_id = ? ", offerDetails.OfferID, userID).Scan(&count).Error
-		if err != nil {
-			return err
-		}
-
-		// find genre of the movie
-		var genreID int
-		err = co.DB.Raw("select genre_id from category_offers inner join category_offer_useds on category_offers.id = category_offer_useds.category_offer_id where user_id = ? and used = false", userID).Scan(&genreID).Error
-		if err != nil {
-			return err
-		}
-		// the user haven't used product offer. also the user did't use category offer yet. -  if both condition come true - allow it
-		if genreID == 0 {
-			if count == 0 {
-				co.DB.Exec("insert into product_offer_useds (user_id,product_offer_id,offer_amount,offer_count,used) values (?,?,?,?,?)", userID, offerDetails.OfferID, offerDetails.OfferPrice, 1, false).Scan(&count)
-			} else {
-				err = co.DB.Exec("update product_offer_useds set offer_count = offer_count + 1 where product_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
-				if err != nil {
-					return err
-				}
-			}
-
-			err = co.DB.Exec("update product_offers set offer_used = offer_used + 1 where id = ?", offerDetails.OfferID).Error
-			if err != nil {
-				return err
-			}
-		}
-
-	} else if offerDetails.OfferType == "category" {
-
-		var count int
-		err := co.DB.Raw("select count(*) from category_offer_useds where category_offer_id = ? and user_id = ? ", offerDetails.OfferID, userID).Scan(&count).Error
-		if err != nil {
-			return err
-		}
-
-		var productID int
-		err = co.DB.Raw("select product_id from product_offers inner join product_offer_useds on product_offers.id = product_offer_useds.product_offer_id where user_id = ? and used = false", userID).Scan(&productID).Error
-		if err != nil {
-			return err
-		}
-
-		// The user have not yet used this offer. create one
-		if productID == 0 {
-			if count == 0 {
-				co.DB.Exec("insert into category_offer_useds (user_id,category_offer_id,offer_amount,offer_count,used) values (?,?,?,?,?)", userID, offerDetails.OfferID, offerDetails.OfferPrice, 1, false).Scan(&count)
-			} else {
-				err = co.DB.Exec("update category_offer_useds set offer_count = offer_count + 1 where category_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
-				if err != nil {
-					return err
-				}
-			}
-
-			err = co.DB.Exec("update category_offers set offer_used = offer_used + 1 where id = ?", offerDetails.OfferID).Error
-			if err != nil {
-				return err
-			}
-		}
-
+	var used bool
+	err := co.DB.Raw("select used from category_offer_useds where user_id = ? and category_offer_id = ?", userID, offerDetails.OfferID).Scan(&used).Error
+	if err != nil {
+		return models.OfferResponse{}, err
 	}
+
+	if used {
+		err := co.DB.Raw("select price from products where id = ? ", product_id).Scan(&offerDetails.OfferPrice).Error
+		if err != nil {
+			return models.OfferResponse{}, err
+		}
+		return offerDetails, nil
+	}
+
+	return offerDetails, nil
+
+}
+
+func (co *couponRepository) OfferUpdateProduct(offerDetails models.OfferResponse, userID int) error {
+
+	var count int
+	err := co.DB.Raw("select count(*) from product_offer_useds where product_offer_id = ? and user_id = ? ", offerDetails.OfferID, userID).Scan(&count).Error
+	if err != nil {
+		return err
+	}
+
+	// find genre of the movie
+	var genreID int
+	err = co.DB.Raw("select genre_id from category_offers inner join category_offer_useds on category_offers.id = category_offer_useds.category_offer_id where user_id = ? and used = false", userID).Scan(&genreID).Error
+	if err != nil {
+		return err
+	}
+	// the user haven't used product offer. also the user did't use category offer yet. -  if both condition come true - allow it
+	if genreID == 0 {
+		if count == 0 {
+			co.DB.Exec("insert into product_offer_useds (user_id,product_offer_id,offer_amount,offer_count,used) values (?,?,?,?,?)", userID, offerDetails.OfferID, offerDetails.OfferPrice, 1, false).Scan(&count)
+		} else {
+			err = co.DB.Exec("update product_offer_useds set offer_count = offer_count + 1 where product_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
+			if err != nil {
+				return err
+			}
+		}
+
+		err = co.DB.Exec("update product_offers set offer_used = offer_used + 1 where id = ?", offerDetails.OfferID).Error
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 
+}
+
+func (co *couponRepository) OfferUpdateCategory(offerDetails models.OfferResponse, userID int) error {
+
+	var count int
+	err := co.DB.Raw("select count(*) from category_offer_useds where category_offer_id = ? and user_id = ? ", offerDetails.OfferID, userID).Scan(&count).Error
+	if err != nil {
+		return err
+	}
+
+	var productID int
+	err = co.DB.Raw("select product_id from product_offers inner join product_offer_useds on product_offers.id = product_offer_useds.product_offer_id where user_id = ? and used = false", userID).Scan(&productID).Error
+	if err != nil {
+		return err
+	}
+
+	// The user have not yet used this offer. create one
+	if productID == 0 {
+		if count == 0 {
+			co.DB.Exec("insert into category_offer_useds (user_id,category_offer_id,offer_amount,offer_count,used) values (?,?,?,?,?)", userID, offerDetails.OfferID, offerDetails.OfferPrice, 1, false).Scan(&count)
+		} else {
+			err = co.DB.Exec("update category_offer_useds set offer_count = offer_count + 1 where category_offer_id = ? and user_id = ?", offerDetails.OfferID, userID).Error
+			if err != nil {
+				return err
+			}
+		}
+
+		err = co.DB.Exec("update category_offers set offer_used = offer_used + 1 where id = ?", offerDetails.OfferID).Error
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // this is the most complicated function in this program
