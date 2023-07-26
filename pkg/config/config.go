@@ -12,13 +12,13 @@ type Config struct {
 	DBPort     string `mapstructure:"DB_PORT"`
 	DBPassword string `mapstructure:"DB_PASSWORD"`
 
-	AUTHTOKEN   string `mapstructure:"DB_AUTHTOKEN"`
-	ACCOUNTSID  string `mapstructure:"DB_ACCOUNTSID"`
-	SERVICESSID string `mapstructure:"DB_SERVICESID"`
+	AUTHTOKEN   string `mapstructure:"TWILIO_AUTHTOKEN"`
+	ACCOUNTSID  string `mapstructure:"TWILIO_ACCOUNTSID"`
+	SERVICESSID string `mapstructure:"TWILIO_SERVICESID"`
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "AUTHTOKEN", "ACCOUNTSID", "SERVICESSID",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "TWILIO_AUTHTOKEN", "TWILIO_ACCOUNTSID", "TWILIO_SERVICESSID",
 }
 
 func LoadConfig() (Config, error) {

@@ -1,0 +1,36 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: moviesgo
+    networks:
+      - fullstack
+    volumes:
+      - database-postgres:/var/lib/postgresql/data
+
+  moviesgo:
+    image: abhinandkakkadi/moviesgo
+    restart: on-failure
+    environment:
+      DB_HOST: "postgres"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "moviesgo"
+    depends_on:
+      - postgres
+    networks:
+      - fullstack
+    ports:
+      - "3000:3000"
+
+volumes:
+  database-postgres:
+
+networks:
+  fullstack:
+    driver: bridge

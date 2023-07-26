@@ -12,15 +12,16 @@ import (
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/config"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/db"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository"
+	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase"
 )
 
 // Injectors from wire.go:
 
-func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
+func InitializeAPI(cfg config.Config) (*http.ServerHTTP,interfaces.ProductRepository, error) {
 	gormDB, err := db.ConnectDatabase(cfg)
 	if err != nil {
-		return nil, err
+		return nil,nil,err
 	}
 	couponRepository := repository.NewCouponRepository(gormDB)
 	couponUseCase := usecase.NewCouponUseCase(couponRepository)
@@ -47,5 +48,7 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	paymentUseCase := usecase.NewPaymentUseCase(paymentRepository, orderRepository, userRepository)
 	paymentHandler := handler.NewPaymentHandler(paymentUseCase)
 	serverHTTP := http.NewServerHTTP(userHandler, productHandler, otpHandler, adminHandler, cartHandler, orderHandler, couponHandler, paymentHandler)
-	return serverHTTP, nil
+	
+	
+	return serverHTTP,productRepository,nil
 }

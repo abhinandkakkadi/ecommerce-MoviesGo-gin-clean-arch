@@ -1,9 +1,13 @@
 package http
 
 import (
+	"log"
+
 	_ "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/api/handler"
 	handler "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/api/handler"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/api/routes"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
+	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -28,6 +32,9 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 	return &ServerHTTP{engine: router}
 }
 
-func (sh *ServerHTTP) Start() {
-	sh.engine.Run(":3000")
+func (sh *ServerHTTP) Start(productRepo interfaces.ProductRepository,infoLog *log.Logger,errorLog *log.Logger) {
+	go helper.LatestOfferAlert(productRepo)
+	infoLog.Printf("starting server on :3000")
+	err := sh.engine.Run(":3000")
+	errorLog.Fatal(err)
 }

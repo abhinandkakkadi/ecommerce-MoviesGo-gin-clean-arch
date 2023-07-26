@@ -27,15 +27,15 @@ jobs:
       - name: Test
         run: make test
 
-      # - name: Deploy to AWS EC2
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{secrets.EC2_PUBLIC_IP}}
-      #     username: ubuntu
-      #     key: ${{secrets.EC2_SSH_KEY}}
-      #     script: |
-      #       echo "Connected to AWS EC2 instance"
-      #       cd ecommerce-MoviesGo-gin-clean-arch
-      #       git pull
-      #       go build -o api ./cmd/api
-      #       sudo systemctl restart go_app.service
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.EC2_PUBLIC_IP}}
+          username: ubuntu
+          key: ${{secrets.EC2_SSH_KEY}}
+          script: |
+            echo "Connected to AWS EC2 instance"
+            cd ecommerce-MoviesGo-gin-clean-arch
+            git pull
+            go build -o api ./cmd/api
+            sudo systemctl restart go_app.service

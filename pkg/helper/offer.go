@@ -1,8 +1,10 @@
 package helper
 
 import (
+	"fmt"
 	"time"
 
+	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
 )
 
@@ -50,5 +52,16 @@ func OfferHelper(combinedOfferDetails models.CombinedOffer) models.OfferResponse
 	combinedOfferDetails.FinalOffer.OfferPrice = combinedOfferDetails.OriginalPrice - ((float64(combinedOfferDetails.FinalOffer.OfferPercentage) * combinedOfferDetails.OriginalPrice) / 100)
 
 	return combinedOfferDetails.FinalOffer
+
+}
+
+
+
+var OfferContainers = map[string][]models.ProductOfferBriefResponse{}
+
+// implement some concurrent stuff and store it in redis
+func LatestOfferAlert(productRepo interfaces.ProductRepository) {
+   
+	fmt.Println("update this in the future")
 
 }
