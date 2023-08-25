@@ -3,26 +3,33 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"mime/multipart"
 	"strings"
 
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/config"
 	domain "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/domain"
 	helper "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/helper"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	services "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/utils/models"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
 type productUseCase struct {
 	productRepo interfaces.ProductRepository
 	cartRepo    interfaces.CartRepository
 	couponRepo  interfaces.CouponRepository
+	cfg 				config.Config
+	s3Uploader  *s3manager.Uploader
 }
 
-func NewProductUseCase(repo interfaces.ProductRepository, cartRepo interfaces.CartRepository, couponRepo interfaces.CouponRepository) services.ProductUseCase {
+func NewProductUseCase(repo interfaces.ProductRepository, cartRepo interfaces.CartRepository, couponRepo interfaces.CouponRepository,cfg config.Config,s3Uploader *s3manager.Uploader) services.ProductUseCase {
 	return &productUseCase{
 		productRepo: repo,
 		cartRepo:    cartRepo,
 		couponRepo:  couponRepo,
+		cfg: cfg,
+		s3Uploader: s3Uploader,
 	}
 }
 
@@ -228,4 +235,27 @@ func (pr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.Produ
 func (pr *productUseCase) GetGenres() ([]domain.Genre, error) {
 
 	return pr.productRepo.GetGenres()
+}
+
+
+func (pr *productUseCase) UploadImageS3(files []*multipart.FileHeader) (error) {
+
+	 for _, file := range files {
+			fileHeader := file
+
+			f, err := fileHeader.Open()
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+
+			uploadURL, err := helper.UploadToS3(f,fileHeader,pr.s3Uploader)
+			if err != nil {
+				return err
+			}
+
+			fmt.Println(uploadURL)
+	 }
+
+	 return nil
 }

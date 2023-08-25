@@ -40,8 +40,9 @@ type UsersProfileDetails struct {
 
 // user details along with embedded token which can be used by the user to access protected routes
 type TokenUsers struct {
-	Users UserDetailsResponse
-	Token string
+	Users        UserDetailsResponse
+	AccessToken  string
+	RefreshToken string
 }
 
 type UserSignInResponse struct {

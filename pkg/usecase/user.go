@@ -85,7 +85,12 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	}
 
 	// crete a JWT token string for the user
-	tokenString, err := helper.GenerateTokenUsers(userData)
+	accessToken, err := helper.GenerateAccessToken(userData)
+	if err != nil {
+		return models.TokenUsers{}, errors.New("could not create token due to some internal error")
+	}
+
+	refreshToken, err := helper.GenerateRefreshToke(userData)
 	if err != nil {
 		return models.TokenUsers{}, errors.New("could not create token due to some internal error")
 	}
@@ -98,8 +103,9 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	}
 
 	return models.TokenUsers{
-		Users: userDetails,
-		Token: tokenString,
+		Users:        userDetails,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 	}, nil
 }
 
@@ -137,14 +143,21 @@ func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 		return models.TokenUsers{}, err
 	}
 
-	tokenString, err := helper.GenerateTokenUsers(userDetails)
+	// crete a JWT token string for the user
+	accessToken, err := helper.GenerateAccessToken(userDetails)
 	if err != nil {
-		return models.TokenUsers{}, errors.New("could not create token")
+		return models.TokenUsers{}, errors.New("could not create token due to some internal error")
+	}
+
+	refreshToken, err := helper.GenerateRefreshToke(userDetails)
+	if err != nil {
+		return models.TokenUsers{}, errors.New("could not create token due to some internal error")
 	}
 
 	return models.TokenUsers{
-		Users: userDetails,
-		Token: tokenString,
+		Users:        userDetails,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 	}, nil
 
 }

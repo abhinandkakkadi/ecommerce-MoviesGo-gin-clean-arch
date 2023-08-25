@@ -15,10 +15,15 @@ type Config struct {
 	AUTHTOKEN   string `mapstructure:"TWILIO_AUTHTOKEN"`
 	ACCOUNTSID  string `mapstructure:"TWILIO_ACCOUNTSID"`
 	SERVICESSID string `mapstructure:"TWILIO_SERVICESID"`
+
+	AWSS3REGION string `mapstructure:"AWSS3_REGION"`
+	AWSS3ACCESSKEY string `mapstructure:"AWSS3_ACCESSKEY"`
+	AWSS3SECRECTKEY string `mapstructure:"AWSS3_SECRECTKEY"`
+
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "TWILIO_AUTHTOKEN", "TWILIO_ACCOUNTSID", "TWILIO_SERVICESSID",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "TWILIO_AUTHTOKEN", "TWILIO_ACCOUNTSID", "TWILIO_SERVICESSID","AWSS3_REGION","AWSS3_ACCESSKEY","AWSS3_SECRECTKEY",
 }
 
 func LoadConfig() (Config, error) {

@@ -16,9 +16,6 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		SkipDefaultTransaction: true,
 	})
 
-	dbName := "moviesgo"
-  err := db.Exec("CREATE DATABASE " + dbName).Error
-  _ = err
 
 	db.AutoMigrate(&domain.Users{})
 	db.AutoMigrate(&domain.Products{})

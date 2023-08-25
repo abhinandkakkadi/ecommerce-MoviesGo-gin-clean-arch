@@ -293,3 +293,32 @@ func (ad *ProductHandler) GetGenresToUser(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the genres", genres, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+
+
+// @Summary Add Product Image
+// @Description Add product Product from admin side
+// @Tags Admin Product Management
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param product body models.ProductsReceiver true "Product details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/products/upload-product-image	[post]
+func (ad *ProductHandler) UploadImage(c *gin.Context) {
+
+	form, err := c.MultipartForm()
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	files := form.File["files"]
+
+	err = ad.productUseCase.UploadImageS3(files)
+
+	
+
+}

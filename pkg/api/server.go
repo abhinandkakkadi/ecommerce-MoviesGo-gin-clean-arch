@@ -32,7 +32,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, productHandler *handler.Pro
 	return &ServerHTTP{engine: router}
 }
 
-func (sh *ServerHTTP) Start(productRepo interfaces.ProductRepository,infoLog *log.Logger,errorLog *log.Logger) {
+func (sh *ServerHTTP) Start(productRepo interfaces.ProductRepository, infoLog *log.Logger, errorLog *log.Logger) {
 	go helper.LatestOfferAlert(productRepo)
 	infoLog.Printf("starting server on :3000")
 	err := sh.engine.Run(":3000")

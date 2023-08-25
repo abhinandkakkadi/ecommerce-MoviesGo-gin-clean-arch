@@ -27,14 +27,14 @@ func main() {
 		log.Fatal("cannot load config: ", configErr)
 	}
 
-	infoLog := log.New(os.Stdout,"INFO\t",log.Ldate|log.Ltime)
-	errorLog := log.New(os.Stderr,"ERROR\t",log.Ldate|log.Ltime|log.Lshortfile)
-	server,productRepo,diErr := di.InitializeAPI(config)
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	server, productRepo, diErr := di.InitializeAPI(config)
 
 	if diErr != nil {
 		log.Fatal("cannot start server: ", diErr)
 	} else {
-		server.Start(productRepo,infoLog,errorLog)
+		server.Start(productRepo, infoLog, errorLog)
 	}
 
 }

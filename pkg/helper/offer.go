@@ -55,13 +55,11 @@ func OfferHelper(combinedOfferDetails models.CombinedOffer) models.OfferResponse
 
 }
 
-
-
 var OfferContainers = map[string][]models.ProductOfferBriefResponse{}
 
 // implement some concurrent stuff and store it in redis
 func LatestOfferAlert(productRepo interfaces.ProductRepository) {
-   
+
 	fmt.Println("update this in the future")
 
 }

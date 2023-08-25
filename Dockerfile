@@ -15,17 +15,17 @@ EXPOSE 3000
 
 CMD ["/api"]
 
-# FROM alpine:3.14 AS prod
+FROM alpine:3.14 AS prod
 
-# # # Set the working directory
-# WORKDIR /app
+# # Set the working directory
+WORKDIR /app
 
-# # Copy only the necessary files from the build image
-# COPY --from=build /api /api
-# COPY --from=build . ./
+# Copy only the necessary files from the build image
+COPY --from=build /api /api
+COPY --from=build . ./
 
-# # expose container port
-# EXPOSE 3000
+# expose container port
+EXPOSE 3000
 
-# # Set the entry point
-# CMD ["/api"]
+# Set the entry point
+CMD ["/api"]

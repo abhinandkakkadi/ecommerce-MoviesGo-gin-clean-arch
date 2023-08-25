@@ -54,7 +54,15 @@ func (ot *otpUseCase) VerifyOTP(code models.VerifyData) (models.TokenUsers, erro
 		return models.TokenUsers{}, err
 	}
 
-	tokenString, err := helper.GenerateTokenUsers(userDetails)
+	accessToken, err := helper.GenerateAccessToken(userDetails)
+	if err != nil {
+		return models.TokenUsers{}, errors.New("could not create token due to some internal error")
+	}
+
+	refreshToken, err := helper.GenerateRefreshToke(userDetails)
+	if err != nil {
+		return models.TokenUsers{}, errors.New("could not create token due to some internal error")
+	}
 
 	var user models.UserDetailsResponse
 	err = copier.Copy(&user, &userDetails)
@@ -64,7 +72,8 @@ func (ot *otpUseCase) VerifyOTP(code models.VerifyData) (models.TokenUsers, erro
 
 	return models.TokenUsers{
 		Users: user,
-		Token: tokenString,
+		AccessToken: accessToken,
+		RefreshToken: refreshToken,
 	}, nil
 
 }

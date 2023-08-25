@@ -47,7 +47,7 @@ func TestUserSignup(t *testing.T) {
 						Email: "nanduttanvsabhi@gmail.com",
 						Phone: "9961088604",
 					},
-					Token: "aksjgnalfiugliagbldfgbldfgbladfjnb",
+					AccessToken: "aksjgnalfiugliagbldfgbldfgbladfjnb",
 				}, nil)
 			},
 			checkResponse: func(t *testing.T, responseRecorder *httptest.ResponseRecorder) {

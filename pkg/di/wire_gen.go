@@ -11,6 +11,7 @@ import (
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/api/handler"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/config"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/db"
+	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/image"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository"
 	interfaces "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/repository/interface"
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/usecase"
@@ -18,10 +19,15 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeAPI(cfg config.Config) (*http.ServerHTTP,interfaces.ProductRepository, error) {
+func InitializeAPI(cfg config.Config) (*http.ServerHTTP, interfaces.ProductRepository, error) {
 	gormDB, err := db.ConnectDatabase(cfg)
 	if err != nil {
-		return nil,nil,err
+		return nil, nil, err
+	}
+
+	s3Uploader, err := image.ConnectS3(cfg)
+	if err != nil {
+		return nil, nil, err
 	}
 	couponRepository := repository.NewCouponRepository(gormDB)
 	couponUseCase := usecase.NewCouponUseCase(couponRepository)
@@ -31,7 +37,7 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP,interfaces.ProductReposi
 	productRepository := repository.NewProductRepository(gormDB)
 	userUseCase := usecase.NewUserUseCase(userRepository, cartRepository, productRepository, couponRepository)
 	userHandler := handler.NewUserHandler(userUseCase)
-	productUseCase := usecase.NewProductUseCase(productRepository, cartRepository, couponRepository)
+	productUseCase := usecase.NewProductUseCase(productRepository, cartRepository, couponRepository,cfg,s3Uploader)
 	productHandler := handler.NewProductHandler(productUseCase)
 	otpRepository := repository.NewOtpRepository(gormDB)
 	otpUseCase := usecase.NewOtpUseCase(cfg, otpRepository)
@@ -48,7 +54,6 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP,interfaces.ProductReposi
 	paymentUseCase := usecase.NewPaymentUseCase(paymentRepository, orderRepository, userRepository)
 	paymentHandler := handler.NewPaymentHandler(paymentUseCase)
 	serverHTTP := http.NewServerHTTP(userHandler, productHandler, otpHandler, adminHandler, cartHandler, orderHandler, couponHandler, paymentHandler)
-	
-	
-	return serverHTTP,productRepository,nil
+
+	return serverHTTP, productRepository, nil
 }

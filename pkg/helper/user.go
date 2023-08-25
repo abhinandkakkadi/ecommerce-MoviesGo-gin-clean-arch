@@ -17,13 +17,13 @@ func init() {
 
 }
 
-func GenerateTokenUsers(user models.UserDetailsResponse) (string, error) {
+func GenerateTokenUsers(userID int, userEmail string, expirationTime time.Time) (string, error) {
 
 	claims := &authCustomClaimsUsers{
-		Id:    user.Id,
-		Email: user.Email,
+		Id:    userID,
+		Email: userEmail,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
+			ExpiresAt: expirationTime.Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
@@ -36,6 +36,28 @@ func GenerateTokenUsers(user models.UserDetailsResponse) (string, error) {
 	}
 
 	return tokenString, nil
+
+}
+
+func GenerateAccessToken(user models.UserDetailsResponse) (string, error) {
+
+	expirationTime := time.Now().Add(15 * time.Minute)
+	tokenString, err := GenerateTokenUsers(user.Id, user.Email, expirationTime)
+	if err != nil {
+		return "", err
+	}
+	return tokenString, nil
+
+}
+
+func GenerateRefreshToke(user models.UserDetailsResponse) (string, error) {
+
+	expirationTime := time.Now().Add(24 * 90 * time.Hour)
+	tokeString, err := GenerateTokenUsers(user.Id, user.Email, expirationTime)
+	if err != nil {
+		return "", err
+	}
+	return tokeString, nil
 
 }
 

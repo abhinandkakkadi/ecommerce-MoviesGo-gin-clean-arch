@@ -22,6 +22,7 @@ func AuthMiddlewareReset() gin.HandlerFunc {
 				return
 			}
 		}
+
 		userID, userEmail, err := helper.ExtractUserIDFromTokenForgotPassword(tokenString)
 		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
