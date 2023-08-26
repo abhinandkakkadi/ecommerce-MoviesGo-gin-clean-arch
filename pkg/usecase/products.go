@@ -213,7 +213,7 @@ func (pr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.Produ
 		length := len(p.MovieName)
 		if length >= lengthOfPrefix {
 			moviePrefix := p.MovieName[:lengthOfPrefix]
-			if strings.EqualFold(prefix,moviePrefix) {
+			if strings.EqualFold(prefix, moviePrefix) {
 				filteredProductBrief = append(filteredProductBrief, p)
 			}
 		}
