@@ -14,9 +14,9 @@ import (
 
 func Test_user_UserSignUp(t *testing.T) {
 
-	type fields struct {
-		db *gorm.DB
-	}
+	// type fields struct {
+	// 	db *gorm.DB
+	// }
 
 	type args struct {
 		input models.UserDetails
@@ -92,9 +92,9 @@ func Test_user_UserSignUp(t *testing.T) {
 
 func Test_user_GetWalletDetails(t *testing.T) {
 
-	type fields struct {
-		db *gorm.DB
-	}
+	// type fields struct {
+	// 	db *gorm.DB
+	// }
 
 	type args struct {
 		userID int

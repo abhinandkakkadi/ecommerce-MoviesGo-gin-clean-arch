@@ -24,8 +24,15 @@ jobs:
           sudo apt update
           sudo apt install -y make
 
+      # testing
       - name: Test
         run: make test
+
+        # linting checking
+      - name: install staticcheck
+        run: |
+          go install honnef.co/go/tools/cmd/staticcheck@latest
+          staticcheck ./...
 
       - name: Deploy to AWS EC2
         uses: appleboy/ssh-action@master

@@ -26,7 +26,7 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandler, pr
 		product := router.Group("/products")
 		{
 			product.GET("", productHandler.SeeAllProductToAdmin)
-			product.POST("/upload-product-image",productHandler.UploadImage)
+			product.POST("/upload-product-image", productHandler.UploadImage)
 			product.GET("/:page", productHandler.SeeAllProductToAdmin)
 			product.POST("/add-product", productHandler.AddProduct)
 			product.DELETE("/delete-product/:id", productHandler.DeleteProduct)

@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/cmd/api/docs"
-	_ "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/cmd/api/docs"
 	config "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/config"
 	di "github.com/abhinandkakkadi/ecommerce-MoviesGo-gin-clean-arch/pkg/di"
 	_ "github.com/swaggo/files"

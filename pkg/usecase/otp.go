@@ -71,8 +71,8 @@ func (ot *otpUseCase) VerifyOTP(code models.VerifyData) (models.TokenUsers, erro
 	}
 
 	return models.TokenUsers{
-		Users: user,
-		AccessToken: accessToken,
+		Users:        user,
+		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
 

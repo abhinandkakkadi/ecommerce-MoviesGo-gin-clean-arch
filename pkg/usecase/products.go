@@ -19,17 +19,17 @@ type productUseCase struct {
 	productRepo interfaces.ProductRepository
 	cartRepo    interfaces.CartRepository
 	couponRepo  interfaces.CouponRepository
-	cfg 				config.Config
+	cfg         config.Config
 	s3Uploader  *s3manager.Uploader
 }
 
-func NewProductUseCase(repo interfaces.ProductRepository, cartRepo interfaces.CartRepository, couponRepo interfaces.CouponRepository,cfg config.Config,s3Uploader *s3manager.Uploader) services.ProductUseCase {
+func NewProductUseCase(repo interfaces.ProductRepository, cartRepo interfaces.CartRepository, couponRepo interfaces.CouponRepository, cfg config.Config, s3Uploader *s3manager.Uploader) services.ProductUseCase {
 	return &productUseCase{
 		productRepo: repo,
 		cartRepo:    cartRepo,
 		couponRepo:  couponRepo,
-		cfg: cfg,
-		s3Uploader: s3Uploader,
+		cfg:         cfg,
+		s3Uploader:  s3Uploader,
 	}
 }
 
@@ -213,7 +213,7 @@ func (pr *productUseCase) SearchItemBasedOnPrefix(prefix string) ([]models.Produ
 		length := len(p.MovieName)
 		if length >= lengthOfPrefix {
 			moviePrefix := p.MovieName[:lengthOfPrefix]
-			if strings.ToLower(moviePrefix) == strings.ToLower(prefix) {
+			if strings.EqualFold(prefix,moviePrefix) {
 				filteredProductBrief = append(filteredProductBrief, p)
 			}
 		}
@@ -237,25 +237,26 @@ func (pr *productUseCase) GetGenres() ([]domain.Genre, error) {
 	return pr.productRepo.GetGenres()
 }
 
+func (pr *productUseCase) UploadImageS3(files []*multipart.FileHeader) error {
 
-func (pr *productUseCase) UploadImageS3(files []*multipart.FileHeader) (error) {
+	for _, file := range files {
+		fileHeader := file
 
-	 for _, file := range files {
-			fileHeader := file
+		f, err := fileHeader.Open()
+		if err != nil {
+			return err
+		}
+		defer f.Close()
 
-			f, err := fileHeader.Open()
-			if err != nil {
-				return err
-			}
-			defer f.Close()
+		uploadURL, err := helper.UploadToS3(f, fileHeader, pr.s3Uploader)
+		if err != nil {
+			return err
+		}
 
-			uploadURL, err := helper.UploadToS3(f,fileHeader,pr.s3Uploader)
-			if err != nil {
-				return err
-			}
+		// TODO: map image to product in db
 
-			fmt.Println(uploadURL)
-	 }
+		fmt.Println(uploadURL)
+	}
 
-	 return nil
+	return nil
 }

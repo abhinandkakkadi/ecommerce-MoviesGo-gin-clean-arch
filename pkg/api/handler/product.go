@@ -294,8 +294,6 @@ func (ad *ProductHandler) GetGenresToUser(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
-
-
 // @Summary Add Product Image
 // @Description Add product Product from admin side
 // @Tags Admin Product Management
@@ -318,7 +316,12 @@ func (ad *ProductHandler) UploadImage(c *gin.Context) {
 	files := form.File["files"]
 
 	err = ad.productUseCase.UploadImageS3(files)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "error while uploading image", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
 
-	
-
+	successRes := response.ClientResponse(http.StatusOK, "Successfully uploaded image to s3", nil, nil)
+	c.JSON(http.StatusOK, successRes)
 }

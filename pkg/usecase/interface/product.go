@@ -17,5 +17,5 @@ type ProductUseCase interface {
 	FilterCategory(data map[string]int) ([]models.ProductsBrief, error)
 	SearchItemBasedOnPrefix(prefix string) ([]models.ProductsBrief, error)
 	GetGenres() ([]domain.Genre, error)
-	UploadImageS3(files []*multipart.FileHeader) (error)
+	UploadImageS3(files []*multipart.FileHeader) error
 }

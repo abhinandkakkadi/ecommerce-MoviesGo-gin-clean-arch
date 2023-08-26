@@ -196,9 +196,9 @@ func (mr *MockUserUseCaseMockRecorder) UpdatePassword(ctx, body interface{}) *go
 }
 
 // UpdateUserDetails mocks base method.
-func (m *MockUserUseCase) UpdateUserDetails(body models.UsersProfileDetails, ctx context.Context) (models.UsersProfileDetails, error) {
+func (m *MockUserUseCase) UpdateUserDetails(body models.UsersProfileDetails, userID int) (models.UsersProfileDetails, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUserDetails", body, ctx)
+	ret := m.ctrl.Call(m, "UpdateUserDetails", body, userID)
 	ret0, _ := ret[0].(models.UsersProfileDetails)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1

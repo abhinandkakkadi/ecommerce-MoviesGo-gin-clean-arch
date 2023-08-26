@@ -263,14 +263,7 @@ func (u *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, e
 
 }
 
-func (u *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails, ctx context.Context) (models.UsersProfileDetails, error) {
-
-	var userID int
-	var ok bool
-	// sent value through context - just for studying purpose - not required in this case
-	if userID, ok = ctx.Value("userID").(int); !ok {
-		return models.UsersProfileDetails{}, errors.New("error retreiving user details")
-	}
+func (u *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails, userID int) (models.UsersProfileDetails, error) {
 
 	userExist := u.userRepo.CheckUserAvailability(userDetails.Email)
 

@@ -8,10 +8,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
+func ConnectS3(cfg config.Config) (*s3manager.Uploader, error) {
 
-func ConnectS3(cfg config.Config) (*s3manager.Uploader,error) {
-
-	var uploader *s3manager.Uploader 
+	var uploader *s3manager.Uploader
 
 	// create aws session
 	awsSession, err := session.NewSessionWithOptions(session.Options{
@@ -26,12 +25,12 @@ func ConnectS3(cfg config.Config) (*s3manager.Uploader,error) {
 	})
 
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	// create an uploader
 	uploader = s3manager.NewUploader(awsSession)
 
-	return uploader,nil
+	return uploader, nil
 
 }

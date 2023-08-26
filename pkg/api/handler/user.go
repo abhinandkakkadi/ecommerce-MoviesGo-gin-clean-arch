@@ -272,9 +272,6 @@ func (u *UserHandler) GetAllAddress(c *gin.Context) {
 func (u *UserHandler) UpdateUserDetails(c *gin.Context) {
 
 	user_id, _ := c.Get("user_id")
-	ctx := context.Background()
-
-	ctx = context.WithValue(ctx, "userID", user_id.(int))
 
 	var user models.UsersProfileDetails
 
@@ -284,7 +281,7 @@ func (u *UserHandler) UpdateUserDetails(c *gin.Context) {
 		return
 	}
 
-	updatedDetails, err := u.userUseCase.UpdateUserDetails(user, ctx)
+	updatedDetails, err := u.userUseCase.UpdateUserDetails(user, user_id.(int))
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "failed update user", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)

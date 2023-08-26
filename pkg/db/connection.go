@@ -16,7 +16,6 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		SkipDefaultTransaction: true,
 	})
 
-
 	db.AutoMigrate(&domain.Users{})
 	db.AutoMigrate(&domain.Products{})
 	db.AutoMigrate(&domain.Admin{})
